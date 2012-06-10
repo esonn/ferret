@@ -1,0 +1,14 @@
+# Ferret implemented in Cobra
+
+class Ferret
+	def main
+		task = Documents()
+
+		for arg in CobraCore.commandLineArgs[1:]
+			task.add(arg)
+
+		task.run
+
+		for i in 0 : task.numDocuments-1
+			for j in i+1 : task.numDocuments
+				print '[task.docName(i)], [task.docName(j)], [task.computeResemblance(i, j)]'

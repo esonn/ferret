@@ -1,0 +1,43 @@
+# Manage a single document
+
+use System.Text.RegularExpressions
+
+class Document
+	var _filename as String
+	get filename from _filename as String
+
+	var _reference as int
+	get reference from _reference as int
+
+	var _trigramCount as int
+	get trigramCount from _trigramCount as int
+
+	cue init(filename, reference)
+		base.init
+		_filename = filename
+		_reference = reference
+
+	def readTrigrams as Set<of List<of String>>
+		tokens = List<of String>()
+		result = Set<of List<of String>>()
+
+		try 
+			using file = StreamReader(_filename)
+				line = file.readLine
+				while line
+					for token in Regex.split(line, r"\W+")
+						if token.length > 0 # ignore tokens with no characters
+							tokens.add(token)
+					# -- move to next line
+					line = file.readLine
+
+		catch ioe as IOException
+			print 'IO Error [ioe] with reading [_filename]'
+			return result
+
+		# convert tokens into trigrams, and return
+		for i in 0:tokens.count-2
+			result.add([tokens[i], tokens[i+1], tokens[i+2]])
+		_trigramCount = result.count
+
+		return result

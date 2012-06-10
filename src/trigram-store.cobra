@@ -1,0 +1,22 @@
+class TrigramStore
+	# store maps trigrams to lists of document references
+	var _store = Dictionary<of String, Set<of int>>()
+
+	def makeKey(trigram as List<of String>) as String
+		return '[trigram[0]] [trigram[1]] [trigram[2]]'
+
+	def add(trigram as List<of String>, reference as int)
+		trigramKey = .makeKey(trigram) 
+		if _store.containsKey(trigramKey)
+			_store[trigramKey].add(reference)
+		else
+			_store[trigramKey] = {reference}
+
+	def countMatches(ref1 as int, ref2 as int) as int
+		matches = 0
+		for docRefs in _store.values
+			if docRefs.contains(ref1) and docRefs.contains(ref2)
+				matches += 1
+
+		return matches
+
