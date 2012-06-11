@@ -25,5 +25,8 @@ class Documents
 	def numDocuments as int
 		return _docs.count
 
-	def docName(reference as int) as String
+	def numPairs as int
+		return ((_docs.count-1) * _docs.count / 2) to int
+
+	def docName(reference as int) as String?
 		return _docs[reference].filename

@@ -5,6 +5,7 @@ use Gtk
 class ResultsWindow inherits Window
 	var _task as Documents
 	var _resultsModel as ListStore
+	var _commentLabel as Label
 
 	cue init(task)
 		base.init('Ferret: Table of comparisons')
@@ -14,11 +15,19 @@ class ResultsWindow inherits Window
 		.createWidgets
 		.fillTable
 		.setDefaultSize(500, 400)
+		.setComment('Finished comparisons')
 
 	def fillTable
 		for i in 0 : _task.numDocuments-1
 			for j in i+1 : _task.numDocuments
-				_resultsModel.appendValues(_task.docName(i), _task.docName(j), '[_task.computeResemblance(i, j)]')
+				_resultsModel.appendValues(
+					_task.docName(i), 
+					_task.docName(j), 
+					_task.computeResemblance(i, j).toString('0.0000')
+				)
+
+	def setComment(msg)
+		_commentLabel.text = msg
 
 	def createWidgets
 		# -- three column tree view for results
@@ -34,11 +43,17 @@ class ResultsWindow inherits Window
 
 		# -- buttons for managing results
 		saveReportButton = Button('Save report ...')
+		saveReportButton.sensitive = false
 		sortDocument1Button = Button('Document 1')
+		sortDocument1Button.sensitive = false
 		sortDocument2Button = Button('Document 2')
+		sortDocument2Button.sensitive = false
 		sortSimilarityButton = Button('Similarity')
+		sortSimilarityButton.sensitive = false
 		showAnalysisButton = Button('Show analysis')
+		showAnalysisButton.sensitive = false
 		saveAnalysisButton = Button('Save analysis ...')
+		saveAnalysisButton.sensitive = false
 		helpButton = Button(Stock.help)
 		quitButton = Button(Stock.quit)
 
@@ -47,10 +62,10 @@ class ResultsWindow inherits Window
 			Application.quit
 
 		# -- labels for data
-		commentLabel = Label('Last action ...')
-		commentLabel.setAlignment(0.0_f32, 0.5_f32)
-		numDocumentsLabel = Label('Documents:')
-		numPairsLabel = Label('Pairs:')
+		_commentLabel = Label('Last action ...')
+		_commentLabel.setAlignment(0.0_f32, 0.5_f32)
+		numDocumentsLabel = Label('Documents: [_task.numDocuments]')
+		numPairsLabel = Label('Pairs: [_task.numPairs]')
 
 		# -- set up display
 		mainPanel = HBox(false, 5)
@@ -82,7 +97,7 @@ class ResultsWindow inherits Window
 		mainPanel.packEnd(buttonPanel, false, false, 0)
 
 		labelPanel = HBox(false, 0)
-		labelPanel.packStart(commentLabel, true, true, 5)
+		labelPanel.packStart(_commentLabel, true, true, 5)
 		labelPanel.packStart(numDocumentsLabel, true, true, 0)
 		labelPanel.packStart(numPairsLabel, true, true, 5)
 

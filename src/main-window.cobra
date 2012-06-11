@@ -33,6 +33,7 @@ class FerretWindow inherits Window
 		documentListScrolled.add(documentList)
 		documentListScrolled.shadowType = ShadowType.In
 
+		helpButton = Button(Stock.help)
 		runButton = Button('Run Ferret')
 
 		runButton.sensitive = false
@@ -109,6 +110,7 @@ class FerretWindow inherits Window
 
 		# -- assemble the panel to place at bottom of frame
 		basePanel = HBox(false, 5)
+		basePanel.packStart(helpButton, false, false, 0)
 		basePanel.packEnd(runButton, false, false, 0)
 
 		# -- assemble the main panel
