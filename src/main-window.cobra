@@ -94,17 +94,13 @@ class FerretWindow inherits Window
 			runButton.sensitive = false
 			clearButton.sensitive = false
 		listen runButton.clicked, do(sender, args as EventArgs)
-			# TODO: Replace this with computing and placing results in a new frame
 			task = Documents()
 			
 			for filename in filenames
 				task.add(filename)
 			task.run
-
-			for i in 0 : task.numDocuments-1
-				for j in i+1 : task.numDocuments
-					print '[task.docName(i)], [task.docName(j)], [task.computeResemblance(i, j)]'
-			Application.quit
+			.destroy
+			ResultsWindow(task).showAll
 
 		# -- assemble the panel for add/clear/show documents
 		documentControls = HBox(true, 5)
