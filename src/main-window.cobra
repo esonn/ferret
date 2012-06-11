@@ -9,7 +9,7 @@ class FerretWindow inherits Window
 		listen .deleteEvent, do(obj, e as DeleteEventArgs)
 			Application.quit
 		.createWidgets
-		.setDefaultSize(500, 300)
+		.setDefaultSize(500, 400)
 
 	def createWidgets
 		titleLabel = Label('<big><b>Ferret 5.0 (alpha)</b></big>')
@@ -34,12 +34,77 @@ class FerretWindow inherits Window
 		documentListScrolled.shadowType = ShadowType.In
 
 		runButton = Button('Run Ferret')
+
+		runButton.sensitive = false
+		clearButton.sensitive = false
+
+		filenames = List<of String>()
 		
 		# -- attach actions to buttons
 		listen addButton.clicked, do(sender, args as EventArgs)
-			documentModel.appendValues("item")
+			fc = FileChooserDialog('Select document(s) to analyse',
+				this,
+				FileChooserAction.Open,
+				"Cancel",ResponseType.Cancel,
+				"Open",ResponseType.Accept)
+		
+			# -- filter for all
+			filter = FileFilter()
+			filter.name = "All files"
+			filter.addPattern("*.*")
+			fc.addFilter(filter)
+
+			# -- filter for doc
+			filter = FileFilter()
+			filter.name = "Doc files"
+			filter.addPattern("*.doc")
+			fc.addFilter(filter)
+
+			# -- filter for pdf 
+			filter = FileFilter()
+			filter.name = "Pdf files"
+			filter.addPattern("*.pdf")
+			fc.addFilter(filter)
+
+			# -- filter for text
+			filter = FileFilter()
+			filter.name = "Text files"
+			filter.addPattern("*.txt")
+			fc.addFilter(filter)
+
+			# -- filter for C-code 
+			filter = FileFilter()
+			filter.name = "C/CPP files"
+			filter.addPattern("*.c")
+			filter.addPattern("*.h")
+			filter.addPattern("*.cpp")
+			fc.addFilter(filter)
+
+			fc.selectMultiple = true
+			if fc.run == ResponseType.Accept to int
+				for filename in fc.filenames
+					documentModel.appendValues(filename)
+					filenames.add(filename)
+			fc.destroy
+			runButton.sensitive = documentModel.iterNChildren > 1
+			clearButton.sensitive = documentModel.iterNChildren > 0
 		listen clearButton.clicked, do(sender, args as EventArgs)
 			documentModel.clear
+			filenames.clear
+			runButton.sensitive = false
+			clearButton.sensitive = false
+		listen runButton.clicked, do(sender, args as EventArgs)
+			# TODO: Replace this with computing and placing results in a new frame
+			task = Documents()
+			
+			for filename in filenames
+				task.add(filename)
+			task.run
+
+			for i in 0 : task.numDocuments-1
+				for j in i+1 : task.numDocuments
+					print '[task.docName(i)], [task.docName(j)], [task.computeResemblance(i, j)]'
+			Application.quit
 
 		# -- assemble the panel for add/clear/show documents
 		documentControls = HBox(true, 5)
