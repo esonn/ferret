@@ -94,6 +94,8 @@ class FerretWindow inherits Window
 			filenames.clear
 			runButton.sensitive = false
 			clearButton.sensitive = false
+		listen helpButton.clicked, do(sender, args as EventArgs)
+			HelpWindow.showMain
 		listen runButton.clicked, do(sender, args as EventArgs)
 			task = Documents()
 			

@@ -58,6 +58,8 @@ class ResultsWindow inherits Window
 		quitButton = Button(Stock.quit)
 
 		# -- attach the actions
+		listen helpButton.clicked, do(sender, args as EventArgs)
+			HelpWindow.showResults
 		listen quitButton.clicked, do(sender, args as EventArgs)
 			Application.quit
 
