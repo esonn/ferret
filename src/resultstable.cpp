@@ -364,7 +364,7 @@ BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_RANK_1, ComparisonTableView::OnRank1)
 	EVT_BUTTON(ID_RANK_2, ComparisonTableView::OnRank2)
 	EVT_BUTTON(ID_RANK_R, ComparisonTableView::OnRank3)
-//	EVT_BUTTON(ID_SAVE_REPORT, ComparisonTableView::OnSaveReport)
+	EVT_BUTTON(ID_SAVE_REPORT, ComparisonTableView::OnSaveReport)
 	EVT_BUTTON(ID_DISPLAY_TEXTS, ComparisonTableView::OnDisplayTexts)
 	EVT_BUTTON(ID_CREATE_REPORT, ComparisonTableView::OnCreateReport)
 	EVT_BUTTON(wxID_HELP, ComparisonTableView::OnHelp)
@@ -505,10 +505,9 @@ ComparisonTableView::ComparisonTableView()
 	// -- note, buttons must be defined before their staticboxsizer, 
 	// else tooltips do not display
 	wxBoxSizer  * buttonSizer = new wxBoxSizer (wxVERTICAL);
-  // UNCOMMENT if support for PDF provided
-//	buttonSizer->Add (MakeButton (this, ID_SAVE_REPORT, wxT("Save Report ..."),
-//				wxT("Save the table of comparisons and other details")),
-//		       	0, wxGROW | wxALL, 5);
+	buttonSizer->Add (MakeButton (this, ID_SAVE_REPORT, wxT("Save Report ..."),
+				wxT("Save the table of comparisons and other details")),
+		       	0, wxGROW | wxALL, 5);
 	wxButton * rank_1 = MakeButton (this, ID_RANK_1, wxT("Document 1"),
 				wxT("Put table into alphabetical order of first document"));
 	wxButton * rank_2 = MakeButton (this, ID_RANK_2, wxT("Document 2"),
