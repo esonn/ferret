@@ -287,28 +287,25 @@ void DocumentListCtrl::SaveReportFor (int document1, int document2)
   wxFileDialog dialog (NULL, wxT("Create and save report"),
       wxEmptyString,
       newname,
-      wxT("xml|*.xml"),
-      //			wxT("pdf|*.pdf|xml|*.xml"), // if pdf included
+      wxT("pdf|*.pdf|xml|*.xml"), 
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
   if (dialog.ShowModal () == wxID_OK)
   {
     wxBusyCursor wait;
     wxBusyInfo info (wxT("Saving comparison report, please wait ..."), this);
     wxFileName path (dialog.GetPath ()); 
-    //		UNCOMMENT if PDF output supported
-    //		if (dialog.GetFilterIndex () == 0 || (path.GetExt () == wxT("pdf")))
-    //		{
-    //			path.SetExt (wxT("pdf")); // force .pdf as extension
-    //			PdfReport pdfreport (_ferretparent->GetDocumentList ());
-    //			pdfreport.WritePdfReport (path.GetFullPath (), document1, document2);
-    //		}
-    //		else // if (dialog.GetFilterIndex () == 1 || (path.GetExt () == wxT("xml")))
-    //		{
-    // only permit XML output		
-    path.SetExt (wxT("xml")); // force .xml as extension
-    XmlReport xmlreport (_ferretparent->GetDocumentList ());
-    xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
-    //		}
+   	if (dialog.GetFilterIndex () == 0 || (path.GetExt () == wxT("pdf")))
+   	{
+    	path.SetExt (wxT("pdf")); // force .pdf as extension
+    	PdfReport pdfreport (_ferretparent->GetDocumentList ());
+    	pdfreport.WritePdfReport (path.GetFullPath (), document1, document2);
+    }
+    else // if (dialog.GetFilterIndex () == 1 || (path.GetExt () == wxT("xml")))
+    {
+      path.SetExt (wxT("xml")); // force .xml as extension
+      XmlReport xmlreport (_ferretparent->GetDocumentList ());
+      xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
+    }
   }
 }
 
@@ -406,7 +403,6 @@ void ComparisonTableView::OnHelp (wxCommandEvent & WXUNUSED(event))
 	wxGetApp().ShowTableHelp ();
 }
 
-/* UNCOMMENT TO SUPPORT PDF 
 void ComparisonTableView::OnSaveReport (wxCommandEvent & WXUNUSED(event))
 {
 	wxFileDialog dialog (NULL, wxT("Save table of comparisons and other details as a pdf report"),
@@ -433,7 +429,7 @@ void ComparisonTableView::OnSaveReport (wxCommandEvent & WXUNUSED(event))
 		SetStatusText (wxT("Cancelled save table as pdf"));
 	}
 }
-*/
+
 void ComparisonTableView::OnQuit (wxCommandEvent & WXUNUSED(event))
 {
 	wxGetApp().CloseHelp ();
@@ -476,7 +472,8 @@ ComparisonTableView::ComparisonTableView()
 {
 	CentreOnScreen ();
 	CreateStatusBar(3);
-	SetStatusWidths (3, (int[]){ -2, -1, -1 });
+  int widths [] = {-2, -1, -1};
+	SetStatusWidths (3, widths);
 	SetStatusText(wxT("Welcome to Ferret"), 0);
 	SetStatusText(wxT("Documents: "), 1);
 	SetStatusText(wxT("Pairs: "), 2);

@@ -40,10 +40,10 @@ bool isHtmlTableOption (wxString test_string)
 	return isNamedOption (test_string, wxT("-w"), wxT("--html-table"));
 }
 
-//bool isPdfOption (wxString test_string)
-//{
-//	return isNamedOption (test_string, wxT("-p"), wxT("--pdf-report"));
-//}
+bool isPdfOption (wxString test_string)
+{
+	return isNamedOption (test_string, wxT("-p"), wxT("--pdf-report"));
+}
 
 bool isXmlOption (wxString test_string)
 {
@@ -133,16 +133,16 @@ void produceComparisonReport (
 
 	docs.RunFerret ();
 
-//	if (report_type == PDF_REPORT)
-//	{
-//		PdfReport pdfreport (docs);
-//		pdfreport.WritePdfReport (target_name, 0, 1);
-//	}
-//	else // if (report_type == XML_REPORT)
-//	{
+	if (report_type == PDF_REPORT)
+	{
+		PdfReport pdfreport (docs);
+		pdfreport.WritePdfReport (target_name, 0, 1);
+	}
+	else // if (report_type == XML_REPORT)
+	{
 		XmlReport xmlreport (docs);
 		xmlreport.WriteXmlReport (target_name, 0, 1);
-//	}
+	}
 }
 
 void writeTrigramList (DocumentList & docs)

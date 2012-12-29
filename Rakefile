@@ -2,8 +2,8 @@ desc "build ferret"
 task :build do 
   Dir.chdir("src") do
     sh("make ferret")
-    if File.exists("src/ferret.exe")
-      sh("mv src/ferret.exe .")
+    if File.exist?("src/ferret")
+      sh("mv src/ferret .")
     end
   end
 end

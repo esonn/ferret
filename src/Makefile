@@ -7,10 +7,8 @@ ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 	$(CC) -o ferret \
 		tokenset.o tokenreader.o tupleset.o document.o documentlist.o \
 		mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
-		outputreport.o xmlreport.o helpframe.o \
-    `wx-config --libs`
-# to include pdf output: pdfreport.o must be in list above
-#		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
+		outputreport.o xmlreport.o helpframe.o pdfreport.o \
+		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
 # for Mac
 #		-lwxpdfdocud `wx-config --libs`
 
@@ -42,9 +40,9 @@ helpframe.o: helpframe.cpp helpframe.h \
 outputreport.o: outputreport.cpp outputreport.h
 	$(CC) `wx-config --cxxflags` -c outputreport.cpp -o outputreport.o
 
-#pdfreport.o: pdfreport.cpp pdfreport.h resultstable.h outputreport.h \
-#		tokenset.h tokenreader.h document.h documentlist.h
-#	$(CC) `wx-config --cxxflags` -c pdfreport.cpp -o pdfreport.o
+pdfreport.o: pdfreport.cpp pdfreport.h resultstable.h outputreport.h \
+		tokenset.h tokenreader.h document.h documentlist.h
+	$(CC) `wx-config --cxxflags` -c pdfreport.cpp -o pdfreport.o
 
 xmlreport.o: xmlreport.cpp xmlreport.h outputreport.h \
 		tokenset.h tokenreader.h document.h documentlist.h
