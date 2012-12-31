@@ -139,7 +139,7 @@ void DocumentListCtrl::SortOnDocument (int doc_num)
 	
 	_sortedIndices = newIndices;
 
-	RefreshItems (0, _sortedIndices.size());
+	RefreshItems (0, _sortedIndices.size()-1);
 	// select original item
 	if (selected_item != -1)
 	{
@@ -189,7 +189,7 @@ void DocumentListCtrl::SortOnResemblance ()
 			_ferretparent->GetDocumentList().GetSimilarityComparer (&_document1, &_document2));
 
 	_sortedIndices = newIndices;
-	RefreshItems (0, _sortedIndices.size());
+	RefreshItems (0, _sortedIndices.size()-1);
 	// select original item
 	if (selected_item != -1)
 	{
@@ -543,6 +543,7 @@ ComparisonTableView::ComparisonTableView()
 
 	SetSizer (topsizer);
 	_resemblanceObserver->SetFocus ();  // give focus to the list control, to show highlighted item
+
 #if __WXMSW__
 	SetBackgroundColour (wxNullColour); // ensure background coloured
 #endif
@@ -560,7 +561,7 @@ void ComparisonTableView::SetDocumentList (DocumentList & documentlist)
 	SetStatusText (wxString::Format (wxT("Documents: %d"), _documentlist.Size()), 1);
 	SetStatusText (wxString::Format (wxT("Pairs: %d"), _documentlist.NumberOfPairs()), 2);
 	_documentlist.ComputeSimilarities ();
-   	_resemblanceObserver->UpdatedDocumentList ();
+ 	_resemblanceObserver->UpdatedDocumentList ();
 	_resemblanceObserver->SortOnResemblance ();
 	_resemblanceObserver->SelectFirstItem ();
 }

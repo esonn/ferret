@@ -2,7 +2,7 @@ CC = g++ -Wno-deprecated -O2
 
 # ferret -- main, general version of Ferret
 ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
-		outputreport.o xmlreport.o helpframe.o \
+		outputreport.o xmlreport.o helpframe.o pdfreport.o \
 		tokenset.o tokenreader.o tupleset.o document.o documentlist.o
 	$(CC) -o ferret \
 		tokenset.o tokenreader.o tupleset.o document.o documentlist.o \
