@@ -3,8 +3,9 @@ task :build do
   Dir.chdir("src") do
     sh("make ferret")
     if File.exist?("ferret")
-      sh("strip ferret")
-      sh("mv ferret ../uhferret")
+      `strip ferret`
+      `mv ferret ../uhferret`
+      `chmod g-x ../uhferret`
     end
   end
 end
@@ -21,3 +22,12 @@ task :find, :text do |v, args|
   end
 end
 
+directory "release"
+
+desc "use fpm to create release packages"
+task :release do 
+  Dir.chdir("release") do
+#    `sudo cp ../uhferret /usr/local/bin/uhferret`
+    sh("fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://github.com/petercrlane/ferret' -m 'Peter Lane<peter.lane@bcs.org.uk' -n uhferret -v 5.0 /usr/local/bin/uhferret")
+  end
+end
