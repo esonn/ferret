@@ -2,8 +2,8 @@
 
 Ferret is a copy-detection tool, locating duplicate text or code in 
 multiple text documents or source files.  Although mostly intended 
-for detecting copying (_collusion_) within a given set of files, a 
-limited web search capability helps check copying (_plagiarism_) 
+for detecting copying (*collusion*) within a given set of files, a 
+limited web search capability helps check copying (*plagiarism*) 
 against external web sources.
 
 Ferret is useful for:
