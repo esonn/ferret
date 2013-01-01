@@ -29,7 +29,7 @@ int TokenReader::GetTokenEnd () const
 // check if given character is a member of standard roman alphabet
 bool WordReader::IsAlphabetChar (wxChar ch)
 {
-	return wxIsalnum (ch); // (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+	return wxIsalpha (ch); // (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
 }
 
 // this function checks if the input character is from a language

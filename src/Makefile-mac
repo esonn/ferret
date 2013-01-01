@@ -1,3 +1,6 @@
+# Makefile for Mac
+# -- needs testing
+
 CC = g++ -Wno-deprecated -O2
 
 # ferret -- main, general version of Ferret
@@ -8,7 +11,7 @@ ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		tokenset.o tokenreader.o tupleset.o document.o documentlist.o \
 		mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		outputreport.o xmlreport.o helpframe.o pdfreport.o \
-		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
+		-lwxpdfdocud `wx-config --libs`
 
 mainferret.o: mainferret.cpp mainferret.h \
 		documentlist.h ferretapp.h
@@ -66,6 +69,16 @@ tupleset.o: tupleset.cpp tupleset.h \
 tokenset.o: tokenset.cpp tokenset.h
 	$(CC) `wx-config --cxxflags` -c tokenset.cpp -o tokenset.o
 	
+# for Mac bundle
+Ferret.app: ferret
+	-mkdir Ferret.app
+	-mkdir Ferret.app/Contents
+	-mkdir Ferret.app/Contents/MacOS
+	-mkdir Ferret.app/Contents/Resources
+	-mkdir Ferret.app/Contents/Resources/English.lproj
+	echo -n 'Ferret5.0' > Ferret.app/Contents/PkgInfo
+	cp ferret Ferret.app/Contents/MacOS/Ferret
+
 clean:
 	rm *.o
 

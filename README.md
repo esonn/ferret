@@ -54,7 +54,7 @@ for versions of Linux and Windows.
 
 *Problems*
 
-- Some problems with highlighting trigrams
+- Some problems with highlighting trigrams (due to handling of unicode)
 
 *Untested* (probably not working)
 
