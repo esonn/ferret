@@ -76,10 +76,6 @@ More details on using Ferret can be found in the manual (in preparation).
 - saving of file comparison to pdf and xml format
 - file conversion from doc/pdf to txt
 
-*Problems*
-
-- Some problems with highlighting trigrams (due to handling of unicode)
-
 *Untested* (probably not working)
 
 - downloading comparisons from internet

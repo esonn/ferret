@@ -269,7 +269,7 @@ void Document::ExtractFromPdf (wxString & extract_folder)
 	wxFileName new_file (extract_folder, this_file.GetFullName ());
 	new_file.SetExt (wxT("txt"));
 #if __WXGTK__
-	wxExecute (wxT("pdftotext -layout -enc Latin1 -nopgbrk ") +
+	wxExecute (wxT("pdftotext -layout -enc ASCII7 -nopgbrk ") + // changed Latin1 to ASCII7
 			this_file.GetFullPath () +
 			wxT(" ") +
 			new_file.GetFullPath (), wxEXEC_SYNC);
