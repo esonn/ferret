@@ -41,6 +41,30 @@ measure itself does not imply any reliable conclusion.
 This software is still being tested and repackaged.  Installers will be made available 
 for versions of Linux and Windows.
 
+## Use ##
+
+Start 'uhferret' to run the program.
+
+Ferret can also be used from the command line. The command-line options are:
+
+    > uhferret --help
+    Ferret 5.0 (beta): start with no arguments for graphical version
+    Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-s] [-f] [-u]
+      -h, --help           	displays help on command-line parameters
+      -t, --text           	text document type (default)
+      -c, --code           	code document type
+      -d, --data-table     	produce similarity table (default)
+      -l, --list-trigrams  	produce trigram list report
+      -a, --all-comparisons	produce list of all comparisons
+      -w, --html-table     	produce similarity table in html format
+      -p, --pdf-report     	source-1 source-2 results-file : create pdf report
+      -x, --xml-report     	source-1 source-2 results-file : create xml report
+      -s, --search-internet	enable internet search
+      -f, --definition-file	use file with document list
+      -u, --use-stored-data	store/retrieve data structure
+
+More details on using Ferret can be found in the manual (in preparation).
+
 ## Status ##
 
 *Working*

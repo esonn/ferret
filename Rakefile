@@ -4,7 +4,7 @@ task :build do
     sh("make ferret")
     if File.exist?("ferret")
       sh("strip ferret")
-      sh("mv ferret ..")
+      sh("mv ferret ../uhferret")
     end
   end
 end
