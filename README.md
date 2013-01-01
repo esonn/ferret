@@ -33,7 +33,8 @@ copying) to 1 (everything has been copied). This measure should _not_ be taken
 as an absolute measure of the amount of copying. Instead, the measure is
 intended to indicate the _relative_ amount of copying that the current pair has
 compared with the rest of the group. Pairs which appear on top of the table of 
-all similarity comparisons should be examined for possible copying.
+all similarity comparisons should be examined for possible copying, but the 
+measure itself does not imply any reliable conclusion.
 
 ## Installation ##
 
