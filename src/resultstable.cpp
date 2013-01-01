@@ -52,7 +52,6 @@ void DocumentListCtrl::UpdatedDocumentList ()
 
 	// set up two indices, mapping position in the list control to a document
 	// -- do not add a pair if in same group
-	// -- only place downloaded files (id = 0) in second list
 	_document1.clear ();
 	_document2.clear ();
 	for (int i=0; i<num_docs; ++i)
@@ -60,16 +59,8 @@ void DocumentListCtrl::UpdatedDocumentList ()
 		{
 			if (doclist[i]->GetGroupId () != doclist[j]->GetGroupId ())
 			{ // only add pair if not in same group
-				if (doclist[i]->GetGroupId() == 0)
-				{ // make sure downloaded documents (id = 0) are in second list
-					_document1.push_back (j);
-					_document2.push_back (i);
-				}
-				else
-				{
-					_document1.push_back (i);
-					_document2.push_back (j);
-				}
+				_document1.push_back (i);
+				_document2.push_back (j);
 			}
 		}
 	assert (_document1.size () == _document2.size ()); // must be same number of items in both

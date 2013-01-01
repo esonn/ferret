@@ -25,7 +25,7 @@
   *    _pathname -- this is the path to the displayed text form of the document
   *                 When files have been converted to text, this holds the converted file's path.
   *    _name -- this is the 'name' of the document.  For user files, it is the name of the 
-  *             document.  For downloaded files, this name is usually prefixed with 'WWW/'
+  *             document.
   * -- the important part of the class is the set of methods for iterating 
   *    across the trigrams, using ReadTrigram, GetTrigramStart/End and GetToken
   */

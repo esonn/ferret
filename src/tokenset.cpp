@@ -48,35 +48,7 @@ void Token::Grow ()
 
 TokenSet::TokenSet ()
 	: _nextindex (0)
-{
-	// the following list of common words will be placed into a sorted array
-	// on construction of TokenSet.
-	// list taken from: http://www.askoxford.com/worldofwords/wordfrom/revisedcoed11/?view=uk
-	// -- extend list just by adding new strings
-	// -- must end with END !
-	wxString list_of_words [] = { 
-		wxT("the"), wxT("be"), wxT("to"), wxT("of"), wxT("and"), wxT("a"), wxT("in"), wxT("that"), wxT("have"), wxT("I"), 
-		wxT("it"), wxT("for"), wxT("not"), wxT("on"), wxT("with"), wxT("he"), wxT("as"), wxT("you"), wxT("do"), wxT("at"), 
-		wxT("this"), wxT("but"), wxT("his"), wxT("by"), wxT("from"), wxT("they"), wxT("we"), wxT("say"), wxT("her"), wxT("she"), 
-		wxT("or"), wxT("an"), wxT("will"), wxT("my"), wxT("one"), wxT("all"), wxT("would"), wxT("there"), wxT("their"), wxT("what"), 
-		wxT("so"), wxT("up"), wxT("out"), wxT("if"), wxT("about"), wxT("who"), wxT("get"), wxT("which"), wxT("go"), wxT("me"), 
-		wxT("when"), wxT("make"), wxT("can"), wxT("like"), wxT("time"), wxT("no"), wxT("just"), wxT("him"), wxT("know"), wxT("take"), 
-		wxT("person"), wxT("into"), wxT("year"), wxT("your"), wxT("good"), wxT("some"), wxT("could"), wxT("them"), wxT("see"), wxT("other"), 
-		wxT("than"), wxT("then"), wxT("now"), wxT("look"), wxT("only"), wxT("come"), wxT("its"), wxT("over"), wxT("think"), wxT("also"), 
-		wxT("back"), wxT("after"), wxT("use"), wxT("two"), wxT("how"), wxT("our"), wxT("work"), wxT("first"), wxT("well"), wxT("way"), 
-		wxT("even"), wxT("new"), wxT("want"), wxT("because"), wxT("any"), wxT("these"), wxT("give"), wxT("day"), wxT("most"), wxT("us"),
-		//  single letters from contractions (won't, let's, ...)  and common html tags, etc
-		wxT("b"), wxT("c"), wxT("p"), wxT("s"), wxT("e"), wxT("www"), wxT("h"), wxT("was"), wxT("were"), wxT("html"), 
-		wxT("t"), wxT("br"), wxT("http"), wxT("is"), wxT("went"), wxT("are"),       
-		wxT("END") // required to finish the array without having to count the words
-	};
-	int i = 0;
-	while (!list_of_words[i].IsSameAs (wxT("END"))) 
-	{
-		_common_words.Add (list_of_words[i]);
-		i += 1;
-	}
-}
+{}
 
 std::size_t TokenSet::GetIndexFor (wxString token)
 {
@@ -104,11 +76,6 @@ void TokenSet::Clear ()
 	_tokens.clear ();
 	_strings.clear ();
 	_nextindex = 0;
-}
-
-bool TokenSet::IsUncommonWord (std::size_t token)
-{
-	return (_common_words.Index (GetStringFor (token)) == wxNOT_FOUND); // uncommon if word not found
 }
 
 // save just one of the maps, as the other can be reconstructed (it's the inverse)

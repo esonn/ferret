@@ -1,4 +1,4 @@
-CC = g++ -Wno-deprecated -O2
+CC = g++ -O2
 
 # ferret -- main, general version of Ferret
 ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \

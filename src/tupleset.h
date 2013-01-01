@@ -54,8 +54,6 @@ class TupleSet
 		bool IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2);
 		// collect and return all tuples in the two given documents
 		wxSortedArrayString CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset);
-		bool IsUncommonTuple (TokenSet & token_set);
-		wxArrayString GetUncommonTuples (TokenSet & token_set);
 	private:
 		TripMap	_tuple_map;
 	public: // following methods and data structures are to handle an iterator on tupleset

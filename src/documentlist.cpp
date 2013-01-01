@@ -105,7 +105,6 @@ void DocumentList::Clear ()
 }
 
 // return a new, unique group id.  
-// note that id = 0 has special meaning (files downloaded from web)
 int DocumentList::GetNewGroupId ()
 {
 	_last_group_id += 1;
@@ -147,73 +146,6 @@ bool DocumentList::MayNeedConversions () const
 	}
 	
 	return false;
-}
-
-void DocumentList::DownloadFiles ()
-{
-std::cout << "trying to download files" << std::endl;
-	// -- step 1: download files
-	// ---- a. Delete all files in DownloadFolder 
-	wxString filename;
-	wxDir dir (wxGetApp().GetDownloadFolder ());
-	if (dir.GetFirst (&filename)) 
-	{
-		wxRemoveFile (wxGetApp().GetDownloadFolder () + wxFILE_SEP_PATH + filename);
-		while (dir.GetNext (&filename)) 
-		{
-			wxRemoveFile (wxGetApp().GetDownloadFolder () + wxFILE_SEP_PATH + filename);
-		}
-	}
-	
-	// ---- b. Write trigrams to filename
-	wxString tupleFileName = wxGetApp().GetDownloadFolder () + wxFILE_SEP_PATH + wxT("ferrettuplesearch.txt");
-	wxFile file;
-	if (wxFileName::FileExists (tupleFileName))
-	{
-		wxRemoveFile (tupleFileName);
-	}
-	if (!file.Create (tupleFileName, true)) return; // abort if file could not be created
-
-	wxArrayString trigrams = GetUncommonTrigrams ();
-	for (size_t i = 0, n = trigrams.GetCount (); i < n; ++i) 
-	{
-		file.Write (trigrams[i] + wxTextFile::GetEOL ());
-	}
-	file.Close ();
-
-	// ---- c. Invoke the ruby download-files.rb script
-#if __WXGTK__
-	wxExecute (wxString::Format(wxT("ruby %s \"%s\" \"%s\" %d %d %d"),  
-				wxGetApp().GetDownloadFile().c_str (),
-				wxGetApp().GetDownloadFolder().c_str (), 
-				tupleFileName.c_str (),
-				wxGetApp().GetMaxDownloadedDocuments (),
-				wxGetApp().GetMaxResultsPerTuple (),
-				wxGetApp().GetMaxTupleSearches ()),
-			wxEXEC_SYNC);
-   std::cout << "execute done" << std::endl;
-#elif __WXMSW__
-	wxExecute (wxString::Format(wxT("download-files.exe \"%s\" \"%s\" %d %d %d"),  
-				wxGetApp().GetDownloadFolder().c_str (), 
-				tupleFileName.c_str (),
-				wxGetApp().GetMaxDownloadedDocuments (),
-				wxGetApp().GetMaxResultsPerTuple (),
-				wxGetApp().GetMaxTupleSearches ()),
-			wxEXEC_SYNC);
-#endif
-//	wxRemoveFile (tupleFileName); // finished with temporary file // TODO: UNCOMMENT THIS
-std::cout << "called the download script" << std::endl;
-
-	// -- step 2: add downloaded files to _document_list
-	wxArrayString downloaded_files;
-	wxDir::GetAllFiles (wxGetApp().GetDownloadFolder (), & downloaded_files);
-	for (unsigned int i = 0; i < downloaded_files.GetCount (); ++i)
-	{
-		wxFileName filename (downloaded_files[i]);
-		AddDocument (filename.GetFullPath (), 
-				wxString::Format (wxT("WWW/%s"), filename.GetFullName().c_str ()),
-				0);
-	}
 }
 
 void DocumentList::RunFerret (int first_document)
@@ -322,11 +254,6 @@ wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::s
 	tuple += wxT(" ") + _token_set.GetStringFor (t2);
 	
 	return tuple;
-}
-
-wxArrayString DocumentList::GetUncommonTrigrams () 
-{
-	return _tuple_set.GetUncommonTuples (_token_set);
 }
 
 wxSortedArrayString DocumentList::CollectMatchingTrigrams (int doc1, int doc2) 

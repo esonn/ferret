@@ -11,7 +11,13 @@ end
 
 desc "find occurrences of text, call with: 'rake find[text]'"
 task :find, :text do |v, args|
-  sh("grep #{args[:text]} src/*.cpp")
-  sh("grep #{args[:text]} src/*.h")
+  begin
+    sh("grep #{args[:text]} src/*.cpp")
+  rescue
+  end
+  begin
+    sh("grep #{args[:text]} src/*.h")
+  rescue
+  end
 end
 

@@ -50,11 +50,6 @@ bool isXmlOption (wxString test_string)
 	return isNamedOption (test_string, wxT("-x"), wxT("--xml-report"));
 }
 
-bool isSearchOption (wxString test_string)
-{
-	return isNamedOption (test_string, wxT("-s"), wxT("--search-internet"));
-}
-
 bool isDefinitionOption (wxString test_string)
 {
 	return isNamedOption (test_string, wxT("-f"), wxT("--definition-file"));
@@ -74,9 +69,8 @@ bool isCommandOption (wxString test_string)
 		|| isListTrigramsOption (test_string) 
 		|| isAllComparisonsOption (test_string) 
 		|| isHtmlTableOption (test_string)
-//		|| isPdfOption (test_string)
+		|| isPdfOption (test_string)
 		|| isXmlOption (test_string)
-		|| isSearchOption (test_string)
 		|| isDefinitionOption (test_string)
 		|| isStoredDataOption (test_string);
 }
@@ -95,7 +89,6 @@ void aboutMessage ()
 		<< "  -w, --html-table     	produce similarity table in html format" << std::endl
 		<< "  -p, --pdf-report     	source-1 source-2 results-file : create pdf report" << std::endl
 		<< "  -x, --xml-report     	source-1 source-2 results-file : create xml report" << std::endl
-		<< "  -s, --search-internet	enable internet search" << std::endl
 		<< "  -f, --definition-file	use file with document list" << std::endl
 		<< "  -u, --use-stored-data	store/retrieve data structure" << std::endl;
 }
@@ -212,7 +205,7 @@ void writeSimilarityTable (DocumentList & docs)
 		}
 }
 
-// Write the data as an HTML page -- downloads are for Web Application version of Ferret
+// Write the data as an HTML page 
 void writeHtmlSimilarityTable (wxString & folder, DocumentList & docs)
 {
 	// create a set of indices, sorted, so table can be displayed in similarity order
@@ -223,16 +216,8 @@ void writeHtmlSimilarityTable (wxString & folder, DocumentList & docs)
 		{
 			if (docs[i]->GetGroupId () != docs[j]->GetGroupId ())
 			{ // only add pair if not in same group
-				if (docs[i]->GetGroupId() == 0)
-				{ // make sure downloaded documents (id = 0) are in second list
-					document1.push_back (j);
-					document2.push_back (i);
-				}
-				else
-				{
-					document1.push_back (i);
-					document2.push_back (j);
-				}
+				document1.push_back (i);
+				document2.push_back (j);
 			}
 		}
 	assert (document1.size () == document2.size ()); // must be same number of items in both
@@ -339,7 +324,6 @@ bool FerretApp::OnInit ()
 		Report report_type = DATA_TABLE;	// assume data table is required
 		int filenames_start = 1; 		// index within argv of first filename
 		bool forced_document_type = false;	// flag to indicate if type forced by user
-		bool search_internet = false;		// flag to indicate if user wants internet search
 		wxString definition_file = wxT("");	// string to hold path to definition file
 		wxString stored_data = wxT("");		// string to hold path to stored data
 		wxString upload_dir = wxT("");		// string to hold path to upload_dir, for html-table
@@ -362,11 +346,6 @@ bool FerretApp::OnInit ()
 			{
 				document_type = Document::typeCode;
 				forced_document_type = true;
-				filenames_start += 1;
-			}
-			else if (isSearchOption (argv[filenames_start]))
-			{
-				search_internet = true;
 				filenames_start += 1;
 			}
 			else if (isDataTableOption (argv[filenames_start]))
@@ -499,7 +478,6 @@ bool FerretApp::OnInit ()
 			}
 
 			docs.RunFerret (num_preloaded_documents);
-			if (search_internet) docs.DownloadFiles ();
 
 			// report output, based on report type
 			if (report_type == LIST_TRIGRAMS) 

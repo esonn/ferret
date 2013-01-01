@@ -73,27 +73,6 @@ wxSortedArrayString TupleSet::CollectMatchingTuples (int doc1, int doc2, TokenSe
 	return tuples; // note: wx library provides copy-on-write semantics
 }
 
-bool TupleSet::IsUncommonTuple (TokenSet & token_set) 
-{
-	return  token_set.IsUncommonWord (GetToken (0)) && 
-		token_set.IsUncommonWord (GetToken (1)) &&
-		token_set.IsUncommonWord (GetToken (2));
-}
-
-wxArrayString TupleSet::GetUncommonTuples (TokenSet & token_set)
-{
-	wxArrayString tuples;
-	for (Begin (); HasMore (); GetNext ())
-	{
-		if (IsUncommonTuple (token_set))
-		{
-			// retrieve information for this trigram
-			tuples.Add (GetStringForCurrentTuple (token_set));
-		}
-	}
-	return tuples; // note: wx library uses copy-on-write semantics
-}
-
 void TupleSet::Begin ()
 {
 	_ti = _tuple_map.begin ();

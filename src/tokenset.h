@@ -45,13 +45,11 @@ class TokenSet
 		std::size_t GetIndexFor (wxString token);
 		wxString GetStringFor (std::size_t token);
 		void Clear ();
-		bool IsUncommonWord (std::size_t token);
 		// methods to Save/Retrieve tokenset
 		void Save (wxFile & file);
 		void SetNextIndex (int index);
 		void SetIndexString (wxString token, int index);
 	private:
-		wxSortedArrayString _common_words;
 		std::map<wxString, std::size_t> _tokens;
 		std::map<wxString, std::size_t>::const_iterator _tokens_it;
 		std::size_t _nextindex; // next free index for new string

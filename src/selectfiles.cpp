@@ -12,7 +12,6 @@ BEGIN_EVENT_TABLE (SelectFiles, wxFrame)
 	EVT_BUTTON (wxID_HELP, SelectFiles::OnHelp)
 	EVT_CLOSE (SelectFiles::OnClose)
 	EVT_BUTTON (ID_RUN_FERRET, SelectFiles::OnRun)
-	EVT_CHECKBOX (ID_WEBFERRET, SelectFiles::OnSearchClicked)
 END_EVENT_TABLE()
 	
 SelectFiles::SelectFiles ()
@@ -67,9 +66,6 @@ SelectFiles::SelectFiles ()
 	button_sizer->Add (new wxButton (this, wxID_HELP), 0, wxGROW | wxLEFT | wxRIGHT, 5);	
 	button_sizer->Add (MakeButton (this, ID_SETTINGS, wxT("Settings ..."),
 				wxT("Advanced users: Control how Ferret converts your files")), 
-			0, wxGROW | wxLEFT | wxRIGHT, 5);
-	button_sizer->Add (MakeCheckBox (this, ID_WEBFERRET, wxT("Search internet"),
-			wxT("Check this box if you want Ferret to search the internet")), 
 			0, wxGROW | wxLEFT | wxRIGHT, 5);
 	button_sizer->AddStretchSpacer (1);
 	button_sizer->Add (MakeButton (this, ID_RUN_FERRET, wxT("Run Ferret"),
@@ -128,27 +124,17 @@ void SelectFiles::OnAdd (wxCommandEvent & WXUNUSED(event))
 	}
 }
 
-void SelectFiles::OnSearchClicked (wxCommandEvent & WXUNUSED(event))
-{
-	UpdateButtons ();
-}
-
 void SelectFiles::UpdateButtons ()
 {
-	// -- only allow 'runferret' if at least two files, or 1 file and can search internet
-	if ((_document_list->Size () >= 2) ||
-			((_document_list->Size () == 1) && 
-			 (((wxCheckBox *) FindWindow (ID_WEBFERRET))->IsChecked ()) &&
-			 (wxGetApp().IsTextType ())))
-	{
+	// -- only allow 'runferret' if at least two files
+	if (_document_list->Size () >= 2)
+  {
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (true);
 	}
 	else
 	{
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (false);
 	}
-	// -- only enable 'search internet' if text type is Text
-	((wxCheckBox *) FindWindow (ID_WEBFERRET))->Enable (wxGetApp().IsTextType ());
 }
 
 void SelectFiles::OnClear (wxCommandEvent & WXUNUSED(event))
@@ -178,17 +164,6 @@ void SelectFiles::OnRun (wxCommandEvent & WXUNUSED(event))
 	if (!ExtractFiles ()) return; // abort, if cancel clicked in conversion
 	ReadDocuments ();
 
-	// download files and add to _document_list
-	if (((wxCheckBox *) FindWindow (ID_WEBFERRET))->IsChecked () &&
-			wxGetApp().IsTextType ())
-	{
-		wxGetApp().SetIgnoreUnknown (false); // retain unknown file types
-		int num_documents = _document_list->Size ();
-		DownloadFiles ();
-		// perform text extraction on downloaded files
-		if (!ExtractFiles (num_documents)) return; // abort, if cancel clicked in conversion
-		ReadDocuments (num_documents);
-	}
 	if (_document_list->Size () >= 2)
 	{
 		WarnOfProblemFiles ();
@@ -366,20 +341,9 @@ bool SelectFiles::ExtractFiles (int start_from)
 	return true;
 }
 
-// retrieve relevant documents from web, place into download folder, and add to _document_list
-void SelectFiles::DownloadFiles ()
-{
-	wxBusyCursor wait; 
-	wxBusyInfo info (wxT("Searching for and downloading documents, please wait ..."), this);
-	wxGetApp().Yield ();
-
-	_document_list->DownloadFiles ();
-}
-
 // *** Options Dialog ***
 
 BEGIN_EVENT_TABLE (OptionSettings, wxDialog)
-	EVT_BUTTON (ID_DOWNLOAD_BROWSE, OptionSettings::OnDownloadBrowse)
 	EVT_BUTTON (ID_EXTRACT_BROWSE, OptionSettings::OnExtractBrowse)
 	EVT_BUTTON (wxID_OK, OptionSettings::OnOk)
 END_EVENT_TABLE ()
@@ -437,51 +401,10 @@ OptionSettings::OptionSettings (wxWindow * parent)
 			0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
 
 	sizer->Add (new wxStaticLine (this, wxID_ANY), 0, wxGROW | wxALL, 5);
-	// -- browser for downloaded files folder name
-	sizer->Add (MakeStaticText (this, wxT("Destination folder for downloaded files:")),
-			0, wxALIGN_LEFT | wxALL, 5);
-
-	// ---- horizontal panel
-	wxBoxSizer * download_browser_sizer = new wxBoxSizer (wxHORIZONTAL);
-	
-	download_browser_sizer->Add (new wxStaticText (this, ID_DOWNLOAD_DIR_NAME, wxGetApp().GetDownloadFolder ()), 
-			1, wxGROW | wxALL, 5);
-	download_browser_sizer->Add (MakeButton (this, ID_DOWNLOAD_BROWSE, wxT("Browse ..."),
-			wxT("Use directory selector to choose a folder to download files")),
-		       	0, wxALIGN_RIGHT | wxRIGHT, 10);
-	sizer->Add (download_browser_sizer, 0, wxGROW);
-	
-	wxGridSizer * download_choices_sizer = new wxGridSizer (3, 2, 2, 5);
-
-	download_choices_sizer->Add (new wxStaticText (this, wxID_ANY, 
-				wxT("Number of documents to download:")));
-	download_choices_sizer->Add (MakeSpinCtrl (this, ID_MAX_DOWNLOADS,
-				wxT("Maximum number of documents to download from internet"),
-				1, 1000, wxGetApp().GetMaxDownloadedDocuments ()));
-
-	download_choices_sizer->Add (new wxStaticText (this, wxID_ANY,
-				wxT("Number of tuple search results:")));
-	download_choices_sizer->Add (MakeSpinCtrl (this, ID_MAX_RESULTS,
-				wxT("Maximum number of search results per tuple searched"),
-				1, 1000, wxGetApp().GetMaxResultsPerTuple ()));
-
-	download_choices_sizer->Add (new wxStaticText (this, wxID_ANY, 
-				wxT("Number of tuples to search:")));
-	download_choices_sizer->Add (MakeSpinCtrl (this, ID_MAX_TUPLE_SEARCHES,
-				wxT("Maximum number of tuples to use for searching"),
-				1, 1000, wxGetApp().GetMaxTupleSearches ()));
-
-	sizer->Add (download_choices_sizer, 0, wxALL, 5);
-	sizer->Add (new wxStaticLine (this, wxID_ANY), 0, wxGROW | wxALL, 5);
 	SetSizer (sizer);
 	sizer->Add (CreateButtonSizer (wxOK | wxCANCEL), 0, wxGROW | wxALL, 5);
 	sizer->Fit (this);
 	sizer->SetSizeHints (this);
-}
-
-void OptionSettings::OnDownloadBrowse (wxCommandEvent & WXUNUSED(event))
-{
-	OnBrowse (ID_DOWNLOAD_DIR_NAME);
 }
 
 void OptionSettings::OnExtractBrowse (wxCommandEvent & WXUNUSED(event))
@@ -507,14 +430,10 @@ void OptionSettings::OnBrowse (int dir_name_id)
 void OptionSettings::OnOk (wxCommandEvent & WXUNUSED(event))
 {
 	wxGetApp().SetTextType (((wxRadioBox *) FindWindow (ID_TYPE_SELECTION))->GetSelection () == 0);
-	wxGetApp().SetDownloadFolder (((wxStaticText *) FindWindow (ID_DOWNLOAD_DIR_NAME))->GetLabel ());
 	wxGetApp().SetExtractFolder (((wxStaticText *) FindWindow (ID_EXTRACT_DIR_NAME))->GetLabel ());
 	wxGetApp().SetCopyAll (((wxCheckBox *) FindWindow (ID_COPY_ALL))->GetValue ());
 	wxGetApp().SetConvertAll (((wxCheckBox *) FindWindow (ID_EXTRACT_ALL))->GetValue ());
 	wxGetApp().SetIgnoreUnknown (((wxCheckBox *) FindWindow (ID_IGNORE_UNKNOWN))->GetValue ());
-	wxGetApp().SetMaxDownloadedDocuments (((wxSpinCtrl *) FindWindow (ID_MAX_DOWNLOADS))->GetValue ());
-	wxGetApp().SetMaxResultsPerTuple (((wxSpinCtrl *) FindWindow (ID_MAX_RESULTS))->GetValue ());
-	wxGetApp().SetMaxTupleSearches (((wxSpinCtrl *) FindWindow (ID_MAX_TUPLE_SEARCHES))->GetValue ());
 
 	EndModal (0);
 }

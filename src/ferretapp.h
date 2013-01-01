@@ -27,9 +27,6 @@ class FerretApp: public wxApp
 		wxString GetVersionString ();
 		wxString GetGeneratedByString ();
 		// BEGIN options and information maintained for ferret application
-		wxString GetDownloadFile () const;
-		wxString GetDownloadFolder () const;
-		void SetDownloadFolder (wxString download_folder);
 		wxString GetExtractFolder () const;
 		void SetExtractFolder (wxString extract_folder);
 		bool IsTextType () const;
@@ -44,12 +41,6 @@ class FerretApp: public wxApp
 		const wxSortedArrayString & GetProblemFiles () const;
 		void AddIgnoredFile (wxString file);
 		const wxSortedArrayString & GetIgnoredFiles () const;
-		int GetMaxDownloadedDocuments () const;
-		int GetMaxResultsPerTuple () const;
-		int GetMaxTupleSearches () const;
-		void SetMaxDownloadedDocuments (int val);
-		void SetMaxResultsPerTuple (int val);
-		void SetMaxTupleSearches (int val);
 		// END
 		wxPoint GetNextFramePosition (int window_width, int window_height);
 	private:
@@ -62,11 +53,6 @@ class FerretApp: public wxApp
 		bool _copy_all;
 		bool _convert_all;
 		bool _ignore_unknown;
-		// parameters for Web searches
-		wxString _download_folder;
-		int _max_downloaded_documents;
-		int _max_results_per_tuple;
-		int _max_tuple_searches;
 		// parameters for placing widgets
 		int _last_x;
 		int _last_y;

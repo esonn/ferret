@@ -56,7 +56,6 @@ class DocumentList
 		int Size () const;
 		int NumberOfPairs () const;
 		bool MayNeedConversions () const;
- 		void DownloadFiles ();
 		void RunFerret (int first_document = 0);
 		void ReadDocument (int i);
 		void ClearSimilarities ();
@@ -70,8 +69,6 @@ class DocumentList
 		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2);
 		// convert given trigram into a string
 		wxString MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2);
-		// get list of trigrams not containing a commong word
-		wxArrayString GetUncommonTrigrams (); 
 		// collect all the matching trigrams in the two documents into a vector of strings
 		wxSortedArrayString CollectMatchingTrigrams (int doc1, int doc2);
 		// for sorting pairs of indices
