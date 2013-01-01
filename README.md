@@ -48,11 +48,13 @@ for versions of Linux and Windows.
 - compiles using wxWidgets 2.9.4 and wxPdfDocument 0.9.3
 - displays similarities of files pairwise
 - pdf output of results table
+- display of file comparison
+- saving of file comparison to pdf and xml format
 - file conversion from doc/pdf to txt
 
-*Error Messages*
+*Problems*
 
-- error messages on comparing files for display or output
+- Some problems with highlighting trigrams
 
 *Untested* (probably not working)
 
@@ -65,6 +67,9 @@ application.  Ferret is written in C++ and uses the
 [wxWidgets](http://wxwidgets.org) and [wxPdfDocument](http://wxcode.org)
 libraries. Text conversion from word processor or pdf formats is through 
 calling [abiword](http://www.abisource.com) or [pdftotext](http://www.xpdf.com).
+The script to search for and download sources from the internet is 
+written in Ruby, and accesses the 
+[Yahoo api](http://developer.yahoo.com/search/web/V1/webSearch.html).
 
 For a version designed for scripting, use in a web application, or general
 hacking, see [uhferret-gem](https://github.com/petercrlane/uhferret-gem).

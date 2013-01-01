@@ -151,6 +151,7 @@ bool DocumentList::MayNeedConversions () const
 
 void DocumentList::DownloadFiles ()
 {
+std::cout << "trying to download files" << std::endl;
 	// -- step 1: download files
 	// ---- a. Delete all files in DownloadFolder 
 	wxString filename;
@@ -190,6 +191,7 @@ void DocumentList::DownloadFiles ()
 				wxGetApp().GetMaxResultsPerTuple (),
 				wxGetApp().GetMaxTupleSearches ()),
 			wxEXEC_SYNC);
+   std::cout << "execute done" << std::endl;
 #elif __WXMSW__
 	wxExecute (wxString::Format(wxT("download-files.exe \"%s\" \"%s\" %d %d %d"),  
 				wxGetApp().GetDownloadFolder().c_str (), 
@@ -199,7 +201,8 @@ void DocumentList::DownloadFiles ()
 				wxGetApp().GetMaxTupleSearches ()),
 			wxEXEC_SYNC);
 #endif
-	wxRemoveFile (tupleFileName); // finished with temporary file
+//	wxRemoveFile (tupleFileName); // finished with temporary file // TODO: UNCOMMENT THIS
+std::cout << "called the download script" << std::endl;
 
 	// -- step 2: add downloaded files to _document_list
 	wxArrayString downloaded_files;

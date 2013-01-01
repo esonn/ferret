@@ -69,7 +69,8 @@ wxString FerretApp::GetDownloadFile () const
 #if __WXMSW__
 	return wxT("\"c:/Program Files/Ferret/download-files.rb\"");
 #elif __WXGTK__
-	return wxT("/usr/lib/uhferret/download-files.rb");
+//	return wxT("/usr/lib/uhferret/download-files.rb");
+  	return wxT("/home/peter/Projects/ferret/src/download-files.rb");
 #else
 	return wxT("download-files.rb");
 #endif
