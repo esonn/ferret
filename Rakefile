@@ -27,12 +27,32 @@ directory "release"
 desc "use fpm to create release packages"
 task :make_deb => :build do 
   Dir.chdir("release") do
-    sh("sudo cp ../uhferret /usr/local/bin/uhferret")
+    # create the desktop file
+    File.open("uhferret.desktop", "w") do |file|
+      file.puts <<-END
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Ferret
+GenericName=Ferret: Copy-detection program
+Icon=/usr/share/icons/uhferret.ico
+Exec=/usr/local/bin/uhferret
+Categories=Office;
+END
+    end
+    # copy files into position
+    `sudo cp ../uhferret /usr/local/bin/uhferret`
+    `sudo cp uhferret.desktop /usr/share/applications/uhferret.desktop`
+    `sudo cp uhferret.ico /usr/share/icons/uhferret.ico`
+    # remove any old deb files
     begin
-      sh("rm *.deb")
+      `rm *.deb`
     rescue # ignore error when no .deb files present
     end
-    sh("fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://github.com/petercrlane/ferret' -m 'Peter Lane<peter.lane@bcs.org.uk' -n uhferret -v 5.0 /usr/local/bin/uhferret")
+    # construct the deb file
+    `fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://github.com/petercrlane/ferret' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v 5.2 /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
+    puts "Deb package:"
+    puts `md5sum *.deb`
   end
 end
 
