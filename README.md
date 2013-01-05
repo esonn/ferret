@@ -47,7 +47,7 @@ create a menu entry for Ferret in your applications menu, under 'Office' for Lin
 
 *More information*
 
-For more information and options, see <http://peterlane/info/ferret.html>
+For more information and options, see <http://peterlane.info/ferret.html>
 
 ## Use ##
 
