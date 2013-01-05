@@ -34,8 +34,20 @@ measure itself does not imply any reliable conclusion.
 
 ## Installation ##
 
-This software is still being tested and repackaged.  Installers will be made available 
-for versions of Linux and Windows.
+*Download*
+
+- [Ferret 5.2](http://peterlane.info/downloads/uhferret_5.2_i386.deb) for Ubuntu
+- [Ferret 5.2](http://peterlane.info/downloads/ferret-5.2.tgz) for generic Linux
+- for Windows (in preparation)
+
+*Install*
+
+Either unpack or follow the instructions in the installer.  The installer will 
+create a menu entry for Ferret in your applications menu, under 'Office' for Linux.
+
+*More information*
+
+For more information and options, see http://peterlane/info/ferret.html[]
 
 ## Use ##
 
