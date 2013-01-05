@@ -37,7 +37,7 @@ measure itself does not imply any reliable conclusion.
 *Download*
 
 - [Ferret 5.2](http://peterlane.info/downloads/uhferret_5.2_i386.deb) for Ubuntu
-- [Ferret 5.2](http://peterlane.info/downloads/ferret-5.2.tgz) for generic Linux
+- [Ferret 5.2](http://peterlane.info/downloads/ferret-5.2-linux.tgz) for generic Linux
 - for Windows (in preparation)
 
 *Install*
