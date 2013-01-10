@@ -1,7 +1,7 @@
 desc "build ferret"
 task :build do 
   Dir.chdir("src") do
-    sh("make ferret")
+    `make ferret`
     if File.exist?("ferret")
       `strip ferret`
       `mv ferret ../uhferret`
@@ -50,7 +50,7 @@ END
     rescue # ignore error when no .deb files present
     end
     # construct the deb file
-    `fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://github.com/petercrlane/ferret' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v 5.2 /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
+    `sudo fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://peterlane.info/ferret.html' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v 5.2 /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
     puts "Deb package:"
     puts `md5sum *.deb`
   end
@@ -76,5 +76,14 @@ END
     `tar zcvf ferret-linux.tgz ferret-linux/`
     puts `md5sum ferret-linux.tgz`
     `rm -rf ferret-linux`
+  end
+end
+
+desc 'create Ferret manual'
+task :manual do
+  Dir.chdir("manual") do
+    `asciidoc-bib manual.txt`
+    `a2x -fpdf -darticle --dblatex-opts "-P latex.output.revhistory=0" manual-ref.txt`
+    `mv manual-ref.pdf manual.pdf`
   end
 end

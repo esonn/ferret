@@ -1,0 +1,407 @@
+= Using the Ferret Copy Detector (Version 5.2) =
+:author: Peter Lane
+:email: peter.lane@bcs.org.uk
+
+== Overview ==
+
+The Ferret copy detector takes a number of documents and finds similar passages
+in any two. This version can be used for up to 300 documents of 10,000 words
+each. It can be used for essays and reports, in English, or else a version for
+programming code can be selected. Material from the web can be used for
+comparison too. If you wish to use the Ferret on other European languages or on
+Chinese please contact the authors via
+http://homepages.feis.herts.ac.uk/~pdgroup/ 
+
+The similar passages do not have to be identical. This software is used for
+detecting plagiarism in students' work where there may be an attempt to avoid
+detection by changing some words and phrases.  
+
+The steps in running the Ferret are: 
+
+. Documents are pre-processed.  Diagrams and figures are ignored.  
+. Comparison of each document with every other one is done.  
+. Results are shown in a table with a measure of similarity between each pair.
+. Any pair can be displayed side by side to show matching passages highlighted 
+
+== Installation ==
+
+Download from your disk or from http://homepages.feis.herts.ac.uk/~pdgroup/
+Follow the wizard taking you through the easy installation steps.  
+
+== Ferret Application ==
+
+Click on the Ferret icon to get the starting screen as shown in Figure 1:
+
+image:images/figure-1.png[]
+Figure 1
+
+Collect all the documents you want to analyse, and put them in one or more
+folders.  They can be Word (suffix .doc), pdf (suffix .pdf), rich text (suffix
+.rtf) or text (suffix .txt).  Acceptable suffixes also include .tex, .html, and
+programming code such as .java. Documents of other types, such as .xls and zip
+files, will be rejected.  Click on button Add Documents (marked with arrow) to
+get your documents. Use the browser to get to the folder(s) where you have
+collected your documents. Tip: to select all documents in a folder, type Ctrl
+A. Having selected your documents you have a screen as in Figure 2 There is
+usually no need to go to the button Further settings for comparing text
+documents. Go to Help for an explanation of the use of these further settings.
+
+image:images/figure-2.png[]
+Figure 2
+
+To remove documents and start again click on button Clear Documents.  
+
+=== Processing the Documents ===
+
+If you have selected the documents you want then click on button Run Ferret
+(marked with an arrow).  The documents will first be converted to .txt format.
+On a standard desk top or laptop computer this typically takes about 2 minutes
+for 80 documents, as shown by the progress bar.  If any files are rejected this
+is reported. It is important to look at the report at the end of the process to
+see which files are rejected, as these may be suspicious ones.  Then each file
+is compared with every other one. This typically takes a few seconds.  The
+Table of Comparison then appears, as in Figure 3, with the most similar pairs
+at the top. (All the documents now have the suffix.txt)
+
+image:images/figure-3.png[]
+Figure 3
+
+=== Explanation of the Table ===
+
+The first and second columns give the names of the files being compared. The
+third column headed Similarity gives a measure of the similarity of the
+documents, between 0 and 1. Two identical documents will have a score of 1. In
+practice, we find that a Similarity score below 0.04 shows that two documents
+are probably written independently, while above 0.04 the two documents should
+be examined further. However, if students have inserted text given by the
+lecturer, such as the wording of a question or other comments, the threshold
+will be higher. In the case shown in Figure 3 the threshold was 0.06 The
+documents are listed in ranked order of similarity, with the most similar at
+the top. You can reorder on first or second column - for instance to find a
+certain document pair you will want them in alphabetical or numerical order -
+by clicking on button Document 1 or Document 2. Use the scroll bar on the side
+of the window to find entries lower down.  At the bottom of the Table you can
+see how many documents are being analysed, and how many pairs this produces.
+To save this table click on the Save Report button. The default is to send it
+to the folder from which you selected documents, or chose another destination.
+Note this file can be large: it will have the same number of entries as number
+of pairs. 
+
+If some files have been rejected at the file conversion stage because they are
+not of the right sort a message will be given in the report.  
+
+=== Displaying the Results ===
+
+Any pair of documents in the Table of Comparisons can be selected and
+displayed, by clicking the button Show Analysis (marked with an arrow). This
+display comes up as in Figures 4 and 4.  Figure 4 shows passages of copied
+text with blocks of highlighted matches, contrasting with 4 which shows an
+independently written text with a sprinkling of matching phrases.
+
+image:images/figure-4.png[]
+Figure 4: Blocks of matching text where copying has taken place
+
+=== Explanation of the display ===
+
+In the top left window is the text of the first file, its name in the top left
+corner, while below is the second file, again with its name in the top left
+corner. Matching text is highlighted in both.  On the right is a list of
+matching trigrams (3 word phrases). The analysis is based on matching trigrams.
+To find corresponding matching sections in the two files you can select a
+trigram (marked with an arrow), click on it, and the cursor will jump to the
+appropriate points in the two files. If the button marked "Find" is active,
+then clicking on it takes you to another occurrence of the same trigram.  4
+
+Use the scroll bar on the right of each window to navigate up and down.  Note
+how copied text can have words inserted, deleted or substituted, but still be
+so similar that plagiarism is suspected.
+
+=== Saving the display ===
+
+The display can be saved by clicking the button Save Analysis, either in the
+display window, or in the Table of Comparisons window. By default it will be
+saved in the folder from which you selected the documents, or chose another
+destination. Both files will be saved, with matching passages highlighted in
+blue, or bold for black and white printing.
+
+image:images/figure-5.png[]
+Figure 5: A sprinkling of matching phrases in independently written text
+
+== Text Interface to Ferret ==
+
+Ferret can be controlled from the command line, by providing it with 
+input options.  The full range of options can be listed by running
++uhferret --help+ or +uh ferret -h+.
+
+------------------------------------------------------------------
+> uhferret --help
+Ferret 5.2: start with no arguments for graphical version
+Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-u]
+  -h, --help           	displays help on command-line parameters
+  -t, --text           	text document type (default)
+  -c, --code           	code document type
+  -d, --data-table     	produce similarity table (default)
+  -l, --list-trigrams  	produce trigram list report
+  -a, --all-comparisons	produce list of all comparisons
+  -w, --html-table     	produce similarity table in html format
+  -p, --pdf-report     	source-1 source-2 results-file : create pdf report
+  -x, --xml-report     	source-1 source-2 results-file : create xml report
+  -f, --definition-file	use file with document list
+  -u, --use-stored-data	store/retrieve data structure
+------------------------------------------------------------------
+
+Notice that all switches have both a long and a short form.  You can either 
+write +uhferret --help+ or +uhferret -h+.  Switches cannot be combined.
+To list trigrams with code documents:
+
++uhferret -l -c filename1 .. +
+
+Not all combinations of the different options make sense, and you may get 
+unexpected results.  For example, you cannot use a definition file with the 
+option to produce a pdf or xml report.  
+
+=== Input documents ===
+
+The simplest way of providing documents to Ferret is by listing them 
+on the command line.  For example, to run Ferret on all the text documents 
+in the current directory, call: +uhferret *.txt+
+
+The default setting treats the documents as _natural-language text_.  To
+process computer-language texts, you have to provide the _--code_ switch.
+For symmetry, the _--text_ switch is also present to enforce
+natural-language.
+
+=== Output formats ===
+
+==== Similarity table ====
+
+The default option, also obtained with the switch +--data-table+, is to
+provide a list of every pair of comparisons and their similarities.  This 
+output format is used with a list of documents.
+
+For example:
+
+---------------------------------------------------
+> uhferret -d *.txt
+Number of documents: 4
+Number of distinct trigrams: 678
+text-1.txt ; text-2.txt ; 0 ; 194 ; 152 ; 0
+text-1.txt ; text-3.txt ; 1 ; 194 ; 128 ; 0.00311526
+text-1.txt ; text-4.txt ; 0 ; 194 ; 273 ; 0
+text-2.txt ; text-3.txt ; 2 ; 152 ; 128 ; 0.00719424
+text-2.txt ; text-4.txt ; 1 ; 152 ; 273 ; 0.00235849
+text-3.txt ; text-4.txt ; 65 ; 128 ; 273 ; 0.193452
+---------------------------------------------------
+
+The output begins with some general information, about the number of documents
+and number of distinct trigrams found.  A semicolon is used to separate 
+the information, making the output easily parsable by a further program.  
+Each line reports:
+
+. name of file 1, 
+. name of file 2, 
+. number of common trigrams, 
+. number of trigrams in file 1, 
+. number of trigrams in file 2, and
+. the similarity score.
+
+For instance, text-3.txt has 128 trigrams, text-4.txt has 273 trigrams.  65 
+of these trigrams are in common, giving a similarity score of 0.193452.
+
+==== Trigram list ====
+
+The switch +--list-trigrams+ is used to output a list of all the trigrams
+within the provided documents, along with the documents in which they occur.  A
+tab separates the trigram from the FILES identifier.
+
+---------------------------------------
+> uhferret -l *.txt
+a programming language    FILES:[ 0 1 ]
+a machine particularly    FILES:[ 0 2 ]
+a computer such           FILES:[ 0 1 ]
+a structured mechanism    FILES:[ 0 ]
+a programmer to           FILES:[ 1 2 ]
+a computation as          FILES:[ 0 ]
+a collection of           FILES:[ 0 ]
+...
+---------------------------------------
+
+This list can become quite long.  The FILES list the documents by indexing 
+them in the order they appeared on the command line.
+
+==== All Comparisons ====
+
+The switch +--all-comparisons+ is used to output a table of all the 
+similarity scores of each pair of documents.  This table is in CSV format 
+and, size permitting, may be read into a spreadsheet package for further 
+analysis.
+
+---------------------------------------
+> uhferret -a *.txt
+, text-1.txt, text-2.txt, text-3.txt, text-4.txt
+text-1.txt, 1.0, 0, 0.00311526, 0
+text-2.txt, 0, 1.0, 0.00719424, 0.00235849
+text-3.txt, 0.00311526, 0.00719424, 1.0, 0.193452
+text-4.txt, 0, 0.00235849, 0.193452, 1.0
+---------------------------------------
+
+==== Html Table ====
+
+The switch +--html-table+ is used to output the table of similarities of the
+top 100 pairs in HTML format.  This option is only useful when Ferret is part
+of a server package.
+
+==== Individual reports ====
+
+The switches +--pdf-report+ and +--xml-report+ are similar in 
+instructing Ferret to provide a pdf or XML report of the comparison 
+of two documents.  A style sheet is provided on comqpcl's website to 
+display the XML output in a web browser.  
+
+For example, to get a comparison of +text-1.txt+ and +text-2.txt+ in
+pdf format, calling the pdf document +comparison.pdf+, you would call
+Ferret with:
+
+--------------------------------------------------
+> uhferret -p text-1.txt text-2.txt comparison.pdf
+--------------------------------------------------
+
+The XML output is similar:
+
+--------------------------------------------------
+> uhferret -x text-1.txt text-2.txt comparison.xml
+--------------------------------------------------
+
+
+=== Storing internal dataset ===
+
+The switch +--use-stored-data+ instructs Ferret to preserve its internal 
+datastore in the given file.  This datastore can then be loaded later, so 
+that documents can be compared against the original set of documents without 
+the latter being present.
+
+For instance:
+
+------------------------------------------------
+> uhferret -u text-data.dat text-1.txt text-2.txt
+------------------------------------------------
+
+will preserve information about documents +text-1.txt+ and 
++text-2.txt+ in the file {\tt text-data.dat}.  We can then compare new 
+documents against these by providing Ferret with the name of the stored 
+dataset:
+
+------------------------------------------------
+> uhferret -u text-data.dat text-3.txt test-4.txt
+------------------------------------------------
+
++text-data.dat+ is also updated to include the new files.
+
+=== Defining input document list ===
+
+An alternative way of providing documents to ferret is to use a _file 
+definition_.  This allows Ferret to read a list of files for processing from 
+a text file, circumventing limitations in the number of permissable arguments 
+on a command line.  Also, the file definition enables the user to separate 
+documents into groups, so that documents within groups are not compared, but 
+all pairs with documents in different groups are compared.
+
+The command-line switch is: +--definition-file+
+
+Example of use: +uhferret -f file-defn.dat+
+
+Example of file definition:
+
+-----------------------------------
+START GROUP
+text-1.txt
+text-2.txt
+END GROUP
+text-3.txt
+text-4.txt
+-----------------------------------
+
+This will compare +text-1.txt+ and +text-2.txt+ with +text-3.txt+
+and +text-4.txt+, and +text-3.txt+ with +text-4.txt+, but
++text-1.txt+ and +text-2.txt+ will not be compared.
+
+You can have as many groups as you need.  You _must_ provide the file type,
+if you want to specify that Ferret treat the documents as program code.
+
+== Ruby Gem ==
+
+A Ruby wrapper around Ferret can be installed using:
+
+----------------------
+> gem install uhferret
+----------------------
+
+The Ruby wrapper provides a command-line interface, rather like +uhferret+ 
+does, a web server version of Ferret, and a callable library for using 
+Ferret in your own Ruby scripts, for more advanced processing.
+
+=== Command Line ===
+
+The command-line program is called +uhferret-ruby+, to distinguish it 
+from the above +uhferret+ program.  The options are a subset of those 
+available from +uhferret+, and function in the same way.
+
+----------------------
+Usage: uhferret-ruby [options] file1 file2 ...
+    -h, --help                       help message
+    -c, --code                       process documents as code
+    -t, --text                       process documents as text (default)
+    -d, --data-table                 output similarity table (default)
+    -l, --list-trigrams              output trigram list
+    -a, --all-comparisons            output list of all comparisons
+    -x, --xml-report FILE            generate xml report from two documents
+    -f, --definition-file FILE       read document names from file
+----------------------
+
+To compute the similarities of a set of files, use:
+
+----------------------
+> uhferret-ruby file1.txt file2.txt ...
+----------------------
+
+An xml output can be generated for a pair of files using:
+
+----------------------
+> uhferret-ruby -x outfile.xml file1.txt file2.txt
+----------------------
+
+The xml output can be displayed in a browser using the style sheet 
+'uhferret.xsl' in the examples folder, and then printed from the browser.
+
+=== Server ===
+
+----------------------
+Usage: start-uhferret-server [options]
+    -h, --help                       help message
+    -p, --port n                     port number
+    -f, --folder FOLDER              base folder
+----------------------
+
+The folder to store the processed files will default to 
+'FerretFiles' and the port to 2000.
+Initial address: http://localhost:2000/ferret/home
+
+NB: The server uses some *nix commands, and so currently does not work 
+under Windows.
+
+
+== Other Material ==
+
+Ferret has been discussed by the authors in the following papers:
+[citenp:Bao06b;Lane06;Lyon01b;Lyon03;Lyon04;Lyon06;Malcolm08a;Malcolm08b].
+
+Ferret has been used to help data preparation by [citenp:Green11].
+
+A comparison with other plagiarism-detection tools can be found in
+[citenp:Green12].
+
+[sect1]
+== References ==
+
+[bibliography]
+
