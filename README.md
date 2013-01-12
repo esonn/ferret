@@ -61,8 +61,8 @@ the three main stages:
 Ferret can also be used from the command line. The command-line options are:
 
     > uhferret --help
-    Ferret 5.0: start with no arguments for graphical version
-    Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-s] [-f] [-u]
+    Ferret 5.2: start with no arguments for graphical version
+    Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]
       -h, --help           	displays help on command-line parameters
       -t, --text           	text document type (default)
       -c, --code           	code document type
