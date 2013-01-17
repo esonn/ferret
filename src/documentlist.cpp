@@ -5,26 +5,26 @@ DocumentList::~DocumentList ()
 	Clear ();
 }
 
-void DocumentList::AddDocument (wxString pathname, Document::DocumentType type)
+void DocumentList::AddDocument (wxString pathname)
 {
-	_documents.push_back (new Document (pathname, type, GetNewGroupId ()));
+	_documents.push_back (new Document (pathname, GetNewGroupId ()));
 }
 
-void DocumentList::AddDocument (wxString pathname, Document::DocumentType type, int id)
+void DocumentList::AddDocument (wxString pathname, int id)
 {
-	_documents.push_back (new Document (pathname, type, id));
+	_documents.push_back (new Document (pathname, id));
 }
 
 void DocumentList::AddDocument (wxString pathname, wxString name, int id)
 {
-	Document * doc = new Document (pathname, Document::typeText, id);
+	Document * doc = new Document (pathname, id);
 	doc->SetName (name);
 	_documents.push_back (doc);
 }
 
 // Use file defined in pathname as a list of definitions
 // -- returns true if managed to open and process definition file correctly
-bool DocumentList::AddDocumentsFromDefinitionFile (wxString pathname, Document::DocumentType type)
+bool DocumentList::AddDocumentsFromDefinitionFile (wxString pathname)
 {
 	assert (wxFile::Exists (pathname));
 	wxFileInputStream file (pathname);
@@ -51,11 +51,11 @@ bool DocumentList::AddDocumentsFromDefinitionFile (wxString pathname, Document::
 		{
 			if (within_group)
 			{
-				AddDocument (line, type, current_id);
+				AddDocument (line, current_id);
 			}
 			else
 			{
-				AddDocument (line, type);
+				AddDocument (line);
 			}
 		}
 	}
@@ -350,7 +350,6 @@ bool DocumentList::ReadSingleDocumentDefinition (wxTextInputStream & stored_data
 	wxString pathname;
 	wxString name;
 	wxString original_pathname;
-	Document::DocumentType type;
 	int id;
 	int num_trigrams;
 
@@ -370,10 +369,6 @@ bool DocumentList::ReadSingleDocumentDefinition (wxTextInputStream & stored_data
 		{
 			name = data;
 		}
-		else if (line.StartsWith (wxT("doc-type\t"), & data))
-		{
-			type = (data.IsSameAs(wxT("1")) ? Document::typeCode : Document::typeText);
-		}
 		else if (line.StartsWith (wxT("num-trigrams\t"), & data))
 		{
 			num_trigrams = wxAtoi (data);
@@ -390,7 +385,7 @@ bool DocumentList::ReadSingleDocumentDefinition (wxTextInputStream & stored_data
 		line = stored_data.ReadLine ();
 	}
 	// -- create the document and set all its parameters based on read data
-	Document * doc = new Document (pathname, type, id);
+	Document * doc = new Document (pathname, id);
 	doc->SetName (name);
 	doc->SetOriginalPathname (original_pathname);
 	doc->SetTrigramCount (num_trigrams);

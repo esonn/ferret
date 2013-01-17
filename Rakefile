@@ -1,7 +1,27 @@
+VERSION = 5.3 # number for next planned release
+
+desc "display planned features"
+task :todo do
+  puts "Planned additional functionality for Ferret"
+  puts "\nVersion #{VERSION}:"
+  puts "- ignore comments in code files (option in gui and command-line)"
+  puts "- check with user about type of unknown files"
+  puts "- add directories to select files"
+  puts "- support student grouping"
+  puts "- display minimal paths in similarity list"
+  puts "- use numbered files in converted files (to support directories of similar code)"
+  puts "- remove FerretAppFolder on quit"
+  puts "\nLater versions:"
+  puts "- use groupwise measures"
+  puts "- display grouped comparisons"
+  puts "- display visualisation of file comparisons"
+  puts "- unicode, including Chinese etc processing"
+end
+
 desc "build ferret"
 task :build do 
   Dir.chdir("src") do
-    `make ferret`
+    sh "make ferret"
     if File.exist?("ferret")
       `strip ferret`
       `mv ferret ../uhferret`
@@ -32,7 +52,7 @@ task :make_deb => :build do
       file.puts <<-END
 [Desktop Entry]
 Type=Application
-Version=1.0
+Version=#{VERSION}
 Name=Ferret
 GenericName=Ferret: Copy-detection program
 Icon=/usr/share/icons/uhferret.ico
@@ -50,7 +70,7 @@ END
     rescue # ignore error when no .deb files present
     end
     # construct the deb file
-    `sudo fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://peterlane.info/ferret.html' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v 5.2 /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
+    `sudo fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://peterlane.info/ferret.html' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v #{VERSION} /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
     puts "Deb package:"
     puts `md5sum *.deb`
   end

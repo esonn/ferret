@@ -45,7 +45,7 @@ void FerretApp::ShowComparisonHelp ()
 
 wxString FerretApp::GetVersionString ()
 {
-	return wxT("Ferret 5.2");
+	return wxT("Ferret 5.3");
 }
 
 wxString FerretApp::GetGeneratedByString ()
@@ -63,16 +63,6 @@ wxString FerretApp::GetExtractFolder () const
 void FerretApp::SetExtractFolder (wxString extract_folder)
 {
 	_extract_folder = extract_folder;
-}
-
-bool FerretApp::IsTextType () const
-{
-	return _text_type;
-}
-
-void FerretApp::SetTextType (bool text_type) 
-{
-	_text_type = text_type;
 }
 
 bool FerretApp::GetCopyAll () const

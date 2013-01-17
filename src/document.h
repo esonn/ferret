@@ -32,12 +32,9 @@
 class Document
 {
 	public:
-		enum DocumentType { typeText, typeCode };
-		Document (wxString pathname, DocumentType type = typeText, int id = 0);
+		Document (wxString pathname, int id = 0);
 		Document (Document * document);
-		// basic information about document: its type and names
-		void SetType (DocumentType type);
-		bool IsTextType () const;
+		// basic information about document
 		wxString GetPathname () const;
 		wxString GetOriginalPathname () const;
 		void SetOriginalPathname (wxString pathname);
@@ -62,10 +59,18 @@ class Document
 		std::size_t GetTrigramEnd () const;		// access end position of trigram
 		void CloseInput ();
 		// following methods check the type of the document based on its filename
-		bool IsCodeType () const;
 		bool IsPdfType () const;
 		bool IsTxtType () const;
 		bool IsWordProcessorType () const;
+    bool IsTextType () const;
+		bool IsCCodeType () const;
+		bool IsJavaCodeType () const;
+    bool IsVBCodeType () const;
+    bool IsRubyCodeType () const;
+    bool IsPythonCodeType () const;
+    bool IsLispCodeType () const;
+    bool IsXmlCodeType () const;
+		bool IsCodeType () const;
 		bool IsUnknownType () const;
 		// extract from non-text formats
 		bool ExtractDocument (wxString & extract_folder); // return true if file should be removed from list
@@ -79,7 +84,6 @@ class Document
 		wxString	  _pathname; 		// -- [converted] source for this document
 		wxString	  _original_pathname;   // -- original source for this document
 		wxString 	  _name;		// -- filename (without path)
-		DocumentType	  _type;
 		int 		  _num_trigrams;
 		wxFile 		* _fb;
 		wxInputStream	* _cin;

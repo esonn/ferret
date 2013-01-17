@@ -20,6 +20,7 @@ detect copying ( _collusion_ ) within a given set of files.
 - display of _all_ document comparisons, ranked by a similarity score
 - detailed display of _individual_ document comparisons, highlighting any copied text
 - save result table and comparisons to pdf or xml formats, for printing.
+- tokens specialised for major programming languages
 
 *Similarity Measure*
 
@@ -45,6 +46,20 @@ measure itself does not imply any reliable conclusion.
 Either unpack or follow the instructions in the installer.  The installer will 
 create a menu entry for Ferret in your applications menu, under 'Office' for Linux.
 
+*From Source*
+
+Download and install [wxWidgets](http://wxwidgets.org) and [wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
+
+To obtain a static executable (with all the wx libraries contained within the 
+ferret executable) use the configure flag +--disable-shared+
+
+Download the [source code](https://github.com/petercrlane/ferret).
+
+    > cd src
+    > make
+
+Will produce the executable +uhferret+
+
 *More information*
 
 For more information and options, see <http://peterlane.info/ferret.html>
@@ -61,11 +76,9 @@ the three main stages:
 Ferret can also be used from the command line. The command-line options are:
 
     > uhferret --help
-    Ferret 5.2: start with no arguments for graphical version
-    Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]
+    Ferret 5.3: start with no arguments for graphical version
+    Usage: ferret [-h] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]
       -h, --help           	displays help on command-line parameters
-      -t, --text           	text document type (default)
-      -c, --code           	code document type
       -d, --data-table     	produce similarity table (default)
       -l, --list-trigrams  	produce trigram list report
       -a, --all-comparisons	produce list of all comparisons
@@ -93,3 +106,12 @@ For a version designed for embedding in your own scripts, see
 
 Ferret is released under the [GPL](http://www.gnu.org/licenses/gpl.html).
 
+## History ##
+
+Version 5.3 (in preparation) changes:
+
+- file-specific tokenising of c/c++, Java, VB, lisp/scheme/clojure, 
+  python, ruby, html/xml
+- no user-selection of text/code format (gui retains option to process 
+  unrecognised files as txt or word-processed files)
+- drag and drop filenames from Explorer onto Select Files dialog

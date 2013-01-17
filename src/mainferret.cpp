@@ -78,11 +78,9 @@ bool isCommandOption (wxString test_string)
 void aboutMessage ()
 {
 	std::cout 
-		<< "Ferret 5.2: start with no arguments for graphical version" << std::endl
-		<< "Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]" << std::endl
+		<< "Ferret 5.3: start with no arguments for graphical version" << std::endl
+		<< "Usage: ferret [-h] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]" << std::endl
 		<< "  -h, --help           	displays help on command-line parameters" << std::endl
-		<< "  -t, --text           	text document type (default)" << std::endl
-		<< "  -c, --code           	code document type" << std::endl
 		<< "  -d, --data-table     	produce similarity table (default)" << std::endl
 		<< "  -l, --list-trigrams  	produce trigram list report" << std::endl
 		<< "  -a, --all-comparisons	produce list of all comparisons" << std::endl
@@ -97,31 +95,19 @@ void produceComparisonReport (
 		wxString filename1, 
 		wxString filename2, 
 		wxString target_name,
-		Report report_type, 
-		Document::DocumentType document_type,
-		bool forced_document_type)
+		Report report_type
+		)
 {
 	DocumentList docs;
 	if (wxFileName::IsFileReadable (filename1))
-		docs.AddDocument (filename1, document_type);
+		docs.AddDocument (filename1);
 	if (wxFileName::IsFileReadable (filename2))
-		docs.AddDocument (filename2, document_type);
+		docs.AddDocument (filename2);
 
 	if (docs.Size () < 2) // check we added at least 2 readable files
 	{
 		aboutMessage ();
 		return;
-	}
-
-	// if we didn't force the document type
-	// then set it, based on type of first document
-	if (!forced_document_type) 
-	{
-		document_type = (docs[0]->IsCodeType () ? Document::typeCode : Document::typeText);
-		for (int i = 0, n = docs.Size() ; i < n; ++i)
-		{
-			docs[i]->SetType (document_type);
-		}
 	}
 
 	docs.RunFerret ();
@@ -320,10 +306,8 @@ bool FerretApp::OnInit ()
 	}
 	else
 	{
-		Document::DocumentType document_type = Document::typeText; // assume text type
 		Report report_type = DATA_TABLE;	// assume data table is required
 		int filenames_start = 1; 		// index within argv of first filename
-		bool forced_document_type = false;	// flag to indicate if type forced by user
 		wxString definition_file = wxT("");	// string to hold path to definition file
 		wxString stored_data = wxT("");		// string to hold path to stored data
 		wxString upload_dir = wxT("");		// string to hold path to upload_dir, for html-table
@@ -335,18 +319,6 @@ bool FerretApp::OnInit ()
 			{
 				aboutMessage ();
 				return false;
-			}
-			else if (isTypeTextOption (argv[filenames_start]))
-			{
-				document_type = Document::typeText;
-				forced_document_type = true;
-				filenames_start += 1;
-			}
-			else if (isTypeCodeOption (argv[filenames_start]))
-			{
-				document_type = Document::typeCode;
-				forced_document_type = true;
-				filenames_start += 1;
 			}
 			else if (isDataTableOption (argv[filenames_start]))
 			{
@@ -369,11 +341,11 @@ bool FerretApp::OnInit ()
 				upload_dir = argv[filenames_start+1];
 				filenames_start += 2;
 			}
-//			else if (isPdfOption (argv[filenames_start]))
-//			{
-//				report_type = PDF_REPORT;
-//				filenames_start += 1;
-//			}
+			else if (isPdfOption (argv[filenames_start]))
+			{
+				report_type = PDF_REPORT;
+				filenames_start += 1;
+			}
 			else if (isXmlOption (argv[filenames_start]))
 			{
 				report_type = XML_REPORT;
@@ -414,9 +386,8 @@ bool FerretApp::OnInit ()
 					argv[filenames_start], 
 					argv[filenames_start+1],
 				        argv[filenames_start+2],	
-					report_type, 
-					document_type,
-					forced_document_type);
+					report_type
+					);
 			return false;
 		}
 		else // other report options are similar, needing ferret to run on all files
@@ -434,14 +405,14 @@ bool FerretApp::OnInit ()
 			// -- from definition file, if provided
 			if (wxFileName::IsFileReadable (definition_file))
 			{
-				docs.AddDocumentsFromDefinitionFile (definition_file, document_type);
+				docs.AddDocumentsFromDefinitionFile (definition_file);
 			}
 			// -- and any remaining filenames on command line
 			for (int i = filenames_start; i < argc; ++i)
 			{
 				if (wxFileName::IsFileReadable (argv[i]))
 				{
-					docs.AddDocument (argv[i], document_type);
+					docs.AddDocument (argv[i]);
 				}
 			}
 
@@ -449,16 +420,6 @@ bool FerretApp::OnInit ()
 			{
 				aboutMessage ();
 				return false;
-			}
-			// if we didn't force the document type and we didn't use a definition file
-			// then set document type, based on type of first document
-			if (!forced_document_type && definition_file.IsEmpty ()) 
-			{
-				document_type = (docs[0]->IsCodeType () ? Document::typeCode : Document::typeText);
-				for (int i = 0, n = docs.Size() ; i < n; ++i)
-				{
-					docs[i]->SetType (document_type);
-				}
 			}
 
 			std::vector<Document *> to_remove; // keep a list of documents not to be processed

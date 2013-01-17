@@ -29,8 +29,6 @@ class FerretApp: public wxApp
 		// BEGIN options and information maintained for ferret application
 		wxString GetExtractFolder () const;
 		void SetExtractFolder (wxString extract_folder);
-		bool IsTextType () const;
-		void SetTextType (bool text_type);
 		bool GetCopyAll () const;
 		void SetCopyAll (bool copy_all);
 		bool GetConvertAll () const;

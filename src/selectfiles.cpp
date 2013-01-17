@@ -1,5 +1,23 @@
 #include "selectfiles.h"
 
+// Process the dropped files
+bool DropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
+{
+  wxSortedArrayString result;
+
+  for (int i = 0; i < filenames.GetCount (); i++) {
+    if (!wxFileName::DirExists (filenames[i])) {
+      wxFileName filename (filenames[i]);
+      if (filename.IsFileReadable ()) {
+        result.Add (filenames[i]);
+      }
+    }
+  }
+  _document_list->AddDocuments (result);
+
+  return true;
+}
+
 BEGIN_EVENT_TABLE (MyListCtrl, wxListCtrl)
 	EVT_MOUSE_EVENTS (MyListCtrl::OnMouseEvent)
 	EVT_CHAR (MyListCtrl::OnKeyEvent)
@@ -88,6 +106,8 @@ SelectFiles::SelectFiles ()
 	SetSizeHints (std::max (best_height, best_width), best_height);
 	
 	SetSizer (frame_sizer);
+
+  SetDropTarget (new DropFiles (this));
 #if __WXMSW__
 	SetBackgroundColour (wxNullColour); // ensure background coloured, on Windows
 #endif
@@ -97,30 +117,13 @@ void SelectFiles::OnAdd (wxCommandEvent & WXUNUSED(event))
 {
 	wxFileDialog dialog (NULL, wxT("Select file(s) to compare"), 
 			wxEmptyString, wxEmptyString,
-			wxT("All Files|*|Text (*.txt)|*.txt|Word (*.doc)|*.doc|Rich Text Format (*.rtf)|*.rtf|pdf (*.pdf)|*.pdf|C++ (*.cpp)|*.cpp|C (*.c)|*.c|Header (*.h)|*.h|Java (*.java)|*.java"),
+			wxT("All Files|*|Text (*.txt)|*.txt|Word (*.doc)|*.doc|Rich Text Format (*.rtf)|*.rtf|pdf (*.pdf)|*.pdf|C++ (*.cpp)|*.cpp|C (*.c)|*.c|Header (*.h)|*.h|Java (*.java)|*.java|Visual Basic (*.vb)|*.vb|Ruby (*.rb)|*.rb|Python (*.py)|*.py"),
 			wxFD_OPEN | wxFD_CHANGE_DIR | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST );
 	if (dialog.ShowModal () == wxID_OK)
 	{
 		wxArrayString paths;
 		dialog.GetPaths (paths);
 		AddDocuments (paths);
-		if (paths.IsEmpty ())
-		{
-			((wxButton *) FindWindow (ID_CLEAR_FILES))->Enable (false);
-		}
-		else
-		{
-			((wxButton *) FindWindow (ID_CLEAR_FILES))->Enable (true);
-			if ((*_document_list)[0]->IsCodeType ())
-			{
-				wxGetApp().SetTextType (false);
-			}
-			else
-			{
-				wxGetApp().SetTextType (true);
-			}
-		}
-		UpdateButtons ();
 	}
 }
 
@@ -192,6 +195,15 @@ void SelectFiles::AddDocuments (wxArrayString & paths)
 		file_list->InsertItem (file_list->GetItemCount (), filename.GetFullName ());
 		_document_list->AddDocument (paths[i]);
 	}
+	if (paths.IsEmpty ())
+	{
+		((wxButton *) FindWindow (ID_CLEAR_FILES))->Enable (false);
+  }
+	else
+	{
+		((wxButton *) FindWindow (ID_CLEAR_FILES))->Enable (true);
+	}
+	UpdateButtons ();
 }
 
 // warn of any ignored or problem files in a dialog
@@ -274,20 +286,7 @@ void SelectFiles::ReadDocuments (int start_from)
 				dialog.Resume ();
 			}
 		}
-		(*_document_list)[i]->SetType (GetDocumentType ());
 		_document_list->ReadDocument (i);
-	}
-}
-
-Document::DocumentType SelectFiles::GetDocumentType () const
-{
-	if (wxGetApp().IsTextType ()) 
-	{
-		return Document::typeText;
-	}
-	else
-	{
-		return Document::typeCode;
 	}
 }
 
@@ -355,21 +354,6 @@ OptionSettings::OptionSettings (wxWindow * parent)
 {
 	wxBoxSizer * sizer = new wxBoxSizer (wxVERTICAL);
 
-	// -- indicate type of documents
-	static wxString choices[] = { 
-		wxT("Natural language (e.g. English)"), 
-		wxT("Computer programs (e.g. Java, C++, C)") 
-	};
-	wxRadioBox * type_selection = new wxRadioBox (this, 
-			ID_TYPE_SELECTION,
-			wxT("Document type (change after selecting documents)"),
-			wxDefaultPosition, wxDefaultSize,
-			WXSIZEOF(choices), choices,
-			1, wxRA_SPECIFY_COLS);
-	type_selection->SetSelection ((wxGetApp().IsTextType()) ? 0 : 1);
-	
-	sizer->Add (type_selection, 0, wxGROW | wxALL, 5);
-
 	// -- browser for folder name, and how files will be converted
 	sizer->Add (new wxStaticText (this, wxID_ANY, wxT("Destination folder for files containing extracted text:")),
 			0, wxALIGN_LEFT | wxALL, 5);
@@ -429,7 +413,6 @@ void OptionSettings::OnBrowse (int dir_name_id)
 // copy all necessary settings into the application
 void OptionSettings::OnOk (wxCommandEvent & WXUNUSED(event))
 {
-	wxGetApp().SetTextType (((wxRadioBox *) FindWindow (ID_TYPE_SELECTION))->GetSelection () == 0);
 	wxGetApp().SetExtractFolder (((wxStaticText *) FindWindow (ID_EXTRACT_DIR_NAME))->GetLabel ());
 	wxGetApp().SetCopyAll (((wxCheckBox *) FindWindow (ID_COPY_ALL))->GetValue ());
 	wxGetApp().SetConvertAll (((wxCheckBox *) FindWindow (ID_EXTRACT_ALL))->GetValue ());

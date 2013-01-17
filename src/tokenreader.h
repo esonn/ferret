@@ -53,16 +53,76 @@ class WordReader: public TokenReader
 		bool ReadToken ();
 };
 
-// The CCodeReader separates its input stream into tokens, looking for 
-//     C-style tokens, numbers and symbols
-class CCodeReader: public TokenReader
+// LispReader matches a bracketed language, suitable for 
+// matching lisp/scheme/racket/clojure files
+class LispCodeReader: public TokenReader
+{
+  public:
+    LispCodeReader (wxInputStream & input) : TokenReader (input) {}
+    bool ReadToken ();
+};
+
+// Template for the 'usual' programming languages (non-lisp style)
+// Individual languages provide their own 'IsSymbol' methods.
+class CodeReader: public TokenReader
+{
+  public:
+    CodeReader (wxInputStream & input) : TokenReader (input) {}
+    bool ReadToken ();
+  private:
+    bool IsSymbol (wxChar c);
+    virtual bool IsSymbol (wxString token, wxChar c) = 0;
+};
+
+class CCodeReader: public CodeReader
 {
 	public:
-		CCodeReader (wxInputStream & input) : TokenReader (input) {}
-		bool ReadToken ();
+		CCodeReader (wxInputStream & input) : CodeReader (input) {}
 	private:
-		bool IsSymbol (wxChar c);
 		bool IsSymbol (wxString token, wxChar c);
+};
+
+class JavaCodeReader: public CodeReader
+{
+	public:
+		JavaCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
+class VbCodeReader: public CodeReader
+{
+	public:
+		VbCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
+class RubyCodeReader: public CodeReader
+{
+	public:
+		RubyCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
+class PythonCodeReader: public CodeReader
+{
+	public:
+		PythonCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
+// For reading XML/HTML, simply recognise the tokens such as '<? />' etc
+// and process rest like a standard computer program.
+// May need revisiting to more correctly parse this kind of document.
+class XmlCodeReader: public CodeReader
+{
+  public:
+    XmlCodeReader (wxInputStream & input) : CodeReader (input) {}
+  private:
+    bool IsSymbol (wxString token, wxChar c);
 };
 
 #endif

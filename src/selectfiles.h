@@ -8,6 +8,7 @@
 #include <wx/wx.h>
 #include <wx/busyinfo.h>
 #include <wx/dir.h>
+#include <wx/dnd.h>
 #include <wx/filename.h>
 #include <wx/progdlg.h>
 #include <wx/spinctrl.h>
@@ -59,7 +60,6 @@ class MyListCtrl: public wxListCtrl
   */
 class SelectFiles: public wxFrame
 {
-	enum {TextType, CodeType};
 	public:
 		SelectFiles ();
 	private:
@@ -77,11 +77,23 @@ class SelectFiles: public wxFrame
 		void WarnOfProblemFiles ();
 		void CreateComparisonView ();
 		void ReadDocuments (int start_from = 0);
-		Document::DocumentType GetDocumentType () const;
 		DocumentList * _document_list;
 		DECLARE_EVENT_TABLE()
+  friend class DropFiles;
 };
 
+// *** Class to accept dropped list of files 
+class DropFiles: public wxFileDropTarget
+{
+  public:
+    DropFiles (SelectFiles * document_list) : wxFileDropTarget ()
+    { 
+      _document_list = document_list;
+    }
+    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
+  private:
+    SelectFiles * _document_list;
+};
 
 // *** dialog to set options
 

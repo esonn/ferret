@@ -1,9 +1,8 @@
 #include "document.h"
 
-Document::Document (wxString pathname, DocumentType type, int id)
+Document::Document (wxString pathname, int id)
 	: _pathname (pathname),
 	  _original_pathname (pathname),
-	  _type (type),
 	  _num_trigrams (0),
 	  _group_id (id)
 {
@@ -15,20 +14,9 @@ Document::Document (Document * document)
 	: _pathname (document->_pathname),
 	  _original_pathname (document->_original_pathname),
 	  _name (document->_name),
-	  _type (document->_type),
 	  _num_trigrams (0),
 	  _group_id (document->_group_id)
 {}
-
-void Document::SetType (DocumentType type)
-{
-	_type = type;
-}
-
-bool Document::IsTextType () const
-{
-	return (_type == typeText);
-}
 
 wxString Document::GetPathname () const 
 {
@@ -123,14 +111,42 @@ bool Document::StartInput (wxInputStream & input, TokenSet & tokenset)
 // TokenSet is provided by caller, so Reader uses common set of labels for tokens
 void Document::InitialiseInput (TokenSet & tokenset)
 {
-	if (_type == typeText)
+	if (IsTextType ())
 	{
 		_token_input = new WordReader (* _cin);
 	}
-	else // (_type == typeCode)
+  else if (IsCCodeType ())
 	{
 		_token_input = new CCodeReader (* _cin);
 	}
+  else if (IsJavaCodeType ())
+  {
+    _token_input = new JavaCodeReader (* _cin);
+  }
+  else if (IsVBCodeType ())
+  {
+    _token_input = new VbCodeReader (* _cin);
+  }
+  else if (IsRubyCodeType ())
+  {
+    _token_input = new RubyCodeReader (* _cin);
+  }
+  else if (IsPythonCodeType ())
+  {
+    _token_input = new PythonCodeReader (* _cin);
+  }
+  else if (IsLispCodeType ())
+  {
+    _token_input = new LispCodeReader (* _cin);
+  }
+  else if (IsXmlCodeType ())
+  {
+    _token_input = new XmlCodeReader (* _cin);
+  }
+  else // default -- treat as text type
+  {
+		_token_input = new WordReader (* _cin);
+  }
 	ReadTrigram (tokenset); // read first two tokens so next call to 
 	ReadTrigram (tokenset); // ReadTrigram returns the first complete trigram
 }
@@ -144,15 +160,6 @@ bool Document::IsFileType (wxString extension) const
 	wxString file_extension = _pathname.Mid (dot_posn+1);
 
 	return file_extension.IsSameAs (extension, false); // ignore case in comparison
-}
-
-// Test if file extension represents a c-type language
-bool Document::IsCodeType () const
-{
-	return  IsFileType (wxT ("cpp")) ||
-		IsFileType (wxT ("c")) ||
-		IsFileType (wxT ("java")) ||
-		IsFileType (wxT ("h"));
 }
 
 // Test if file extension represents a pdf document
@@ -176,11 +183,63 @@ bool Document::IsWordProcessorType () const
 		IsFileType (wxT ("rtf"));
 }
 
+// Test if document should be processed using WordReader tokens.
+bool Document::IsTextType () const
+{
+  return IsWordProcessorType () || IsPdfType () || IsTxtType ();
+}
+
+bool Document::IsCCodeType () const
+{
+	return  IsFileType (wxT ("cpp")) ||
+		IsFileType (wxT ("c")) ||
+		IsFileType (wxT ("h"));
+}
+
+bool Document::IsJavaCodeType () const
+{
+	return IsFileType (wxT ("java"));
+}
+
+bool Document::IsVBCodeType () const
+{
+  return IsFileType (wxT ("vb"));
+}
+
+bool Document::IsRubyCodeType () const
+{
+  return IsFileType (wxT ("rb"));
+}
+
+bool Document::IsPythonCodeType () const
+{
+  return IsFileType (wxT ("py"));
+}
+
+bool Document::IsLispCodeType () const
+{
+  return IsFileType (wxT ("lisp")) || IsFileType (wxT ("lsp")) ||
+    IsFileType (wxT ("scm")) || 
+    IsFileType (wxT ("rkt")) || IsFileType (wxT ("ss")) ||
+    IsFileType (wxT ("clj"));
+}
+
+bool Document::IsXmlCodeType () const
+{
+  return IsFileType (wxT ("xml")) || IsFileType (wxT ("html"));
+}
+ 
+bool Document::IsCodeType () const
+{
+  return IsCCodeType () || IsJavaCodeType () || IsVBCodeType () ||
+    IsRubyCodeType () || IsPythonCodeType () || IsLispCodeType () ||
+    IsXmlCodeType ();
+}
+
 // Test if file is not a known type
 bool Document::IsUnknownType () const
 {
-	return ! (IsCodeType () || IsPdfType () || 
-		  IsTxtType () || IsWordProcessorType ());
+	return ! (IsCodeType () || IsTextType ());
 }
 
 // Perform extraction of text from given document, if required
@@ -358,7 +417,6 @@ void Document::Save (wxFile & file)
 	file.Write (wxString::Format (wxT("path\t%s\n"), _pathname.c_str ()));
 	file.Write (wxString::Format (wxT("original-path\t%s\n"), _original_pathname.c_str ()));
 	file.Write (wxString::Format (wxT("name\t%s\n"), _name.c_str ()));
-	file.Write (wxString::Format (wxT("doc-type\t%d\n"), _type));
 	file.Write (wxString::Format (wxT("num-trigrams\t%d\n"), _num_trigrams));
 	file.Write (wxString::Format (wxT("group-id\t%d\n"), _group_id));
 	file.Write (wxT("end-document\n"));
