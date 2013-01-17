@@ -82,6 +82,22 @@ class CCodeReader: public CodeReader
 		bool IsSymbol (wxString token, wxChar c);
 };
 
+class HaskellCodeReader: public CodeReader
+{
+	public:
+		HaskellCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
+class GroovyCodeReader: public CodeReader
+{
+	public:
+		GroovyCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
 class JavaCodeReader: public CodeReader
 {
 	public:
@@ -102,6 +118,14 @@ class RubyCodeReader: public CodeReader
 {
 	public:
 		RubyCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
+class PrologCodeReader: public CodeReader
+{
+	public:
+		PrologCodeReader (wxInputStream & input) : CodeReader (input) {}
 	private:
 		bool IsSymbol (wxString token, wxChar c);
 };

@@ -117,7 +117,7 @@ void SelectFiles::OnAdd (wxCommandEvent & WXUNUSED(event))
 {
 	wxFileDialog dialog (NULL, wxT("Select file(s) to compare"), 
 			wxEmptyString, wxEmptyString,
-			wxT("All Files|*|Text (*.txt)|*.txt|Word (*.doc)|*.doc|Rich Text Format (*.rtf)|*.rtf|pdf (*.pdf)|*.pdf|C++ (*.cpp)|*.cpp|C (*.c)|*.c|Header (*.h)|*.h|Java (*.java)|*.java|Visual Basic (*.vb)|*.vb|Ruby (*.rb)|*.rb|Python (*.py)|*.py"),
+			wxT("All Files|*|Text (*.txt)|*.txt|Word (*.doc, *.docx)|*.doc;*.docx|Rich Text Format (*.rtf)|*.rtf|pdf (*.pdf)|*.pdf|C++ (*.cpp, *.h)|*.cpp;*.h|C (*.c, *.h)|*.c;*.h|Clojure (*.clj)|*.clj|Groovy (*.groovy)|*.groovy|Haskell (*.hs, *.lhs)|*.hs;*.lhs|Java (*.java)|*.java|Lisp (*.lisp,*.lsp)|*.lisp;*.lsp|Prolog (*.pl)|*.pl|Python (*.py)|*.py|Racket (*.rkt)|*.rkt|Ruby (*.rb)|*.rb|Scheme (*.ss, *.scm)|*.scm;*.ss|Visual Basic (*.vb)|*.vb|Xml/Html (*.xml, *.html)|*.xml;*.html"),
 			wxFD_OPEN | wxFD_CHANGE_DIR | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST );
 	if (dialog.ShowModal () == wxID_OK)
 	{

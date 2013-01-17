@@ -119,6 +119,14 @@ void Document::InitialiseInput (TokenSet & tokenset)
 	{
 		_token_input = new CCodeReader (* _cin);
 	}
+  else if (IsHaskellCodeType ())
+  {
+    _token_input = new HaskellCodeReader (* _cin);
+  }
+  else if (IsGroovyCodeType ())
+  {
+    _token_input = new GroovyCodeReader (* _cin);
+  }
   else if (IsJavaCodeType ())
   {
     _token_input = new JavaCodeReader (* _cin);
@@ -130,6 +138,10 @@ void Document::InitialiseInput (TokenSet & tokenset)
   else if (IsRubyCodeType ())
   {
     _token_input = new RubyCodeReader (* _cin);
+  }
+  else if (IsPrologCodeType ())
+  {
+    _token_input = new PrologCodeReader (* _cin);
   }
   else if (IsPythonCodeType ())
   {
@@ -196,9 +208,19 @@ bool Document::IsCCodeType () const
 		IsFileType (wxT ("h"));
 }
 
+bool Document::IsHaskellCodeType () const
+{
+  return IsFileType (wxT ("hs")) || IsFileType (wxT ("lhs"));
+}
+
 bool Document::IsJavaCodeType () const
 {
 	return IsFileType (wxT ("java"));
+}
+
+bool Document::IsGroovyCodeType () const
+{
+	return IsFileType (wxT ("groovy"));
 }
 
 bool Document::IsVBCodeType () const
@@ -209,6 +231,11 @@ bool Document::IsVBCodeType () const
 bool Document::IsRubyCodeType () const
 {
   return IsFileType (wxT ("rb"));
+}
+
+bool Document::IsPrologCodeType () const
+{
+  return IsFileType (wxT ("pl"));
 }
 
 bool Document::IsPythonCodeType () const

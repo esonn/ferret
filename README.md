@@ -16,7 +16,7 @@ detect copying ( _collusion_ ) within a given set of files.
 
 - compares text documents containing natural language or computer language
 - automatic conversion of standard word processor or pdf formats to text
-- processing specialised for major programming languages
+- processing specialised for major programming languages [from 5.3]
 - quick loading and comparison of documents, up to computer's memory capacity
 - display of _all_ document comparisons, ranked by a similarity score
 - detailed display of _individual_ document comparisons, highlighting any copied text
@@ -46,23 +46,24 @@ measure itself does not imply any reliable conclusion.
 Either unpack or follow the instructions in the installer.  The installer will 
 create a menu entry for Ferret in your applications menu, under 'Office' for Linux.
 
-*From Source*
+*More information*
 
-Download and install [wxWidgets](http://wxwidgets.org) and [wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
+For more information and options, see <http://peterlane.info/ferret.html>
 
-To obtain a static executable (with all the wx libraries contained within the 
-ferret executable) use the configure flag '--disable-shared'.
+## Compile From Source ##
+
+Download and install [wxWidgets](http://wxwidgets.org) and
+[wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
+
+(To obtain a static executable (with all the wx libraries contained within the 
+ferret executable) use the configure flag '--disable-shared'.)
 
 Download the [source code](https://github.com/petercrlane/ferret).
 
     > cd src
     > make
 
-Will produce the executable 'uhferret'
-
-*More information*
-
-For more information and options, see <http://peterlane.info/ferret.html>
+to build the executable 'uhferret'.
 
 ## Use ##
 
@@ -90,6 +91,29 @@ Ferret can also be used from the command line. The command-line options are:
 
 More details on using Ferret can be found in the manual (in preparation).
 
+### Supported File Types / Languages ###
+
+The following list gives the recognised types of file or computer code within 
+Ferret, with the recognised file extension in brackets. For any additions to this 
+list, contact the author.
+
+- Text documents (.txt)
+- Word processor formats (.doc, .docx, .rtf, .abw)
+- Pdf documents (.pdf)
+- Computer languages [from 5.3]
+  - C/C++ (.h, .c, .cpp)
+  - Clojure (.clj)
+  - Groovy (.groovy)
+  - Haskell (.hs, .lhs)
+  - Java (.java)
+  - Lisp (.lisp, .lsp)
+  - Prolog (.pl)
+  - Python (.py)
+  - Racket (.rkt)
+  - Ruby (.rb)
+  - Scheme (.scm, .ss)
+  - Visual Basic (.vb)
+  - XML/HTML (.xml, .html)
 
 ## Implementation ##
 
@@ -110,8 +134,8 @@ Ferret is released under the [GPL](http://www.gnu.org/licenses/gpl.html).
 
 Version 5.3 (in preparation) changes:
 
-- file-specific tokenising of c/c++, Java, VB, lisp/scheme/clojure, 
-  python, ruby, html/xml
+- file-specific tokenising of major programming languages (see list above)
 - no user-selection of text/code format (gui retains option to process 
   unrecognised files as txt or word-processed files)
-- drag and drop filenames from Explorer onto Select Files dialog
+- drag and drop files onto Select Files dialog
+
