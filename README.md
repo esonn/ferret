@@ -16,11 +16,11 @@ detect copying ( _collusion_ ) within a given set of files.
 
 - compares text documents containing natural language or computer language
 - automatic conversion of standard word processor or pdf formats to text
+- processing specialised for major programming languages
 - quick loading and comparison of documents, up to computer's memory capacity
 - display of _all_ document comparisons, ranked by a similarity score
 - detailed display of _individual_ document comparisons, highlighting any copied text
-- save result table and comparisons to pdf or xml formats, for printing.
-- tokens specialised for major programming languages
+- save result table and comparisons to pdf or xml formats, for printing or further analysis.
 
 *Similarity Measure*
 
@@ -51,14 +51,14 @@ create a menu entry for Ferret in your applications menu, under 'Office' for Lin
 Download and install [wxWidgets](http://wxwidgets.org) and [wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
 
 To obtain a static executable (with all the wx libraries contained within the 
-ferret executable) use the configure flag +--disable-shared+
+ferret executable) use the configure flag '--disable-shared'.
 
 Download the [source code](https://github.com/petercrlane/ferret).
 
     > cd src
     > make
 
-Will produce the executable +uhferret+
+Will produce the executable 'uhferret'
 
 *More information*
 
