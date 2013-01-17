@@ -222,6 +222,27 @@ bool CCodeReader::IsSymbol (wxString token, wxChar c)
       );
 }
 
+bool CSharpCodeReader::IsSymbol (wxString token, wxChar c)
+{
+	wxString candidate = token + c;
+  return (
+      candidate == wxT("++") || candidate == wxT("--") || 
+      candidate == wxT("->") || 
+      candidate == wxT("<<") || candidate == wxT(">>") || 
+      candidate == wxT(">=") || candidate == wxT("<=") || 
+      candidate == wxT("==") || candidate == wxT("!=") ||
+      candidate == wxT("||") || candidate == wxT("&&") || 
+      candidate == wxT("+=") || candidate == wxT("-=") || 
+      candidate == wxT("*=") || candidate == wxT("/=") || 
+      candidate == wxT("%=") || candidate == wxT("&=") || 
+      candidate == wxT("|=") || candidate == wxT("^=") || 
+      candidate == wxT("<<=") || candidate == wxT(">>=") ||
+      candidate == wxT("??") || candidate == wxT("///") ||
+      candidate == wxT("/*") || candidate == wxT("*/") ||
+      candidate == wxT("//")
+  );
+}
+
 bool HaskellCodeReader::IsSymbol (wxString token, wxChar c)
 {
   wxString candidate = token + c;

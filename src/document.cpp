@@ -119,6 +119,10 @@ void Document::InitialiseInput (TokenSet & tokenset)
 	{
 		_token_input = new CCodeReader (* _cin);
 	}
+  else if (IsCSharpCodeType ())
+	{
+		_token_input = new CSharpCodeReader (* _cin);
+	}
   else if (IsHaskellCodeType ())
   {
     _token_input = new HaskellCodeReader (* _cin);
@@ -206,6 +210,11 @@ bool Document::IsCCodeType () const
 	return  IsFileType (wxT ("cpp")) ||
 		IsFileType (wxT ("c")) ||
 		IsFileType (wxT ("h"));
+}
+
+bool Document::IsCSharpCodeType () const
+{
+	return IsFileType (wxT ("cs"));
 }
 
 bool Document::IsHaskellCodeType () const

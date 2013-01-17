@@ -50,7 +50,7 @@ create a menu entry for Ferret in your applications menu, under 'Office' for Lin
 
 For more information and options, see <http://peterlane.info/ferret.html>
 
-## Compile From Source ##
+## Install From Source ##
 
 Download and install [wxWidgets](http://wxwidgets.org) and
 [wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
@@ -102,6 +102,7 @@ list, contact the author.
 - Pdf documents (.pdf)
 - Computer languages [from 5.3]
   - C/C++ (.h, .c, .cpp)
+  - C# (.cs)
   - Clojure (.clj)
   - Groovy (.groovy)
   - Haskell (.hs, .lhs)

@@ -82,6 +82,14 @@ class CCodeReader: public CodeReader
 		bool IsSymbol (wxString token, wxChar c);
 };
 
+class CSharpCodeReader: public CodeReader
+{
+	public:
+		CSharpCodeReader (wxInputStream & input) : CodeReader (input) {}
+	private:
+		bool IsSymbol (wxString token, wxChar c);
+};
+
 class HaskellCodeReader: public CodeReader
 {
 	public:

@@ -64,6 +64,7 @@ class Document
 		bool IsWordProcessorType () const;
     bool IsTextType () const;
 		bool IsCCodeType () const;
+    bool IsCSharpCodeType () const;
     bool IsGroovyCodeType () const;
     bool IsHaskellCodeType () const;
 		bool IsJavaCodeType () const;
