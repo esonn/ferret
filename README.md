@@ -79,11 +79,12 @@ Ferret can also be used from the command line. The command-line options are:
 
     > uhferret --help
     Ferret 5.3: start with no arguments for graphical version
-    Usage: ferret [-h] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]
+    Usage: ferret [-h] [-d] [-l] [-a] [-r] [-w] [-p] [-x] [-f] [-u]
       -h, --help           	displays help on command-line parameters
       -d, --data-table     	produce similarity table (default)
       -l, --list-trigrams  	produce trigram list report
       -a, --all-comparisons	produce list of all comparisons
+      -r, --remove-common   removes common trigrams
       -w, --html-table     	produce similarity table in html format
       -p, --pdf-report     	source-1 source-2 results-file : create pdf report
       -x, --xml-report     	source-1 source-2 results-file : create xml report
