@@ -12,11 +12,12 @@ detect copying ( _collusion_ ) within a given set of files.
 - teachers, scanning for collusion in student work
 - tracking the amount of new material in the current version of a text or program 
 
-*Features*
+*Features:*
 
 - compares text documents containing natural language or computer language
 - automatic conversion of standard word processor or pdf formats to text
 - processing specialised for major programming languages [from 5.3]
+- choice of similarity measures to highlight individual or group similarity [from 5.3]
 - quick loading and comparison of documents, up to computer's memory capacity
 - display of _all_ document comparisons, ranked by a similarity score
 - detailed display of _individual_ document comparisons, highlighting any copied text
@@ -139,4 +140,5 @@ Version 5.3 (in preparation) changes:
 - no user-selection of text/code format (gui retains option to process 
   unrecognised files as txt or word-processed files)
 - drag and drop files onto Select Files dialog
+- include option to compute similarities after excluding trigrams common to other files
 

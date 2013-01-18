@@ -1,8 +1,8 @@
 #include "xmlreport.h"
 
 // Constructor just passes doclist to its parent class
-XmlReport::XmlReport (DocumentList & doclist)
-	: OutputReport (doclist)
+XmlReport::XmlReport (DocumentList & doclist, bool unique)
+	: OutputReport (doclist, unique)
 {
 }
 
@@ -16,9 +16,13 @@ void XmlReport::WriteXmlReport (wxString save_report_path, int doc1, int doc2)
 		_file.Write (wxT("<uhferret>\n"));
 		// -- write document comparison summary
 		_file.Write (wxString::Format (wxT("<common-trigrams>%d</common-trigrams>\n"),
-					_doclist.CountMatches (doc1, doc2)));
+					_doclist.CountMatches (doc1, doc2, _unique)));
 		_file.Write (wxString::Format (wxT("<similarity>%f</similarity>\n"),
-					_doclist.ComputeResemblance (doc1, doc2)));
+					_doclist.ComputeResemblance (doc1, doc2, _unique)));
+    if (_unique)
+    {
+      _file.Write (wxT("(Pairwise similarity ignores trigrams in common with other documents)"));
+    }
 		// -- write out document 1
 		WriteDocumentHeader (doc1, doc2);
 		WriteDocument (doc1, doc2);

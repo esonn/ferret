@@ -10,16 +10,6 @@ bool isHelpOption (wxString test_string)
 	return isNamedOption (test_string, wxT("-h"), wxT("--help"));
 }
 
-bool isTypeTextOption (wxString test_string)
-{
-	return isNamedOption (test_string, wxT("-t"), wxT("--text"));
-}
-
-bool isTypeCodeOption (wxString test_string)
-{
-	return isNamedOption (test_string, wxT("-c"), wxT("--code"));
-}
-
 bool isDataTableOption (wxString test_string)
 {
 	return isNamedOption (test_string, wxT("-d"), wxT("--data-table"));
@@ -33,6 +23,11 @@ bool isListTrigramsOption (wxString test_string)
 bool isAllComparisonsOption (wxString test_string)
 {
 	return isNamedOption (test_string, wxT("-a"), wxT("--all-comparisons"));
+}
+
+bool isRemoveCommonTrigramsOption (wxString test_string)
+{
+	return isNamedOption (test_string, wxT("-r"), wxT("--remove-common"));
 }
 
 bool isHtmlTableOption (wxString test_string)
@@ -63,11 +58,10 @@ bool isStoredDataOption (wxString test_string)
 bool isCommandOption (wxString test_string)
 {
 	return isHelpOption (test_string) 
-		|| isTypeTextOption (test_string) 
-		|| isTypeCodeOption (test_string)
 		|| isDataTableOption (test_string) 
 		|| isListTrigramsOption (test_string) 
 		|| isAllComparisonsOption (test_string) 
+    || isRemoveCommonTrigramsOption (test_string)
 		|| isHtmlTableOption (test_string)
 		|| isPdfOption (test_string)
 		|| isXmlOption (test_string)
@@ -79,11 +73,12 @@ void aboutMessage ()
 {
 	std::cout 
 		<< "Ferret 5.3: start with no arguments for graphical version" << std::endl
-		<< "Usage: ferret [-h] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]" << std::endl
+		<< "Usage: ferret [-h] [-d] [-l] [-a] [-r] [-w] [-p] [-x] [-f] [-u]" << std::endl
 		<< "  -h, --help           	displays help on command-line parameters" << std::endl
 		<< "  -d, --data-table     	produce similarity table (default)" << std::endl
 		<< "  -l, --list-trigrams  	produce trigram list report" << std::endl
 		<< "  -a, --all-comparisons	produce list of all comparisons" << std::endl
+    << "  -r, --remove-common   removes common trigrams" << std::endl
 		<< "  -w, --html-table     	produce similarity table in html format" << std::endl
 		<< "  -p, --pdf-report     	source-1 source-2 results-file : create pdf report" << std::endl
 		<< "  -x, --xml-report     	source-1 source-2 results-file : create xml report" << std::endl
@@ -95,7 +90,8 @@ void produceComparisonReport (
 		wxString filename1, 
 		wxString filename2, 
 		wxString target_name,
-		Report report_type
+		Report report_type,
+    bool remove_common_trigrams
 		)
 {
 	DocumentList docs;
@@ -114,12 +110,12 @@ void produceComparisonReport (
 
 	if (report_type == PDF_REPORT)
 	{
-		PdfReport pdfreport (docs);
+		PdfReport pdfreport (docs, remove_common_trigrams);
 		pdfreport.WritePdfReport (target_name, 0, 1);
 	}
 	else // if (report_type == XML_REPORT)
 	{
-		XmlReport xmlreport (docs);
+		XmlReport xmlreport (docs, remove_common_trigrams);
 		xmlreport.WriteXmlReport (target_name, 0, 1);
 	}
 }
@@ -143,7 +139,7 @@ void writeTrigramList (DocumentList & docs)
 	}
 }
 
-void writeAllComparisons (DocumentList & docs)
+void writeAllComparisons (DocumentList & docs, bool remove_common_trigrams)
 {
 	// output the headings
 	for (int i = 0, n = docs.Size (); i < n; ++i)
@@ -161,19 +157,23 @@ void writeAllComparisons (DocumentList & docs)
 			if (i == j)
 				std::cout << "1.0";
 			else if (i < j) // resemblance is symmetric, and assumes i < j
-				std::cout << docs.ComputeResemblance (i, j);
+				std::cout << docs.ComputeResemblance (i, j, remove_common_trigrams);
 			else
-				std::cout << docs.ComputeResemblance (j, i);
+				std::cout << docs.ComputeResemblance (j, i, remove_common_trigrams);
 		}
 		std::cout << std::endl;
 	}
 }
 
-void writeSimilarityTable (DocumentList & docs) 
+void writeSimilarityTable (DocumentList & docs, bool remove_common_trigrams) 
 {
 	// output the data
 	std::cout << "Number of documents: " << docs.Size () << std::endl;
 	std::cout << "Number of distinct trigrams: " << docs.GetTotalTrigramCount () << std::endl;
+  if (remove_common_trigrams)
+  {
+    std::cout << "Similarity measure removes trigrams common to other files" << std::endl;
+  }
 	for (int i=0; i<docs.Size(); ++i)
 		for (int j=i+1; j<docs.Size(); ++j)
 		{
@@ -182,17 +182,17 @@ void writeSimilarityTable (DocumentList & docs)
 				std::cout 
 					<< docs[i]->GetPathname () << " ; "
 					<< docs[j]->GetPathname () << " ; "
-					<< docs.CountMatches (i, j) << " ; "
-					<< docs.CountTrigrams (i) << " ; " 
-					<< docs.CountTrigrams (j) << " ; "
-					<< docs.ComputeResemblance (i, j)
+					<< docs.CountMatches (i, j, remove_common_trigrams) << " ; "
+					<< docs.CountTrigrams (i, remove_common_trigrams) << " ; " 
+					<< docs.CountTrigrams (j, remove_common_trigrams) << " ; "
+					<< docs.ComputeResemblance (i, j, remove_common_trigrams)
 					<< std::endl;
 			}
 		}
 }
 
 // Write the data as an HTML page 
-void writeHtmlSimilarityTable (wxString & folder, DocumentList & docs)
+void writeHtmlSimilarityTable (wxString & folder, DocumentList & docs, bool remove_common_trigrams)
 {
 	// create a set of indices, sorted, so table can be displayed in similarity order
 	std::vector<int> document1;
@@ -214,7 +214,7 @@ void writeHtmlSimilarityTable (wxString & folder, DocumentList & docs)
 		sorted_indices.push_back (i);
 	}
 	sort (sorted_indices.begin (), sorted_indices.end (), 
-			docs.GetSimilarityComparer (&document1, &document2));
+			docs.GetSimilarityComparer (&document1, &document2, remove_common_trigrams));
 	
 	std::cout << "<html><body>" << std::endl;
 	std::cout << "<h1>Ferret: Table of Comparisons</h1>";
@@ -311,6 +311,7 @@ bool FerretApp::OnInit ()
 		wxString definition_file = wxT("");	// string to hold path to definition file
 		wxString stored_data = wxT("");		// string to hold path to stored data
 		wxString upload_dir = wxT("");		// string to hold path to upload_dir, for html-table
+    bool remove_common_trigrams = false; // flag to change type of similarity measure used
 
 		// work through command options, leaving filenames_start pointing at next argument
 		while (isCommandOption (argv[filenames_start]) && filenames_start < argc)
@@ -335,6 +336,11 @@ bool FerretApp::OnInit ()
 				report_type = ALL_COMPARISONS;
 				filenames_start += 1;
 			}
+      else if (isRemoveCommonTrigramsOption (argv[filenames_start]))
+      {
+        remove_common_trigrams = true;
+        filenames_start += 1;
+      }
 			else if (isHtmlTableOption (argv[filenames_start]))
 			{
 				report_type = HTML_TABLE;
@@ -386,7 +392,8 @@ bool FerretApp::OnInit ()
 					argv[filenames_start], 
 					argv[filenames_start+1],
 				        argv[filenames_start+2],	
-					report_type
+					report_type,
+          remove_common_trigrams
 					);
 			return false;
 		}
@@ -447,15 +454,15 @@ bool FerretApp::OnInit ()
 			}
 			else if (report_type == ALL_COMPARISONS) 
 			{
-				writeAllComparisons (docs);
+				writeAllComparisons (docs, remove_common_trigrams);
 			}
 			else if (report_type == DATA_TABLE)
 			{
-				writeSimilarityTable (docs);
+				writeSimilarityTable (docs, remove_common_trigrams);
 			}
 			else if (report_type == HTML_TABLE)
 			{
-				writeHtmlSimilarityTable (upload_dir, docs);
+				writeHtmlSimilarityTable (upload_dir, docs, remove_common_trigrams);
 			}
 			// optionally save out the document table
 			if (!stored_data.IsEmpty ())

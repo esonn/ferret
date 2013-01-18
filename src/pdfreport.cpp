@@ -60,7 +60,9 @@ void PdfTable::PrintList (wxString title, wxSortedArrayString list)
 }
 
 SaveTableThread::SaveTableThread (wxString save_report_path, DocumentList & doclist, DocumentListCtrl & resObs)
-	: _save_report_path (save_report_path), _documentlist (doclist), _resemblanceObserver (resObs)
+	: _save_report_path (save_report_path), 
+  _documentlist (doclist), 
+  _resemblanceObserver (resObs)
 {}
 
 void * SaveTableThread::Entry ()
@@ -78,6 +80,11 @@ void * SaveTableThread::Entry ()
 	pdf.Cell (50);
 	pdf.Cell (50, 10, wxT("Table of Similarity Scores from Ferret"), 
 			0, 1, wxPDF_ALIGN_CENTER);
+  if (_resemblanceObserver.RemoveCommonTrigramsSet ())
+  {
+    pdf.Cell (50, 10, wxT("(Pairwise similarity ignores trigrams in common with other documents)"),
+        0, 1, wxPDF_ALIGN_CENTER);
+  }
 	pdf.SetFont (_T("Arial"), _T(""), 11);
 	pdf.PrintLine (wxString::Format(wxT("Number of documents compared: %d"),
 				_documentlist.Size()));
@@ -124,8 +131,8 @@ void PdfDocumentComparison::Footer()
 			0, 0, wxPDF_ALIGN_RIGHT);
 }
 
-PdfReport::PdfReport (DocumentList & doclist)
-	: OutputReport (doclist)
+PdfReport::PdfReport (DocumentList & doclist, bool unique)
+	: OutputReport (doclist, unique)
 {
 }
 
@@ -145,18 +152,22 @@ void PdfReport::WritePdfReport (wxString save_report_path, int document1, int do
 	PrintLine (wxString::Format (wxT("Document 2 source: %s"),
 				_doclist[document2]->GetOriginalPathname().c_str()));
 	PrintLine (wxString::Format (wxT("Number of trigrams in Document 1: %d"),
-				_doclist.CountTrigrams (document1)));
+				_doclist.CountTrigrams (document1, _unique)));
 	PrintLine (wxString::Format (wxT("Number of trigrams in Document 2: %d"),
-				_doclist.CountTrigrams (document2)));
+				_doclist.CountTrigrams (document2, _unique)));
 	PrintLine (wxString::Format (wxT("Number of common trigrams: %d"),
-				_doclist.CountMatches (document1, document2)));
+				_doclist.CountMatches (document1, document2, _unique)));
 	PrintLine (wxString::Format (wxT("Similarity measure: %f"),
-				_doclist.ComputeResemblance (document1, document2)));
+				_doclist.ComputeResemblance (document1, document2, _unique)));
 	PrintLine (wxString::Format (wxT("Containment of Document 1 in Document 2: %f"),
-				_doclist.ComputeContainment (document1, document2)));
+				_doclist.ComputeContainment (document1, document2, _unique)));
 	PrintLine (wxString::Format (wxT("Containment of Document 2 in Document 1: %f"),
-				_doclist.ComputeContainment (document2, document1)));
+				_doclist.ComputeContainment (document2, document1, _unique)));
 	_pdf.Ln();
+  if (_unique)
+  {
+    PrintLine (wxT("(Pairwise similarity ignores trigrams in common with other documents)"));
+  }
 	PrintLine (wxT("(Text highlighted in bold/blue is duplicated in the two documents)"));
 	// do documents
 	PrintDocument (1, document1, document2);

@@ -15,7 +15,7 @@
 class XmlReport : public OutputReport
 {
 	public:
-		XmlReport (DocumentList & doclist);
+		XmlReport (DocumentList & doclist, bool unique);
 		void WriteXmlReport (wxString save_report_path, int doc1, int doc2);
 	private:
 		void WriteDocumentHeader (int source_doc, int target_doc);

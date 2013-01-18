@@ -1,7 +1,7 @@
 #include "outputreport.h"
 
-OutputReport::OutputReport (DocumentList & doclist)
-	: _doclist (doclist)
+OutputReport::OutputReport (DocumentList & doclist, bool unique)
+	: _doclist (doclist), _unique (unique)
 {
 }
 
@@ -37,11 +37,16 @@ void OutputReport::WriteDocument (int doc1, int doc2)
 					document1->GetToken (1),
 					document1->GetToken (2),
 					doc1,
-					doc2))
+					doc2,
+          _unique
+          ))
 		{
 			if (!insideblock)
 			{
 				if (lastwritten > 0) EndBlock ();
+        // write any unwritten text up to start of this block
+        WriteString (txt.Mid (lastwritten, document1->GetTrigramStart()-lastwritten));
+        lastwritten = document1->GetTrigramStart ();
 				StartCopiedBlock ();
 				insideblock = true;
 			}
@@ -71,8 +76,7 @@ void OutputReport::WriteDocument (int doc1, int doc2)
 			}
 		}
 	}
-	// TODO: Check if this is going to the end of the document or not.
-	if (lastwritten < document1->GetTrigramEnd ())
+	if (lastwritten < txt.length ())
 	{
 		if (insideblock)
 		{
@@ -80,7 +84,7 @@ void OutputReport::WriteDocument (int doc1, int doc2)
 			insideblock = false;
 			StartNormalBlock ();
 		}
-		WriteString (txt.Mid (lastwritten, document1->GetTrigramEnd() - lastwritten));
+		WriteString (txt.Mid (lastwritten, txt.length () - lastwritten));
 	}
 	EndBlock ();
 	WriteDocumentFooter ();

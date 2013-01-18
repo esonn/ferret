@@ -46,9 +46,11 @@ class Document
 		void SetGroupId (int id);
 		// information about trigrams in document
 		int GetTrigramCount () const;
+    int GetUniqueTrigramCount () const;
 		void SetTrigramCount (int count);
 		void ResetTrigramCount ();
 		void IncrementTrigramCount ();
+    void IncrementUniqueTrigramCount ();
 		// following methods used to start, read and end processing of trigrams
 		bool StartInput (TokenSet & tokenset);
 		bool StartInput (wxInputStream & input, TokenSet & tokenset);
@@ -88,13 +90,14 @@ class Document
 		wxString	  _pathname; 		// -- [converted] source for this document
 		wxString	  _original_pathname;   // -- original source for this document
 		wxString 	  _name;		// -- filename (without path)
-		int 		  _num_trigrams;
+		int 		    _num_trigrams;
+    int         _num_unique_trigrams;
 		wxFile 		* _fb;
 		wxInputStream	* _cin;
 		TokenReader 	* _token_input; // this is a pointer, because initialised separately
 		std::size_t	  _current_tuple[3];
 		std::size_t	  _current_start[3];
-		int		  _group_id;	// an index number indicating this document's group
+		int		      _group_id;	// an index number indicating this document's group
 };
 
 #endif

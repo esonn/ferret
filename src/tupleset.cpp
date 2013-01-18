@@ -46,9 +46,10 @@ bool TupleSet::AddDocument (std::size_t token_0, std::size_t token_1, std::size_
 	return false;
 }
 
-bool TupleSet::IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2)
+bool TupleSet::IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique)
 {
 	std::vector<int> fvector = GetDocumentsForTuple (t0, t1, t2);
+  if (unique && fvector.size () != 2) return false;
 	bool has_doc1 = false;
 	bool has_doc2 = false;
 	for (int i=0, n=fvector.size(); i<n; ++i)
@@ -59,13 +60,13 @@ bool TupleSet::IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, 
 	return ( has_doc1 && has_doc2 );
 }
 
-wxSortedArrayString TupleSet::CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset)
+wxSortedArrayString TupleSet::CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset, bool unique)
 {
 	wxSortedArrayString tuples;
 	for (Begin (); HasMore (); GetNext ())
 	{
 		if (IsMatchingTuple (GetToken (0), GetToken (1), GetToken (2), 
-					doc1, doc2))
+					doc1, doc2, unique))
 		{
 			tuples.Add (GetStringForCurrentTuple (tokenset));
 		}

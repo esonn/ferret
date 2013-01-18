@@ -17,6 +17,17 @@
 #include "tupleset.h"
 #include "document.h"
 
+/** Pair used in matches - 
+ * keeps a count of number of matches where only A & B are present, 
+ * and of all trigrams that A & B occur in.
+ */
+class MatchPair
+{
+  public:
+    int common;
+    int unique;
+};
+
 /** DocumentList maintains a list of documents, a TokenSet of identified Tokens and 
   *    a TupleSet, which maps from sequences of three tokens to lists of documents 
   *    in which the trigrams were found.  
@@ -28,15 +39,17 @@
 class DocumentList
 {
 	struct similaritycmp { // structure for sorting indices to document by similarity
+    similaritycmp (bool unique): _unique (unique) {}
 		static DocumentList * doclist;
 		static std::vector<int> * document1;
 		static std::vector<int> * document2;
+    bool _unique;
 
 		bool operator()(int x, int y) const 
 		{
-			return (doclist->ComputeResemblance((*document1)[x], (*document2)[x])
+			return (doclist->ComputeResemblance((*document1)[x], (*document2)[x], _unique)
 				>
-				doclist->ComputeResemblance((*document1)[y], (*document2)[y]));
+				doclist->ComputeResemblance((*document1)[y], (*document2)[y], _unique));
 		}
 	};
 	public:
@@ -61,18 +74,18 @@ class DocumentList
 		void ClearSimilarities ();
 		void ComputeSimilarities ();
 		int GetTotalTrigramCount ();
-		int CountTrigrams (int doc_i);
-		int CountMatches (int doc_i, int doc_j);
-		float ComputeResemblance (int doc_i, int doc_j);
-		float ComputeContainment (int doc_i, int doc_j);
+		int CountTrigrams (int doc_i, bool unique=false);
+		int CountMatches (int doc_i, int doc_j, bool unique=false);
+		float ComputeResemblance (int doc_i, int doc_j, bool unique=false);
+		float ComputeContainment (int doc_i, int doc_j, bool unique=false);
 		// check if given trigram is in both the indexed documents
-		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2);
+		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique=false);
 		// convert given trigram into a string
 		wxString MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2);
 		// collect all the matching trigrams in the two documents into a vector of strings
-		wxSortedArrayString CollectMatchingTrigrams (int doc1, int doc2);
+		wxSortedArrayString CollectMatchingTrigrams (int doc1, int doc2, bool unique=false);
 		// for sorting pairs of indices
-		struct similaritycmp GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2);
+		struct similaritycmp GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique);
 		// for storing/retrieving list of documents and token/tuple definitions
 		void SaveDocumentList (wxString path);
 		bool RetrieveDocumentList (wxString path);
@@ -85,8 +98,8 @@ class DocumentList
 		std::vector<Document *>	_documents;
 		TokenSet		_token_set;
 		TupleSet		_tuple_set;
-		std::vector<int>	_matches;
-		int			_last_group_id;
+		std::vector<MatchPair *>	_matches;
+		int			    _last_group_id;
 };
 
 #endif

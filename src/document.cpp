@@ -4,6 +4,7 @@ Document::Document (wxString pathname, int id)
 	: _pathname (pathname),
 	  _original_pathname (pathname),
 	  _num_trigrams (0),
+    _num_unique_trigrams (0),
 	  _group_id (id)
 {
 	wxFileName filename (pathname);
@@ -15,6 +16,7 @@ Document::Document (Document * document)
 	  _original_pathname (document->_original_pathname),
 	  _name (document->_name),
 	  _num_trigrams (0),
+    _num_unique_trigrams (0),
 	  _group_id (document->_group_id)
 {}
 
@@ -66,6 +68,11 @@ int Document::GetTrigramCount () const
 	return _num_trigrams;
 }
 
+int Document::GetUniqueTrigramCount () const
+{
+  return _num_unique_trigrams;
+}
+
 // WARNING: This method should only be used when document definitions are 
 // loaded from a file.
 void Document::SetTrigramCount (int count)
@@ -81,6 +88,11 @@ void Document::ResetTrigramCount ()
 void Document::IncrementTrigramCount ()
 {
 	_num_trigrams += 1;
+}
+
+void Document::IncrementUniqueTrigramCount ()
+{
+  _num_unique_trigrams += 1;
 }
 
 // Start input from the file referred to by this document

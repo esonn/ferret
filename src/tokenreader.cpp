@@ -87,14 +87,25 @@ bool WordReader::ReadToken ()
 
 bool LispCodeReader::ReadToken ()
 {
-	if (_done) return false;
-	// step to first non-whitespace character
-	do
-	{
-		_look = _input.GetC ();
-		_position++;
-	}
-	while (std::isspace (_look) && _input.CanRead ());
+  if (_done) return false;
+  // step to first non-whitespace character
+  do
+  {
+    _look = _input.GetC ();
+    _position++;
+    // check for comment start, and skip to end of line if found
+    if (_look == ';')
+    {
+      do
+      {
+        _look = _input.GetC ();
+        _position++;
+      }
+      while (_look != '\n' && _input.CanRead ());
+    }
+  }
+  while (std::isspace (_look) && _input.CanRead ());
+
 	// check for finished
 	if (!_input.CanRead ())
 	{

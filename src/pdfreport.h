@@ -51,7 +51,7 @@ class PdfDocumentComparison : public wxPdfDocument
 class PdfReport : public OutputReport
 {
 	public:
-		PdfReport (DocumentList & doclist);
+		PdfReport (DocumentList & doclist, bool unique);
 		void WritePdfReport (wxString save_report_path, int document1, int document2);
 	private:
 		void DocumentTitle (int num, const wxString& label);

@@ -38,7 +38,8 @@ enum { 	ID_RANK_1 = wxID_HIGHEST + 1,
 	ID_RANK_R,
 	ID_SAVE_REPORT,
 	ID_CREATE_REPORT,
-	ID_DISPLAY_TEXTS
+	ID_DISPLAY_TEXTS,
+  ID_REMOVE_COMMON
 };
 
 // *** helper functions
@@ -66,31 +67,35 @@ class DocumentListCtrl: public wxListCtrl
 			: wxListCtrl (parent, wxID_ANY,
 					wxDefaultPosition, wxDefaultSize,
 					wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_VIRTUAL | wxSIMPLE_BORDER ),
-			  _ferretparent (ferretparent)
+			  _ferretparent (ferretparent),
+        _remove_common_trigrams (false)
 		{}
 		void UpdatedDocumentList ();
 		void SelectFirstItem ();
+    void SetSimilarityType (bool removeCommonTrigrams);
 		void SortOnDocument1 ();
 		void SortOnDocument2 ();
-		void SortOnResemblance ();
+		void SortOnResemblance (bool force_sort = false);
 		wxString OnGetItemText (long item, long column) const;
 		void OnListItemActivated (wxListEvent & event);
 		void ShowSelectedItem ();
-		void SaveReportFor (int document1, int document2);
+		void SaveReportFor (int document1, int document2, bool unique);
 		void SaveSelectedItem ();
 		void OnSortColumn (wxListEvent & event);
 		int GetNumberItems () const;
 		wxString GetPathname (int i) const;
 		wxString GetName (int i) const;
+    bool RemoveCommonTrigramsSet () const;
 	private:
-		void SortOnDocument (int num_doc);
+		void SortOnDocument (int num_doc, bool force_sort = false);
 		void ShowItem (long item_number);
 		DECLARE_EVENT_TABLE()
 		ComparisonTableView 	* _ferretparent;
 		std::vector<int> _document1;
 		std::vector<int> _document2;
 		std::vector<int> _sortedIndices;
-		Sort _lastsort;
+		Sort         _lastsort;
+    bool        _remove_common_trigrams;
 };
 
 // The ComparisonTableView displays the list of compared document pairs, allowing the user to 
@@ -98,7 +103,7 @@ class DocumentListCtrl: public wxListCtrl
 class ComparisonTableView: public wxFrame
 {
 	public:
-		ComparisonTableView ();
+    ComparisonTableView ();
 		void OnRank1   	   (wxCommandEvent & event);
 		void OnRank2   	   (wxCommandEvent & event);
 		void OnRank3   	   (wxCommandEvent & event);
@@ -107,9 +112,10 @@ class ComparisonTableView: public wxFrame
 		void OnHelp   	   (wxCommandEvent & event);
 		void OnSaveReport  (wxCommandEvent & event);
 		void OnQuit        (wxCommandEvent & event);
+    void OnCheckRemoveCommon (wxCommandEvent & event);
 		void OnClose (wxCloseEvent & event);
 		void SetDocumentList (DocumentList & documentlist);
-		void SaveReportFor (int document1, int document2);
+		void SaveReportFor (int document1, int document2, bool unique);
 		wxString GetName (int document) const;
 		DocumentList & GetDocumentList ()
 		{ 

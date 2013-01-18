@@ -182,7 +182,7 @@ void DocumentList::ClearSimilarities ()
 {
 	for (int i=0; i < _documents.size() * _documents.size(); ++i)
 	{
-		_matches.push_back (0);
+		_matches.push_back (new MatchPair());
 	}
 }
 
@@ -192,6 +192,13 @@ void DocumentList::ComputeSimilarities ()
 	for (_tuple_set.Begin (); _tuple_set.HasMore (); _tuple_set.GetNext ())
 	{
 		const std::vector<int> & fvector = _tuple_set.GetDocumentsForCurrentTuple ();
+    // if fvector is only size 1, then that tuple is unique to the document
+    // so keep track of the number of unique tuples
+    if (fvector.size () == 1) 
+    {
+      _documents[fvector[0]]->IncrementUniqueTrigramCount ();
+    }
+
 		// take each pair of documents in the vector, and add one to matches
 		for (unsigned int fi = 0, n = fvector.size (); fi < n; ++fi)
 		{
@@ -201,7 +208,11 @@ void DocumentList::ComputeSimilarities ()
 				int doc1 = fvector[(fi <= fj ? fi : fj)];
 				int doc2 = fvector[(fi <= fj ? fj : fi)];
 				assert (doc1 * _documents.size() + doc2 < _matches.size());
-				_matches[doc1 * _documents.size() + doc2]++;
+				_matches[doc1 * _documents.size() + doc2]->common += 1;
+        if (fvector.size () == 2) 
+        {
+          _matches[doc1 * _documents.size() + doc2]->unique += 1;
+        }
 			}
 		}
 
@@ -213,37 +224,54 @@ int DocumentList::GetTotalTrigramCount ()
 	return _tuple_set.Size ();
 }
 
-int DocumentList::CountTrigrams (int doc_i) 
+// return a count of the trigrams in document i
+// use 'unique count' if unique is set,
+// else use 'total count'
+int DocumentList::CountTrigrams (int doc_i, bool unique) 
 {
-	return _documents[doc_i]->GetTrigramCount ();
+  if (unique)
+  {
+    return _documents[doc_i]->GetUniqueTrigramCount ();
+  }
+  else
+  {
+  	return _documents[doc_i]->GetTrigramCount ();
+  }
 }
 
-int DocumentList::CountMatches (int doc_i, int doc_j)
+int DocumentList::CountMatches (int doc_i, int doc_j, bool unique)
 {
 	assert (doc_j > doc_i); // _matches is only completed from one side, with doc_j > doc_i
 	assert ((doc_i * _documents.size() + doc_j) < _matches.size());
-	return _matches[doc_i * _documents.size() + doc_j];
+  if (unique)
+  {
+    return _matches[doc_i * _documents.size() + doc_j]->unique;
+  }
+  else
+  {
+	  return _matches[doc_i * _documents.size() + doc_j]->common;
+  }
 }
 
-float DocumentList::ComputeResemblance (int doc_i, int doc_j)
+float DocumentList::ComputeResemblance (int doc_i, int doc_j, bool unique)
 {
-	float num_matches = (float)CountMatches (doc_i, doc_j);
-	float total_trigrams = (float)(CountTrigrams (doc_i) + CountTrigrams (doc_j) - CountMatches (doc_i, doc_j));
+	float num_matches = (float)CountMatches (doc_i, doc_j, unique);
+	float total_trigrams = (float)(CountTrigrams (doc_i, unique) + CountTrigrams (doc_j, unique) - CountMatches (doc_i, doc_j, unique));
 	if (total_trigrams == 0.0) return 0.0; // check for divide by zero
 	return num_matches/total_trigrams;
 }
 
-float DocumentList::ComputeContainment (int doc_i, int doc_j)
+float DocumentList::ComputeContainment (int doc_i, int doc_j, bool unique)
 {
-	float num_matches = (float)(doc_j > doc_i ? CountMatches (doc_i, doc_j) : CountMatches (doc_j, doc_i));
-	float target_trigrams = (float)(CountTrigrams (doc_j));
+	float num_matches = (float)(doc_j > doc_i ? CountMatches (doc_i, doc_j, unique) : CountMatches (doc_j, doc_i, unique));
+	float target_trigrams = (float)(CountTrigrams (doc_j, unique));
 	if (target_trigrams == 0.0) return 0.0; // check for divide by zero
 	return num_matches/target_trigrams;
 }
 
-bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2)
+bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique)
 {
-	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2);
+	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2, unique);
 }
 
 wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2)
@@ -256,9 +284,9 @@ wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::s
 	return tuple;
 }
 
-wxSortedArrayString DocumentList::CollectMatchingTrigrams (int doc1, int doc2) 
+wxSortedArrayString DocumentList::CollectMatchingTrigrams (int doc1, int doc2, bool unique) 
 {
-	return _tuple_set.CollectMatchingTuples (doc1, doc2, _token_set);
+	return _tuple_set.CollectMatchingTuples (doc1, doc2, _token_set, unique);
 }
 
 // make names of comparison structure visible
@@ -266,9 +294,9 @@ DocumentList * DocumentList::similaritycmp::doclist;
 std::vector<int> * DocumentList::similaritycmp::document1;
 std::vector<int> * DocumentList::similaritycmp::document2;
 
-struct DocumentList::similaritycmp DocumentList::GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2)
+struct DocumentList::similaritycmp DocumentList::GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique)
 {
-	similaritycmp comparer;
+	similaritycmp comparer (unique);
 	comparer.doclist = this;
 	comparer.document1 = document1;
 	comparer.document2 = document2;

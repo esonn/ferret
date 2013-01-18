@@ -26,7 +26,7 @@ class DocumentView: public wxPanel
 {
 	public:
 		DocumentView (wxWindow * parent, ComparisonTableView * ferretparent, 
-				int main_document, int compared_document);
+				int main_document, int compared_document, bool unique);
 		void LoadDocument ();
 		void AddTupleStart (wxString tuple, int start, int end);
 		void StartTupleSearch (wxString tuple);
@@ -48,6 +48,7 @@ class DocumentView: public wxPanel
 		std::vector<int>	  _search_starts;
 		std::vector<int>	  _search_ends;
 		int			  _search_posn;
+    bool      _unique; // display unique trigrams only
 		DECLARE_EVENT_TABLE()
 };
 
@@ -55,7 +56,7 @@ class DocumentView: public wxPanel
 class TextctrlReport : public OutputReport
 {
 	public:
-		TextctrlReport (DocumentList & doclist, DocumentView * view);
+		TextctrlReport (DocumentList & doclist, DocumentView * view, bool unique);
 		void WriteReport (wxTextCtrl * text, int doc1, int doc2);
 	private:
 		void ProcessTrigram (wxString trigram, int start, int end);
@@ -90,7 +91,7 @@ class TrigramList: public wxListCtrl
 class DocumentComparisonView: public wxFrame
 {
 	public:
-		DocumentComparisonView (ComparisonTableView * parent, wxString title, int document1, int document2);
+		DocumentComparisonView (ComparisonTableView * parent, wxString title, int document1, int document2, bool unique);
 		~DocumentComparisonView ();
 		void LoadDocuments ();
 		wxString GetTuple (long item);
@@ -104,6 +105,7 @@ class DocumentComparisonView: public wxFrame
 		DocumentView		* _document2_view;
 		int			  _document1;
 		int			  _document2;
+    bool      _unique;
 		ComparisonTableView	* _ferretparent;
 		TrigramList		* _trigramList;
 		wxSortedArrayString	  _matchingtrigrams;

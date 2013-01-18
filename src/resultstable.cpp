@@ -86,11 +86,26 @@ void DocumentListCtrl::SelectFirstItem ()
 	}
 }
 
-void DocumentListCtrl::SortOnDocument (int doc_num)
+// toggle the type of displayed similarity measure
+// false : use all trigrams in comparison
+// true  : only use trigrams uniquely within the two documents
+void DocumentListCtrl::SetSimilarityType (bool removeCommonTrigrams)
+{
+  _remove_common_trigrams = removeCommonTrigrams;
+  // repeat the last used sort
+  switch (_lastsort)
+  {
+    case sortDoc1: SortOnDocument (0, true); break;
+    case sortDoc2: SortOnDocument (1, true); break;
+    case sortResemblance: SortOnResemblance (true); break;
+  }
+}
+
+void DocumentListCtrl::SortOnDocument (int doc_num, bool force_sort)
 {
 	// just return if last sort is re-requested
-	if (doc_num == 0 && _lastsort == sortDoc1) return;
-	if (doc_num == 1 && _lastsort == sortDoc2) return;
+	if (doc_num == 0 && _lastsort == sortDoc1 && !force_sort) return;
+	if (doc_num == 1 && _lastsort == sortDoc2 && !force_sort) return;
 	// store this sort
 	if (doc_num == 0) 
 		_lastsort = sortDoc1;
@@ -160,9 +175,9 @@ void DocumentListCtrl::SortOnDocument2 ()
 	_ferretparent->SetStatusText (wxT("Rearranged table by second document"), 0);
 }
 
-void DocumentListCtrl::SortOnResemblance ()
+void DocumentListCtrl::SortOnResemblance (bool force_sort)
 {
-	if (_lastsort == sortResemblance) return;
+	if (_lastsort == sortResemblance && !force_sort) return;
 	_lastsort = sortResemblance;
 	// get current selected item
 	long item_number = GetNextItem (-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
@@ -177,7 +192,7 @@ void DocumentListCtrl::SortOnResemblance ()
 	}
 	
 	std::sort (newIndices.begin(), newIndices.end(), 
-			_ferretparent->GetDocumentList().GetSimilarityComparer (&_document1, &_document2));
+			_ferretparent->GetDocumentList().GetSimilarityComparer (&_document1, &_document2, _remove_common_trigrams));
 
 	_sortedIndices = newIndices;
 	RefreshItems (0, _sortedIndices.size()-1);
@@ -220,7 +235,7 @@ wxString DocumentListCtrl::OnGetItemText (long item, long column) const
 		else // if (column == 2)
 		{
 			return wxString::Format(wxT("%f"), 
-					_ferretparent->GetDocumentList().ComputeResemblance (doc1, doc2));
+					_ferretparent->GetDocumentList().ComputeResemblance (doc1, doc2, _remove_common_trigrams));
 		}
 	}
 	else
@@ -239,7 +254,7 @@ void DocumentListCtrl::ShowItem (long item_number)
 	wxString title = wxString::Format(wxT("Ferret: Analysis of copying between %s and %s"), 
 			name1.c_str(), name2.c_str());
 	DocumentComparisonView * view = new DocumentComparisonView (_ferretparent, title, 
-			_document1[index], _document2[index]);
+			_document1[index], _document2[index], _remove_common_trigrams);
 	view->Show (true);
 	view->LoadDocuments ();
 }
@@ -259,16 +274,16 @@ void DocumentListCtrl::ShowSelectedItem ()
 	}
 }
 
-void ComparisonTableView::SaveReportFor (int document1, int document2)
+void ComparisonTableView::SaveReportFor (int document1, int document2, bool unique)
 {
-	_resemblanceObserver->SaveReportFor (document1, document2);
+	_resemblanceObserver->SaveReportFor (document1, document2, unique);
 }
 
 // Save report of document comparison
 // -- input is index of documents to compare
 // -- uses file dialog to locate filename and type of output
 // -- saves comparison in either .pdf or .xml format
-void DocumentListCtrl::SaveReportFor (int document1, int document2)
+void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique)
 {
   wxFileName filename1 (GetPathname (document1));
   wxFileName filename2 (GetPathname (document2));
@@ -288,13 +303,13 @@ void DocumentListCtrl::SaveReportFor (int document1, int document2)
    	if (dialog.GetFilterIndex () == 0 || (path.GetExt () == wxT("pdf")))
    	{
     	path.SetExt (wxT("pdf")); // force .pdf as extension
-    	PdfReport pdfreport (_ferretparent->GetDocumentList ());
+    	PdfReport pdfreport (_ferretparent->GetDocumentList (), unique);
     	pdfreport.WritePdfReport (path.GetFullPath (), document1, document2);
     }
     else // if (dialog.GetFilterIndex () == 1 || (path.GetExt () == wxT("xml")))
     {
       path.SetExt (wxT("xml")); // force .xml as extension
-      XmlReport xmlreport (_ferretparent->GetDocumentList ());
+      XmlReport xmlreport (_ferretparent->GetDocumentList (), unique);
       xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
     }
   }
@@ -310,7 +325,7 @@ void DocumentListCtrl::SaveSelectedItem ()
 	long index = _sortedIndices[item_number];
 	int document1 = _document1[index];
 	int document2 = _document2[index];
-	SaveReportFor (document1, document2);
+	SaveReportFor (document1, document2, _remove_common_trigrams);
 }
 
 // Called when user clicks top of table
@@ -351,6 +366,11 @@ wxString DocumentListCtrl::GetName (int i) const
 	return _ferretparent->GetDocumentList()[i]->GetName ();
 }
 
+bool DocumentListCtrl::RemoveCommonTrigramsSet () const
+{
+  return _remove_common_trigrams;
+}
+
 BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_RANK_1, ComparisonTableView::OnRank1)
 	EVT_BUTTON(ID_RANK_2, ComparisonTableView::OnRank2)
@@ -358,6 +378,7 @@ BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_SAVE_REPORT, ComparisonTableView::OnSaveReport)
 	EVT_BUTTON(ID_DISPLAY_TEXTS, ComparisonTableView::OnDisplayTexts)
 	EVT_BUTTON(ID_CREATE_REPORT, ComparisonTableView::OnCreateReport)
+  EVT_CHECKBOX(ID_REMOVE_COMMON, ComparisonTableView::OnCheckRemoveCommon)
 	EVT_BUTTON(wxID_HELP, ComparisonTableView::OnHelp)
 	EVT_BUTTON(wxID_EXIT,  ComparisonTableView::OnQuit)
 	EVT_CLOSE (ComparisonTableView::OnClose)
@@ -387,6 +408,12 @@ void ComparisonTableView::OnDisplayTexts (wxCommandEvent & WXUNUSED(event))
 void ComparisonTableView::OnCreateReport (wxCommandEvent & WXUNUSED(event))
 {
 	_resemblanceObserver->SaveSelectedItem ();
+}
+
+void ComparisonTableView::OnCheckRemoveCommon (wxCommandEvent & WXUNUSED(event))
+{
+  wxCheckBox * box = (wxCheckBox *) FindWindow (ID_REMOVE_COMMON);
+  _resemblanceObserver->SetSimilarityType (box->IsChecked ());
 }
 
 void ComparisonTableView::OnHelp (wxCommandEvent & WXUNUSED(event))
@@ -459,7 +486,7 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 
 ComparisonTableView::ComparisonTableView()
 	: wxFrame(NULL, wxID_ANY, wxT("Ferret: Table of comparisons"), 
-		wxDefaultPosition, wxSize (600, 450))
+		wxDefaultPosition, wxSize (600, 500))
 {
 	CentreOnScreen ();
 	CreateStatusBar(3);
@@ -520,7 +547,9 @@ ComparisonTableView::ComparisonTableView()
 	showSizer->Add (saveButton, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (showSizer, 0, wxGROW);
 
-
+  buttonSizer->Add (MakeCheckBox (this, ID_REMOVE_COMMON, "Remove Common Trigrams",
+      "Compute similarity only from trigrams for the two documents", false), 
+      0, wxGROW | wxALL, 5);
 	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
 	buttonSizer->Add (new wxButton (this, wxID_HELP), 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (new wxButton (this, wxID_EXIT), 0, wxGROW | wxALL, 5);

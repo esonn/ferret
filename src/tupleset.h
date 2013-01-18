@@ -51,9 +51,9 @@ class TupleSet
 		bool AddDocument (std::size_t token_0, std::size_t token_1, std::size_t token_2, 
 				int document);
 		// check if two documents share the given tuple
-		bool IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2);
+		bool IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique = false);
 		// collect and return all tuples in the two given documents
-		wxSortedArrayString CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset);
+		wxSortedArrayString CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset, bool unique = false);
 	private:
 		TripMap	_tuple_map;
 	public: // following methods and data structures are to handle an iterator on tupleset

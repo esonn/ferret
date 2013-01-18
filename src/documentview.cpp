@@ -1,7 +1,7 @@
 #include "documentview.h"
 
-TextctrlReport::TextctrlReport (DocumentList & doclist, DocumentView * view)
-	: OutputReport (doclist), _view (view)
+TextctrlReport::TextctrlReport (DocumentList & doclist, DocumentView * view, bool unique)
+	: OutputReport (doclist, unique), _view (view)
 {
 }
 
@@ -99,12 +99,13 @@ void DocumentView::OnFind (wxCommandEvent & event)
 }
 
 DocumentView::DocumentView (wxWindow * parent, ComparisonTableView * ferretparent, 
-		int main_document, int compared_document)
+		int main_document, int compared_document, bool unique)
 	: wxPanel (parent, wxID_ANY), 
 	  _ferretparent (ferretparent),
 	  _main_document (main_document), 
 	  _compared_document (compared_document),
-	  _inside_search (false)
+	  _inside_search (false),
+    _unique (unique)
 {
 	wxBoxSizer * docViewSizer = new wxBoxSizer (wxVERTICAL);
 	SetSizer (docViewSizer);
@@ -162,7 +163,7 @@ void DocumentView::LoadDocument ()
 	wxGetApp().Yield ();
 	HighlightCommonTuples ();
 #else
-	TextctrlReport textoutput (_ferretparent->GetDocumentList (), this);
+	TextctrlReport textoutput (_ferretparent->GetDocumentList (), this, _unique);
 	textoutput.WriteReport (_docObserver, _main_document, _compared_document);
 #endif
 }
@@ -231,7 +232,9 @@ void DocumentView::HighlightCommonTuples ()
 					doc1->GetToken (1),
 					doc1->GetToken (2), 
 					_main_document,
-					_compared_document))
+					_compared_document,
+          _unique
+    ))
 		{
 			// keep a record of start/end
 			wxString tuple = _ferretparent->GetDocumentList().MakeTrigramString(
@@ -243,7 +246,9 @@ void DocumentView::HighlightCommonTuples ()
 					doc1->GetTrigramEnd ());
 			// highlight the tuple
 			if (last_highlight < doc1->GetTrigramStart ())
+      {
 				last_highlight = doc1->GetTrigramStart ();
+      }
 			_docObserver->SetStyle (last_highlight, doc1->GetTrigramEnd (), attr);
 			last_highlight = doc1->GetTrigramEnd ();
 		}
@@ -259,14 +264,15 @@ BEGIN_EVENT_TABLE(DocumentComparisonView, wxFrame)
 	EVT_BUTTON (ID_CREATE_REPORT, DocumentComparisonView::OnCreateReport)
 END_EVENT_TABLE()
 
-DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wxString title, int document1, int document2)
+DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wxString title, int document1, int document2, bool unique)
 	: wxFrame((wxFrame *)parent, wxID_ANY, 
 			title,
 			wxGetApp().GetNextFramePosition (800, 550), 
 			wxSize (800, 550)),
 	  _document1 (document1),
 	  _document2 (document2),
-	  _ferretparent (parent)
+	  _ferretparent (parent),
+    _unique (unique)
 {
 	wxPanel * paneButtons = new wxPanel (this, wxID_ANY);
 	wxBoxSizer * paneButtonsSizer = new wxBoxSizer (wxVERTICAL);
@@ -282,9 +288,9 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 
 	// document views
 	_document1_view = new DocumentView (docSplitter, _ferretparent, 
-			_document1, _document2);
+			_document1, _document2, _unique);
 	_document2_view = new DocumentView (docSplitter, _ferretparent, 
-			_document2, _document1);
+			_document2, _document1, _unique);
 	
 	// -- trigram panel
 	wxPanel * trigramPanel = new wxPanel (pane, wxID_ANY);
@@ -299,7 +305,7 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	trigramLabelSizer->Add (_trigramList, 1, wxGROW | wxALL, 2);
 
 	wxString num_matches_label = wxString::Format (wxT("%d matches"),
-			_ferretparent->GetDocumentList().CountMatches(document1, document2));
+			_ferretparent->GetDocumentList().CountMatches(document1, document2, _unique));
 	trigramLabelSizer->Add (new wxStaticText (trigramPanel, wxID_ANY, num_matches_label), 
 			0, wxALIGN_CENTER | wxALL, 2);
 
@@ -319,8 +325,9 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	11,
 #endif
 	wxFONTFAMILY_SWISS, wxNORMAL, wxBOLD, false);
-	wxString label2 = wxString::Format (wxT("Similarity measure: %f"),
-			_ferretparent->GetDocumentList().ComputeResemblance(document1, document2));
+	wxString label2 = wxString::Format (wxT("Similarity measure%s: %f"),
+      (_unique ? " (no common trigrams)" : ""),
+			_ferretparent->GetDocumentList().ComputeResemblance(document1, document2, _unique));
 	wxStaticText * labeltext = new wxStaticText (buttons, wxID_ANY, label2);
 	labeltext->SetFont (boldfont);
 	buttonSizer->Add (labeltext, 0, wxALIGN_CENTER | wxALL, 2);
@@ -340,7 +347,7 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	paneButtonsSizer->Add (pane, 1, wxGROW | wxALL, 2);
 	paneButtonsSizer->Add (buttons, 0, wxGROW | wxALL, 5);
 	
-	_matchingtrigrams = _ferretparent->GetDocumentList().CollectMatchingTrigrams (document1, document2);
+	_matchingtrigrams = _ferretparent->GetDocumentList().CollectMatchingTrigrams (document1, document2, _unique);
 	
 	_trigramList->InsertColumn (0, wxT("Trigrams"));
 	_trigramList->SetItemCount (_matchingtrigrams.GetCount ());
@@ -391,7 +398,7 @@ void DocumentComparisonView::OnHelp (wxCommandEvent & WXUNUSED(event))
 
 void DocumentComparisonView::OnCreateReport (wxCommandEvent & WXUNUSED(event))
 {
-	_ferretparent->SaveReportFor (_document1, _document2);
+	_ferretparent->SaveReportFor (_document1, _document2, _unique);
 }
 
 void DocumentComparisonView::OnClose (wxCommandEvent & WXUNUSED(event))
