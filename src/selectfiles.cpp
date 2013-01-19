@@ -33,7 +33,7 @@ BEGIN_EVENT_TABLE (SelectFiles, wxFrame)
 END_EVENT_TABLE()
 	
 SelectFiles::SelectFiles ()
-	: wxFrame (NULL, wxID_ANY, wxT("Ferret: Select document filenames for comparison"),
+	: wxFrame (NULL, wxID_ANY, "Ferret: Select document filenames for comparison",
 			wxDefaultPosition, wxSize (600, 550))
 {
 	CentreOnScreen ();
@@ -47,10 +47,10 @@ SelectFiles::SelectFiles ()
 			wxGetApp().GetVersionString ());
 	heading_1->SetFont (heading_font);
 	wxStaticText * heading_2 = new wxStaticText (this, wxID_ANY,
-			wxT ("A Copy-Detection Tool"));
+			"A Copy-Detection Tool");
 	heading_2->SetFont (subheading_font);
 	wxStaticText * heading_3 = new wxStaticText (this, wxID_ANY,
-			wxT("Developed by the Plagiarism Detection Group, University of Hertfordshire"));
+			"Developed by the Plagiarism Detection Group, University of Hertfordshire");
 
 	frame_sizer->Add (heading_1, 0, wxALIGN_CENTER | wxALL, 5);
 	frame_sizer->Add (heading_2, 0, wxALIGN_CENTER | wxALL, 5);
@@ -62,17 +62,17 @@ SelectFiles::SelectFiles ()
 	//    clearing the list to start again
 	wxBoxSizer * selection_buttons_sizer = new wxBoxSizer (wxHORIZONTAL);
 	
-	selection_buttons_sizer->Add (MakeButton (this, ID_ADD_FILES,  wxT("Add Documents ..."),
-				wxT("Use a file selector to identify files containing documents for comparison")),
+	selection_buttons_sizer->Add (MakeButton (this, ID_ADD_FILES,  "Add Documents ...",
+				"Use a file selector to identify files containing documents for comparison"),
 		       	0, wxGROW | wxALL, 5);
-	selection_buttons_sizer->Add (MakeButton (this, ID_CLEAR_FILES, wxT("Clear Documents"),
-			       wxT("Remove every document filename from the list"), false),
+	selection_buttons_sizer->Add (MakeButton (this, ID_CLEAR_FILES, "Clear Documents",
+			       "Remove every document filename from the list", false),
 			0, wxGROW | wxALL, 5);
 	
 	frame_sizer->Add (selection_buttons_sizer, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	// -- list control, to hold names of selected files
-	frame_sizer->Add (MakeStaticText (this, wxT ("List of document filenames, to analyse for signs of copying:")),
+	frame_sizer->Add (MakeStaticText (this, "List of document filenames, to analyse for signs of copying:"),
 		       	0, wxTOP | wxLEFT, 5);
 
 	MyListCtrl * file_list = new MyListCtrl (this, ID_FILE_LIST);
@@ -82,15 +82,15 @@ SelectFiles::SelectFiles ()
 	wxBoxSizer * button_sizer = new wxBoxSizer (wxHORIZONTAL);
 
 	button_sizer->Add (new wxButton (this, wxID_HELP), 0, wxGROW | wxLEFT | wxRIGHT, 5);	
-	button_sizer->Add (MakeButton (this, ID_SETTINGS, wxT("Settings ..."),
-				wxT("Advanced users: Control how Ferret converts your files")), 
+	button_sizer->Add (MakeButton (this, ID_SETTINGS, "Settings ...",
+				"Advanced users: Control how Ferret converts your files"), 
 			0, wxGROW | wxLEFT | wxRIGHT, 5);
 	button_sizer->AddStretchSpacer (1);
-	button_sizer->Add (MakeButton (this, ID_RUN_FERRET, wxT("Run Ferret"),
-			wxT("Finish selecting documents, and perform comparison"), false),
+	button_sizer->Add (MakeButton (this, ID_RUN_FERRET, "Run Ferret",
+			"Finish selecting documents, and perform comparison", false),
 			0, wxGROW | wxLEFT | wxRIGHT, 5);
 #if __WXMAC__
-	button_sizer->Add (new wxStaticText (this, wxID_ANY, wxT("")), 0, wxRIGHT, 10);
+	button_sizer->Add (new wxStaticText (this, wxID_ANY, ""), 0, wxRIGHT, 10);
 #endif
 
 	frame_sizer->Add (button_sizer, 0, wxGROW | wxBOTTOM, 5);
@@ -115,9 +115,9 @@ SelectFiles::SelectFiles ()
 
 void SelectFiles::OnAdd (wxCommandEvent & WXUNUSED(event))
 {
-	wxFileDialog dialog (NULL, wxT("Select file(s) to compare"), 
+	wxFileDialog dialog (NULL, "Select file(s) to compare", 
 			wxEmptyString, wxEmptyString,
-			wxT("All Files|*|Text (*.txt)|*.txt|Word (*.doc, *.docx)|*.doc;*.docx|Rich Text Format (*.rtf)|*.rtf|pdf (*.pdf)|*.pdf|C++ (*.cpp, *.h)|*.cpp;*.h|C (*.c, *.h)|*.c;*.h|C# (*.cs)|*.cs|Clojure (*.clj)|*.clj|Groovy (*.groovy)|*.groovy|Haskell (*.hs, *.lhs)|*.hs;*.lhs|Java (*.java)|*.java|Lisp (*.lisp,*.lsp)|*.lisp;*.lsp|Prolog (*.pl)|*.pl|Python (*.py)|*.py|Racket (*.rkt)|*.rkt|Ruby (*.rb)|*.rb|Scheme (*.ss, *.scm)|*.scm;*.ss|Visual Basic (*.vb)|*.vb|Xml/Html (*.xml, *.html)|*.xml;*.html"),
+			"All Files|*|Text (*.txt)|*.txt|Word (*.doc, *.docx)|*.doc;*.docx|Rich Text Format (*.rtf)|*.rtf|pdf (*.pdf)|*.pdf|C++ (*.cpp, *.h)|*.cpp;*.h|C (*.c, *.h)|*.c;*.h|C# (*.cs)|*.cs|Clojure (*.clj)|*.clj|Groovy (*.groovy)|*.groovy|Haskell (*.hs, *.lhs)|*.hs;*.lhs|Java (*.java)|*.java|Lisp (*.lisp,*.lsp)|*.lisp;*.lsp|Prolog (*.pl)|*.pl|Python (*.py)|*.py|Racket (*.rkt)|*.rkt|Ruby (*.rb)|*.rb|Scheme (*.ss, *.scm)|*.scm;*.ss|Visual Basic (*.vb)|*.vb|Xml/Html (*.xml, *.html)|*.xml;*.html",
 			wxFD_OPEN | wxFD_CHANGE_DIR | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST );
 	if (dialog.ShowModal () == wxID_OK)
 	{
@@ -174,8 +174,8 @@ void SelectFiles::OnRun (wxCommandEvent & WXUNUSED(event))
 	}
 	else // warn that there are not enough documents and allow user to continue
 	{
-		wxMessageBox (wxT("After removing invalid document filetypes, there are not \nenough remaining to analyse.\nPlease add some more document filenames to analyse.\nIn some cases, you may want to alter the Settings\nto force Ferret to analyse different types of file."), 
-			wxT("Warning: not enough valid documents to analyse"),
+		wxMessageBox ("After removing invalid document filetypes, there are not \nenough remaining to analyse.\nPlease add some more document filenames to analyse.\nIn some cases, you may want to alter the Settings\nto force Ferret to analyse different types of file.", 
+			"Warning: not enough valid documents to analyse",
 			wxOK | wxICON_INFORMATION, this);
 	}
 }
@@ -211,29 +211,29 @@ void SelectFiles::WarnOfProblemFiles ()
 {
 	if (!wxGetApp().GetProblemFiles().IsEmpty () || !wxGetApp().GetIgnoredFiles().IsEmpty ())
 	{
-		wxString msg = wxT("Some files will not be analysed, as follows:\n\n");
+		wxString msg = "Some files will not be analysed, as follows:\n\n";
 		if (wxGetApp().GetProblemFiles().size () == 1)
 		{
-			msg += wxT("1 file was not converted\n");
+			msg += "1 file was not converted\n";
 		}
 		else if (wxGetApp().GetProblemFiles().size () > 1)
 		{
-			msg += wxString::Format(wxT("%d files were not converted\n"), 
+			msg += wxString::Format("%d files were not converted\n", 
 					wxGetApp().GetProblemFiles().size ());
 		}
 		
 		if (wxGetApp().GetIgnoredFiles().size () == 1)
 		{
-			msg += wxT("1 file was ignored as its filetype is unknown\n");
+			msg += "1 file was ignored as its filetype is unknown\n";
 		}
 		else if (wxGetApp().GetIgnoredFiles().size () > 1)
 		{
-			msg += wxString::Format(wxT("%d files were ignored, as their filetypes were unknown\n"), 
+			msg += wxString::Format("%d files were ignored, as their filetypes were unknown\n", 
 					wxGetApp().GetIgnoredFiles().size ());
 		}
 
-		msg += wxT("\nMore details of the files affected can be found in the report, which you can create from the 'Comparison' display.");
-		wxMessageBox (msg, wxT("Warning: Some files not analysed"),
+		msg += "\nMore details of the files affected can be found in the report, which you can create from the 'Comparison' display.";
+		wxMessageBox (msg, "Warning: Some files not analysed",
 				wxOK | wxICON_INFORMATION, this);
 	}
 }
@@ -244,7 +244,7 @@ void SelectFiles::CreateComparisonView ()
 	ComparisonTableView * frame = new ComparisonTableView ();
 	{
 		wxBusyCursor wait;
-		wxBusyInfo info (wxT("Please wait: computing similarities ..."), this);
+		wxBusyInfo info ("Please wait: computing similarities ...", this);
 		frame->SetDocumentList (*_document_list);
 	}
 	// tidy up, and show the Ferret table of comparisons
@@ -257,8 +257,8 @@ void SelectFiles::CreateComparisonView ()
 void SelectFiles::ReadDocuments (int start_from)
 {
 	// read the documents, using a progress dialog
-	wxProgressDialog dialog (wxT("Running Ferret"),
-			wxT("Please wait whilst documents are being analysed ..."),
+	wxProgressDialog dialog ("Running Ferret",
+			"Please wait whilst documents are being analysed ...",
 			_document_list->Size () - start_from,
 			this,
 			wxPD_CAN_ABORT |
@@ -275,8 +275,8 @@ void SelectFiles::ReadDocuments (int start_from)
 	{
 		if (!dialog.Update (i - start_from))
 		{
-			if ( wxMessageBox (wxT("Do you really want to cancel, and return to selecting files?"),
-						wxT("Cancelling the Progress Dialog"),
+			if ( wxMessageBox ("Do you really want to cancel, and return to selecting files?",
+						"Cancelling the Progress Dialog",
 						wxYES_NO | wxICON_QUESTION) == wxYES )
 			{
 				return; // abort the run
@@ -296,8 +296,8 @@ bool SelectFiles::ExtractFiles (int start_from)
 {
 	wxString extract_folder = wxGetApp().GetExtractFolder ();
 	// maintain a progress dialog
-	wxProgressDialog dialog (wxT("Preparing Documents"),
-			wxT("Please wait while extracting text and copying documents ..."),
+	wxProgressDialog dialog ("Preparing Documents",
+			"Please wait while extracting text and copying documents ...",
 			_document_list->Size () - start_from,
 			this,
 			wxPD_CAN_ABORT |
@@ -311,10 +311,10 @@ bool SelectFiles::ExtractFiles (int start_from)
 	// appropriate
 	for (int i = start_from, n = _document_list->Size (); i < n; ++i)
 	{
-		if (!dialog.Update (i - start_from, wxT("Please wait, processing file ...")))
+		if (!dialog.Update (i - start_from, "Please wait, processing file ..."))
 		{
-			if ( wxMessageBox (wxT("Do you really want to cancel, and return to extracting files?"),
-						wxT("Cancelling the Progress Dialog"),
+			if ( wxMessageBox ("Do you really want to cancel, and return to extracting files?",
+						"Cancelling the Progress Dialog",
 						wxYES_NO | wxICON_QUESTION) == wxYES )
 			{
 				return false; // abort the run
@@ -348,14 +348,14 @@ BEGIN_EVENT_TABLE (OptionSettings, wxDialog)
 END_EVENT_TABLE ()
 
 OptionSettings::OptionSettings (wxWindow * parent)
-	: wxDialog (parent, wxID_ANY, wxT("Ferret: Settings"), 
+	: wxDialog (parent, wxID_ANY, "Ferret: Settings", 
 			wxDefaultPosition, wxDefaultSize, 
-			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, wxT(""))
+			wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER, "")
 {
 	wxBoxSizer * sizer = new wxBoxSizer (wxVERTICAL);
 
 	// -- browser for folder name, and how files will be converted
-	sizer->Add (new wxStaticText (this, wxID_ANY, wxT("Destination folder for files containing extracted text:")),
+	sizer->Add (new wxStaticText (this, wxID_ANY, "Destination folder for files containing extracted text:"),
 			0, wxALIGN_LEFT | wxALL, 5);
 
 	// ---- horizontal panel
@@ -363,24 +363,24 @@ OptionSettings::OptionSettings (wxWindow * parent)
 	
 	browser_sizer->Add (new wxStaticText (this, ID_EXTRACT_DIR_NAME, wxGetApp().GetExtractFolder ()), 
 			1, wxGROW | wxALL, 5);
-	browser_sizer->Add (MakeButton (this, ID_EXTRACT_BROWSE, wxT("Browse ..."),
-				wxT("Use directory selector to choose a folder to save new files")),
+	browser_sizer->Add (MakeButton (this, ID_EXTRACT_BROWSE, "Browse ...",
+				"Use directory selector to choose a folder to save new files"),
 		       	0, wxALIGN_RIGHT | wxRIGHT, 10);
 	
 	sizer->Add (browser_sizer, 0, wxGROW);
 	
 	// -- options, for what to do, and whether to place all files
 	sizer->Add (MakeCheckBox (this, ID_COPY_ALL,
-				wxT("Copy all files to destination folder, even if not extracting text"),
-				wxT("Use when extracting to your own folder, to keep all analysed documents together"),
+				"Copy all files to destination folder, even if not extracting text",
+				"Use when extracting to your own folder, to keep all analysed documents together",
 				wxGetApp().GetCopyAll ()), 
 			0, wxALIGN_LEFT | wxLEFT | wxTOP, 5);
 	sizer->Add (MakeCheckBox (this, ID_EXTRACT_ALL, 
-				wxT("Treat all files as if they were word or rich text (rtf) documents"),
+				"Treat all files as if they were word or rich text (rtf) documents",
 			wxEmptyString, wxGetApp().GetConvertAll()),
 		       	0, wxALIGN_LEFT | wxLEFT, 5);
-	sizer->Add (MakeCheckBox (this, ID_IGNORE_UNKNOWN, wxT("Ignore unknown file types"),
-				wxT("Only analyse documents of known file type (see Help for details)"),
+	sizer->Add (MakeCheckBox (this, ID_IGNORE_UNKNOWN, "Ignore unknown file types",
+				"Only analyse documents of known file type (see Help for details)",
 				wxGetApp().GetIgnoreUnknown ()),
 			0, wxALIGN_LEFT | wxLEFT | wxBOTTOM, 5);
 
@@ -402,7 +402,7 @@ void OptionSettings::OnExtractBrowse (wxCommandEvent & WXUNUSED(event))
 void OptionSettings::OnBrowse (int dir_name_id)
 {
 	wxStaticText * path = (wxStaticText *) FindWindow (dir_name_id);
-	wxDirDialog dialog (this, wxT("Select a folder in which to place files"),
+	wxDirDialog dialog (this, "Select a folder in which to place files",
 			path->GetLabel (), wxDD_NEW_DIR_BUTTON);
 	if ((dialog.ShowModal () == wxID_OK) && wxFileName::DirExists (dialog.GetPath ()))
 	{

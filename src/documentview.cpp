@@ -138,12 +138,12 @@ DocumentView::DocumentView (wxWindow * parent, ComparisonTableView * ferretparen
 	wxBoxSizer * buttonsSizer = new wxBoxSizer (wxHORIZONTAL);
 	buttons->SetSizer (buttonsSizer);
 
-	wxString label = wxString::Format (wxT("Number of distinct trigrams: %d"),
+	wxString label = wxString::Format ("Number of distinct trigrams: %d",
 			_ferretparent->GetDocumentList().CountTrigrams (main_document));
 	buttonsSizer->Add (new wxStaticText (buttons, wxID_ANY, label), 0, wxALIGN_CENTER | wxALL, 2);
 
 	wxButton * find_button = new wxButton (buttons, wxID_FIND);
-	find_button->SetToolTip (wxT("Find next highlighted trigram"));
+	find_button->SetToolTip ("Find next highlighted trigram");
 	find_button->Disable ();
 
 	buttonsSizer->AddStretchSpacer ();
@@ -155,7 +155,7 @@ DocumentView::DocumentView (wxWindow * parent, ComparisonTableView * ferretparen
 void DocumentView::LoadDocument ()
 {
 	wxBusyCursor wait; // Note: cannot use wxWindowDisabler as messes up textctrl highlight
-	wxBusyInfo info (wxT("Loading and comparing documents, please wait ..."), this);
+	wxBusyInfo info ("Loading and comparing documents, please wait ...", this);
 
 	wxGetApp().Yield ();
 #if __WXMSW__
@@ -195,7 +195,7 @@ void DocumentView::StartTupleSearch (wxString tuple)
 	_search_starts = _trigram_starts[tuple];
 	_search_ends = _trigram_ends[tuple];
 	// and highlight the tuples
-	wxColour yellow_colour = wxTheColourDatabase->Find (wxT("YELLOW"));
+	wxColour yellow_colour = wxTheColourDatabase->Find ("YELLOW");
 	wxTextAttr yellow (*wxBLUE, yellow_colour, bold_font);
 	for (int i=0, n=_search_starts.size(); i<n; ++i)
 	{
@@ -297,14 +297,14 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	wxBoxSizer * trigramSizer = new wxBoxSizer (wxVERTICAL);
 	trigramPanel->SetSizer (trigramSizer);
 
-	wxStaticBox * trigramLabel = new wxStaticBox (trigramPanel, wxID_ANY, wxT("Matching trigrams"));
+	wxStaticBox * trigramLabel = new wxStaticBox (trigramPanel, wxID_ANY, "Matching trigrams");
 	wxStaticBoxSizer * trigramLabelSizer = new wxStaticBoxSizer (trigramLabel, wxVERTICAL);
 	trigramSizer->Add (trigramLabelSizer, 1, wxGROW | wxALL, 2);
 
 	_trigramList = new TrigramList (this, trigramPanel);
 	trigramLabelSizer->Add (_trigramList, 1, wxGROW | wxALL, 2);
 
-	wxString num_matches_label = wxString::Format (wxT("%d matches"),
+	wxString num_matches_label = wxString::Format ("%d matches",
 			_ferretparent->GetDocumentList().CountMatches(document1, document2, _unique));
 	trigramLabelSizer->Add (new wxStaticText (trigramPanel, wxID_ANY, num_matches_label), 
 			0, wxALIGN_CENTER | wxALL, 2);
@@ -325,7 +325,7 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	11,
 #endif
 	wxFONTFAMILY_SWISS, wxNORMAL, wxBOLD, false);
-	wxString label2 = wxString::Format (wxT("Similarity measure%s: %f"),
+	wxString label2 = wxString::Format ("Similarity measure%s: %f",
       (_unique ? " (no common trigrams)" : ""),
 			_ferretparent->GetDocumentList().ComputeResemblance(document1, document2, _unique));
 	wxStaticText * labeltext = new wxStaticText (buttons, wxID_ANY, label2);
@@ -335,13 +335,13 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	buttonSizer->AddStretchSpacer ();
 	buttonSizer->Add (new wxButton (buttons, wxID_HELP), 0, wxALL, 2);
 #if !__WXMAC__
-	buttonSizer->Add (MakeButton (buttons, ID_CREATE_REPORT, wxT("Save Analysis ..."),
-				wxT("Save analysis of the selected documents")),
+	buttonSizer->Add (MakeButton (buttons, ID_CREATE_REPORT, "Save Analysis ...",
+				"Save analysis of the selected documents"),
 		       	0, wxALL, 2);
 #endif
 	buttonSizer->Add (new wxButton (buttons, wxID_CLOSE), 0, wxALL, 2);
 	#if __WXMAC__
-	buttonSizer->Add (new wxStaticText (buttons, wxID_ANY, wxT("")), 0, wxRIGHT, 10);
+	buttonSizer->Add (new wxStaticText (buttons, wxID_ANY, ""), 0, wxRIGHT, 10);
 	#endif
 	
 	paneButtonsSizer->Add (pane, 1, wxGROW | wxALL, 2);
@@ -349,7 +349,7 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	
 	_matchingtrigrams = _ferretparent->GetDocumentList().CollectMatchingTrigrams (document1, document2, _unique);
 	
-	_trigramList->InsertColumn (0, wxT("Trigrams"));
+	_trigramList->InsertColumn (0, "Trigrams");
 	_trigramList->SetItemCount (_matchingtrigrams.GetCount ());
 	wxString longest_trigram;
 	for (int i=0, n=_matchingtrigrams.GetCount (); i<n; ++i)
@@ -357,7 +357,7 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 		if (_matchingtrigrams.Item(i).Len () > longest_trigram.Len ())
 			longest_trigram = _matchingtrigrams.Item (i);
 	}
-	longest_trigram += wxT("   "); // add a little extra space
+	longest_trigram += "   "; // add a little extra space
 	int trigram_width, trigram_height;
 	GetTextExtent (longest_trigram, &trigram_width, &trigram_height);
 	_trigramList->SetColumnWidth (0, trigram_width);

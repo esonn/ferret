@@ -109,10 +109,10 @@ std::vector<int> & TupleSet::GetDocumentsForCurrentTuple ()
 
 wxString TupleSet::GetStringForCurrentTuple (TokenSet & tokenset) const
 {
-	wxString tuple = wxT("");
+	wxString tuple = "";
 	tuple += tokenset.GetStringFor (_ti->first);
-	tuple += wxT(" ") + tokenset.GetStringFor (_pi->first);
-	tuple += wxT(" ") + tokenset.GetStringFor (_wi->first);
+	tuple += " " + tokenset.GetStringFor (_pi->first);
+	tuple += " " + tokenset.GetStringFor (_wi->first);
 	
 	return tuple;
 
@@ -134,13 +134,13 @@ void TupleSet::Save (wxFile & file)
 	for (Begin (); HasMore (); GetNext ())
 	{
 		const std::vector<int> indices = GetDocumentsForCurrentTuple ();
-		file.Write (wxString::Format (wxT("%d %d %d"), 
+		file.Write (wxString::Format ("%d %d %d", 
 					GetToken (0), GetToken (1), GetToken (2)));
-		file.Write (wxT(" FILES:[ "));
+		file.Write (" FILES:[ ");
 		for (int i = 0, n = indices.size (); i < n; ++i)
 		{
-			file.Write (wxString::Format (wxT("%d "), indices[i]));
+			file.Write (wxString::Format ("%d ", indices[i]));
 		}
-		file.Write (wxT("] \n"));
+		file.Write ("] \n");
 	}
 }

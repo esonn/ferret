@@ -27,7 +27,7 @@ wxCheckBox * MakeCheckBox (wxWindow * parent, int id, wxString title, wxString t
 
 wxSpinCtrl * MakeSpinCtrl (wxWindow * parent, int id, wxString tooltip, int min_value, int max_value, int start_value)
 {
-	wxSpinCtrl * value = new wxSpinCtrl (parent, id, wxString::Format(wxT("%d"), start_value),
+	wxSpinCtrl * value = new wxSpinCtrl (parent, id, wxString::Format("%d", start_value),
 				wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS,
 				min_value, max_value, start_value);
 	value->SetToolTip (tooltip);
@@ -165,13 +165,13 @@ void DocumentListCtrl::SortOnDocument (int doc_num, bool force_sort)
 void DocumentListCtrl::SortOnDocument1 ()
 {
 	SortOnDocument (0);
-	_ferretparent->SetStatusText (wxT("Rearranged table by first document"), 0);
+	_ferretparent->SetStatusText ("Rearranged table by first document", 0);
 }
 
 void DocumentListCtrl::SortOnDocument2 ()
 {
 	SortOnDocument (1);
-	_ferretparent->SetStatusText (wxT("Rearranged table by second document"), 0);
+	_ferretparent->SetStatusText ("Rearranged table by second document", 0);
 }
 
 void DocumentListCtrl::SortOnResemblance (bool force_sort)
@@ -211,7 +211,7 @@ void DocumentListCtrl::SortOnResemblance (bool force_sort)
 	}
 
 	Refresh ();
-	_ferretparent->SetStatusText (wxT("Rearranged table by similarity"), 0);
+	_ferretparent->SetStatusText ("Rearranged table by similarity", 0);
 }
 
 wxString DocumentListCtrl::OnGetItemText (long item, long column) const
@@ -233,13 +233,13 @@ wxString DocumentListCtrl::OnGetItemText (long item, long column) const
 		}
 		else // if (column == 2)
 		{
-			return wxString::Format(wxT("%f"), 
+			return wxString::Format("%f", 
 					_ferretparent->GetDocumentList().ComputeResemblance (doc1, doc2, _remove_common_trigrams));
 		}
 	}
 	else
 	{
-		return wxT("No items in document list");
+		return "No items in document list";
 	}
 }
 
@@ -250,7 +250,7 @@ void DocumentListCtrl::ShowItem (long item_number)
 	int index = _sortedIndices[item_number];
 	wxString name1 = GetName (_document1[index]);
 	wxString name2 = GetName (_document2[index]);
-	wxString title = wxString::Format(wxT("Ferret: Analysis of copying between %s and %s"), 
+	wxString title = wxString::Format("Ferret: Analysis of copying between %s and %s", 
 			name1.c_str(), name2.c_str());
 	DocumentComparisonView * view = new DocumentComparisonView (_ferretparent, title, 
 			_document1[index], _document2[index], _remove_common_trigrams);
@@ -286,28 +286,28 @@ void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique)
 {
   wxFileName filename1 (GetPathname (document1));
   wxFileName filename2 (GetPathname (document2));
-  wxString newname = wxString::Format (wxT("%s-%s"), 
+  wxString newname = wxString::Format ("%s-%s", 
       filename1.GetName().c_str(), 
       filename2.GetName().c_str());
-  wxFileDialog dialog (NULL, wxT("Create and save report"),
+  wxFileDialog dialog (NULL, "Create and save report",
       wxEmptyString,
       newname,
-      wxT("pdf|*.pdf|xml|*.xml"), 
+      "pdf|*.pdf|xml|*.xml", 
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
   if (dialog.ShowModal () == wxID_OK)
   {
     wxBusyCursor wait;
-    wxBusyInfo info (wxT("Saving comparison report, please wait ..."), this);
+    wxBusyInfo info ("Saving comparison report, please wait ...", this);
     wxFileName path (dialog.GetPath ()); 
-   	if (dialog.GetFilterIndex () == 0 || (path.GetExt () == wxT("pdf")))
+   	if (dialog.GetFilterIndex () == 0 || (path.GetExt () == "pdf"))
    	{
-    	path.SetExt (wxT("pdf")); // force .pdf as extension
+    	path.SetExt ("pdf"); // force .pdf as extension
     	PdfReport pdfreport (_ferretparent->GetDocumentList (), unique);
     	pdfreport.WritePdfReport (path.GetFullPath (), document1, document2);
     }
-    else // if (dialog.GetFilterIndex () == 1 || (path.GetExt () == wxT("xml")))
+    else // if (dialog.GetFilterIndex () == 1 || (path.GetExt () == "xml"))
     {
-      path.SetExt (wxT("xml")); // force .xml as extension
+      path.SetExt ("xml"); // force .xml as extension
       XmlReport xmlreport (_ferretparent->GetDocumentList (), unique);
       xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
     }
@@ -423,10 +423,10 @@ void ComparisonTableView::OnHelp (wxCommandEvent & WXUNUSED(event))
 
 void ComparisonTableView::OnSaveReport (wxCommandEvent & WXUNUSED(event))
 {
-	wxFileDialog dialog (NULL, wxT("Save table of comparisons and other details as a pdf report"),
+	wxFileDialog dialog (NULL, "Save table of comparisons and other details as a pdf report",
 			wxEmptyString, 
-			wxT("results-table.pdf"),
-			wxT("pdf|*.pdf"),
+			"results-table.pdf",
+			"pdf|*.pdf",
 			wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
 	if (dialog.ShowModal () == wxID_OK)
 	{
@@ -435,16 +435,16 @@ void ComparisonTableView::OnSaveReport (wxCommandEvent & WXUNUSED(event))
 		if (thread->Create () == wxTHREAD_NO_ERROR)
 		{
 			thread->Run ();
-			SetStatusText (wxT("Saved table as pdf"));
+			SetStatusText ("Saved table as pdf");
 		}
 		else
 		{
-			SetStatusText (wxT("Error in saving table as pdf"));
+			SetStatusText ("Error in saving table as pdf");
 		}
 	}
 	else
 	{
-		SetStatusText (wxT("Cancelled save table as pdf"));
+		SetStatusText ("Cancelled save table as pdf");
 	}
 }
 
@@ -493,16 +493,16 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 }
 
 ComparisonTableView::ComparisonTableView()
-	: wxFrame(NULL, wxID_ANY, wxT("Ferret: Table of comparisons"), 
+	: wxFrame(NULL, wxID_ANY, "Ferret: Table of comparisons", 
 		wxDefaultPosition, wxSize (650, 500))
 {
 	CentreOnScreen ();
 	CreateStatusBar(3);
   int widths [] = {-2, -1, -1};
 	SetStatusWidths (3, widths);
-	SetStatusText(wxT("Welcome to Ferret"), 0);
-	SetStatusText(wxT("Documents: "), 1);
-	SetStatusText(wxT("Pairs: "), 2);
+	SetStatusText("Welcome to Ferret", 0);
+	SetStatusText("Documents: ", 1);
+	SetStatusText("Pairs: ", 2);
 	
 	// set up internal widgets
 	wxBoxSizer * topsizer = new wxBoxSizer (wxHORIZONTAL);
@@ -517,13 +517,13 @@ ComparisonTableView::ComparisonTableView()
 
 	// -- insert three columns
 	wxListItem itemCol;
-	itemCol.SetText (wxT("Document 1"));
+	itemCol.SetText ("Document 1");
 	_resemblanceObserver->InsertColumn (0, itemCol);
 	_resemblanceObserver->SetColumnWidth (0, wxLIST_AUTOSIZE_USEHEADER);
-	itemCol.SetText (wxT("Document 2"));
+	itemCol.SetText ("Document 2");
 	_resemblanceObserver->InsertColumn (1, itemCol);
 	_resemblanceObserver->SetColumnWidth (1, wxLIST_AUTOSIZE_USEHEADER);
-	itemCol.SetText (wxT("Similarity"));
+	itemCol.SetText ("Similarity");
 	_resemblanceObserver->InsertColumn (2, itemCol);
 	_resemblanceObserver->SetColumnWidth (2, wxLIST_AUTOSIZE_USEHEADER);
 
@@ -531,30 +531,30 @@ ComparisonTableView::ComparisonTableView()
 	// -- note, buttons must be defined before their staticboxsizer, 
 	// else tooltips do not display
 	wxBoxSizer  * buttonSizer = new wxBoxSizer (wxVERTICAL);
-  buttonSizer->Add (MakeButton (this, ID_SAVE_REPORT, wxT("Save Report ..."),
-        wxT("Save the table of comparisons and other details")),
+  buttonSizer->Add (MakeButton (this, ID_SAVE_REPORT, "Save Report ...",
+        "Save the table of comparisons and other details"),
       0, wxGROW | wxALL, 5);
-  buttonSizer->Add (MakeButton (this, ID_UNIQUE_VIEW, wxT("Show Uniqueness"), 
-        wxT("Show number of unique trigrams per document")),
+  buttonSizer->Add (MakeButton (this, ID_UNIQUE_VIEW, "Show Uniqueness", 
+        "Show number of unique trigrams per document"),
       0, wxGROW | wxALL, 5);
 
-	wxButton * rank_1 = MakeButton (this, ID_RANK_1, wxT("Document 1"),
-				wxT("Put table into alphabetical order of first document"));
-	wxButton * rank_2 = MakeButton (this, ID_RANK_2, wxT("Document 2"),
-				wxT("Put table into alphabetical order of second document"));
-	wxButton * rank_r = MakeButton (this, ID_RANK_R, wxT("Similarity"),
-				wxT("Put table into order with most similar at top"));
-	wxStaticBoxSizer * rankSizer = new wxStaticBoxSizer (wxVERTICAL, this, wxT("Rearrange table by"));
+	wxButton * rank_1 = MakeButton (this, ID_RANK_1, "Document 1",
+				"Put table into alphabetical order of first document");
+	wxButton * rank_2 = MakeButton (this, ID_RANK_2, "Document 2",
+				"Put table into alphabetical order of second document");
+	wxButton * rank_r = MakeButton (this, ID_RANK_R, "Similarity",
+				"Put table into order with most similar at top");
+	wxStaticBoxSizer * rankSizer = new wxStaticBoxSizer (wxVERTICAL, this, "Rearrange table by");
 	rankSizer->Add (rank_1, 0, wxGROW | wxALL, 5);
 	rankSizer->Add (rank_2, 0, wxGROW | wxALL, 5);
 	rankSizer->Add (rank_r, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (rankSizer, 0, wxGROW);
 
-	wxButton * showButton = MakeButton (this, ID_DISPLAY_TEXTS, wxT("Show Analysis"),
-				wxT("Show selected documents in a separate window"));
-	wxButton * saveButton = MakeButton (this, ID_CREATE_REPORT, wxT("Save Analysis ..."),
-				wxT("Save analysis of the selected documents"));
-	wxStaticBoxSizer * showSizer = new wxStaticBoxSizer (wxVERTICAL, this, wxT("For selected pair"));
+	wxButton * showButton = MakeButton (this, ID_DISPLAY_TEXTS, "Show Analysis",
+				"Show selected documents in a separate window");
+	wxButton * saveButton = MakeButton (this, ID_CREATE_REPORT, "Save Analysis ...",
+				"Save analysis of the selected documents");
+	wxStaticBoxSizer * showSizer = new wxStaticBoxSizer (wxVERTICAL, this, "For selected pair");
 	showSizer->Add (showButton, 0, wxGROW | wxALL, 5);
 	showSizer->Add (saveButton, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (showSizer, 0, wxGROW);
@@ -592,8 +592,8 @@ void ComparisonTableView::OnClose (wxCloseEvent & WXUNUSED(event))
 void ComparisonTableView::SetDocumentList (DocumentList & documentlist)
 {
 	_documentlist = documentlist;
-	SetStatusText (wxString::Format (wxT("Documents: %d"), _documentlist.Size()), 1);
-	SetStatusText (wxString::Format (wxT("Pairs: %d"), _documentlist.NumberOfPairs()), 2);
+	SetStatusText (wxString::Format ("Documents: %d", _documentlist.Size()), 1);
+	SetStatusText (wxString::Format ("Pairs: %d", _documentlist.NumberOfPairs()), 2);
 	_documentlist.ComputeSimilarities ();
  	_resemblanceObserver->UpdatedDocumentList ();
 	_resemblanceObserver->SortOnResemblance ();

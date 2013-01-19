@@ -16,10 +16,10 @@ void OutputReport::WriteString (wxString str) {}
 void OutputReport::WriteDocument (int doc1, int doc2)
 {
 	// -- write internal text from document
-	wxFFile f (_doclist[doc1]->GetPathname (), wxT("rb"));
+	wxFFile f (_doclist[doc1]->GetPathname (), "rb");
   wxString txt;
   f.ReadAll (&txt);
-	txt.Replace (wxT("\t"), wxT("    ")); // replace tabs with 4-spaces, to ensure they show up in all outputs
+	txt.Replace ("\t", "    "); // replace tabs with 4-spaces, to ensure they show up in all outputs
 
 	// make an input stream for the read document
 	TokenSet & tokenset = _doclist.GetTokenSet ();

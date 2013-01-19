@@ -27,7 +27,7 @@ void UniqueTrigramsView::OnRankCount (wxCommandEvent & WXUNUSED(event))
 }
 
 UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentList & documentlist)
-  : wxFrame((wxFrame *)parent, wxID_ANY, wxT("Ferret: Unique Trigrams View"),
+  : wxFrame((wxFrame *)parent, wxID_ANY, "Ferret: Unique Trigrams View",
     wxGetApp().GetNextFramePosition (650, 350), 
     wxSize (650, 350)),
   _documentlist (documentlist)
@@ -35,8 +35,8 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
   CreateStatusBar (2);
   int widths [] = {-2, -1};
   SetStatusWidths (2, widths);
-  SetStatusText (wxT("Unique trigrams view"), 0);
-  SetStatusText (wxString::Format (wxT("Documents: %d"), _documentlist.Size()), 1);
+  SetStatusText ("Unique trigrams view", 0);
+  SetStatusText (wxString::Format ("Documents: %d", _documentlist.Size()), 1);
 
   // set up internal widgets
   wxBoxSizer * topsizer = new wxBoxSizer (wxHORIZONTAL);
@@ -51,21 +51,21 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
 
   // -- insert two columns
   wxListItem itemCol;
-  itemCol.SetText (wxT("Document"));
+  itemCol.SetText ("Document");
   _uniqueObserver->InsertColumn (0, itemCol);
   _uniqueObserver->SetColumnWidth (0, wxLIST_AUTOSIZE_USEHEADER);
-  itemCol.SetText (wxT("Count"));
+  itemCol.SetText ("Count");
   _uniqueObserver->InsertColumn (1, itemCol);
   _uniqueObserver->SetColumnWidth (1, wxLIST_AUTOSIZE_USEHEADER);
   _uniqueObserver->SetItemCount (_documentlist.Size ());
 
   // 2. buttons
   wxBoxSizer * buttonSizer = new wxBoxSizer (wxVERTICAL);
-	wxButton * rank_f = UMakeButton (this, ID_RANK_F, wxT("Document"),
-				wxT("Put table into alphabetical order of document"));
-	wxButton * rank_u = UMakeButton (this, ID_RANK_U, wxT("Count"),
-				wxT("Put table into order with largest unique count at top"));
-	wxStaticBoxSizer * rankSizer = new wxStaticBoxSizer (wxVERTICAL, this, wxT("Rearrange table by"));
+	wxButton * rank_f = UMakeButton (this, ID_RANK_F, "Document",
+				"Put table into alphabetical order of document");
+	wxButton * rank_u = UMakeButton (this, ID_RANK_U, "Count",
+				"Put table into order with largest unique count at top");
+	wxStaticBoxSizer * rankSizer = new wxStaticBoxSizer (wxVERTICAL, this, "Rearrange table by");
 	rankSizer->Add (rank_f, 0, wxGROW | wxALL, 5);
 	rankSizer->Add (rank_u, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (rankSizer, 0, wxGROW);
@@ -180,7 +180,7 @@ void UniqueTrigramsListCtrl::SortOnDocument ()
   std::sort (newIndices.begin(), newIndices.end (), comparer);
   _sortedIndices = newIndices;
   RefreshItems (0, _sortedIndices.size()-1);
-  _ferretparent->SetStatusText (wxT("Rearranged table by document name"), 0);
+  _ferretparent->SetStatusText ("Rearranged table by document name", 0);
 
 }
 
@@ -202,7 +202,7 @@ void UniqueTrigramsListCtrl::SortOnCount ()
 
   _sortedIndices = newIndices;
   RefreshItems (0, _sortedIndices.size()-1);
-  _ferretparent->SetStatusText (wxT("Rearranged table by uniqueness count"), 0);
+  _ferretparent->SetStatusText ("Rearranged table by uniqueness count", 0);
 }
 
 void UniqueTrigramsListCtrl::OnSortColumn (wxListEvent & event)

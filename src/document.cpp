@@ -193,22 +193,22 @@ bool Document::IsFileType (wxString extension) const
 // Test if file extension represents a pdf document
 bool Document::IsPdfType () const
 {
-	return IsFileType (wxT ("pdf"));
+	return IsFileType ("pdf");
 }
 
 // Test if file extension represents a pure text document
 bool Document::IsTxtType () const
 {
-	return IsFileType (wxT ("txt"));
+	return IsFileType ("txt");
 }
 
 // Test if file extension represents a word-processor format
 bool Document::IsWordProcessorType () const
 {
-	return 	IsFileType (wxT ("abw")) ||
-		IsFileType (wxT ("doc")) ||
-		IsFileType (wxT ("docx")) ||
-		IsFileType (wxT ("rtf"));
+	return 	IsFileType ("abw") ||
+		IsFileType ("doc") ||
+		IsFileType ("docx") ||
+		IsFileType ("rtf");
 }
 
 // Test if document should be processed using WordReader tokens.
@@ -219,62 +219,62 @@ bool Document::IsTextType () const
 
 bool Document::IsCCodeType () const
 {
-	return  IsFileType (wxT ("cpp")) ||
-		IsFileType (wxT ("c")) ||
-		IsFileType (wxT ("h"));
+	return  IsFileType ("cpp") ||
+		IsFileType ("c") ||
+		IsFileType ("h");
 }
 
 bool Document::IsCSharpCodeType () const
 {
-	return IsFileType (wxT ("cs"));
+	return IsFileType ("cs");
 }
 
 bool Document::IsHaskellCodeType () const
 {
-  return IsFileType (wxT ("hs")) || IsFileType (wxT ("lhs"));
+  return IsFileType ("hs") || IsFileType ("lhs");
 }
 
 bool Document::IsJavaCodeType () const
 {
-	return IsFileType (wxT ("java"));
+	return IsFileType ("java");
 }
 
 bool Document::IsGroovyCodeType () const
 {
-	return IsFileType (wxT ("groovy"));
+	return IsFileType ("groovy");
 }
 
 bool Document::IsVBCodeType () const
 {
-  return IsFileType (wxT ("vb"));
+  return IsFileType ("vb");
 }
 
 bool Document::IsRubyCodeType () const
 {
-  return IsFileType (wxT ("rb"));
+  return IsFileType ("rb");
 }
 
 bool Document::IsPrologCodeType () const
 {
-  return IsFileType (wxT ("pl"));
+  return IsFileType ("pl");
 }
 
 bool Document::IsPythonCodeType () const
 {
-  return IsFileType (wxT ("py"));
+  return IsFileType ("py");
 }
 
 bool Document::IsLispCodeType () const
 {
-  return IsFileType (wxT ("lisp")) || IsFileType (wxT ("lsp")) ||
-    IsFileType (wxT ("scm")) || 
-    IsFileType (wxT ("rkt")) || IsFileType (wxT ("ss")) ||
-    IsFileType (wxT ("clj"));
+  return IsFileType ("lisp") || IsFileType ("lsp") ||
+    IsFileType ("scm") || 
+    IsFileType ("rkt") || IsFileType ("ss") ||
+    IsFileType ("clj");
 }
 
 bool Document::IsXmlCodeType () const
 {
-  return IsFileType (wxT ("xml")) || IsFileType (wxT ("html"));
+  return IsFileType ("xml") || IsFileType ("html");
 }
  
 bool Document::IsCodeType () const
@@ -343,11 +343,11 @@ void Document::ExtractFromWordProcessor (wxString & extract_folder)
 {
 	wxFileName this_file (_pathname);
 	wxFileName new_file (extract_folder, this_file.GetFullName ());
-	new_file.SetExt (wxT("txt"));
+	new_file.SetExt ("txt");
 #if __WXGTK__
-	wxExecute (wxT("abiword --to=txt ") + 
+	wxExecute ("abiword --to=txt " + 
 			this_file.GetFullPath () + 
-			wxT(" -o ") +
+			" -o " +
 			new_file.GetFullPath (), wxEXEC_SYNC);
 #elif __WXMSW__  // different calling sequence for MSW, as cannot handle paths (?? Bad coding ??)
 	// copy old file
@@ -358,9 +358,9 @@ void Document::ExtractFromWordProcessor (wxString & extract_folder)
 	// do the extraction
 	wxArrayString outputs;
 	wxArrayString errors;
-	wxExecute (wxT("\"AbiWord.exe\" --to=txt ") + 
+	wxExecute ("\"AbiWord.exe\" --to=txt " + 
 			copy_old.GetFullName () + 
-			wxT(" -o ") +
+			" -o " +
 			new_file.GetFullName (), 
 			outputs, errors);
 	// remove the old file 
@@ -375,11 +375,11 @@ void Document::ExtractFromPdf (wxString & extract_folder)
 {
 	wxFileName this_file (_pathname);
 	wxFileName new_file (extract_folder, this_file.GetFullName ());
-	new_file.SetExt (wxT("txt"));
+	new_file.SetExt ("txt");
 #if __WXGTK__
-	wxExecute (wxT("pdftotext -layout -enc ASCII7 -nopgbrk ") + // changed Latin1 to ASCII7
+	wxExecute ("pdftotext -layout -enc ASCII7 -nopgbrk " + // changed Latin1 to ASCII7
 			this_file.GetFullPath () +
-			wxT(" ") +
+			" " +
 			new_file.GetFullPath (), wxEXEC_SYNC);
 #elif __WXMSW__   // different calling sequence for MSW, as cannot handle paths (?? Bad coding ??)
 	// copy old file
@@ -390,9 +390,9 @@ void Document::ExtractFromPdf (wxString & extract_folder)
 	// do the extraction
 	wxArrayString outputs;
 	wxArrayString errors;
-	wxExecute (wxT("\"pdftotext\" -layout -enc Latin1 -nopgbrk ") + 
+	wxExecute ("\"pdftotext\" -layout -enc Latin1 -nopgbrk " + 
 			copy_old.GetFullName () + 
-			wxT(" ") +
+			" " +
 			new_file.GetFullName (), 
 			outputs, errors);
 	// remove the old file
@@ -462,11 +462,11 @@ void Document::CloseInput ()
 
 void Document::Save (wxFile & file)
 {
-	file.Write (wxT("start-document\n"));
-	file.Write (wxString::Format (wxT("path\t%s\n"), _pathname.c_str ()));
-	file.Write (wxString::Format (wxT("original-path\t%s\n"), _original_pathname.c_str ()));
-	file.Write (wxString::Format (wxT("name\t%s\n"), _name.c_str ()));
-	file.Write (wxString::Format (wxT("num-trigrams\t%d\n"), _num_trigrams));
-	file.Write (wxString::Format (wxT("group-id\t%d\n"), _group_id));
-	file.Write (wxT("end-document\n"));
+	file.Write ("start-document\n");
+	file.Write (wxString::Format ("path\t%s\n", _pathname.c_str ()));
+	file.Write (wxString::Format ("original-path\t%s\n", _original_pathname.c_str ()));
+	file.Write (wxString::Format ("name\t%s\n", _name.c_str ()));
+	file.Write (wxString::Format ("num-trigrams\t%d\n", _num_trigrams));
+	file.Write (wxString::Format ("group-id\t%d\n", _group_id));
+	file.Write ("end-document\n");
 }

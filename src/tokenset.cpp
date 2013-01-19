@@ -81,10 +81,10 @@ void TokenSet::Clear ()
 // save just one of the maps, as the other can be reconstructed (it's the inverse)
 void TokenSet::Save (wxFile & file)
 {
-	file.Write (wxString::Format (wxT("next-index\t%d\n"), _nextindex));
+	file.Write (wxString::Format ("next-index\t%d\n", _nextindex));
 	for (std::size_t i = 0; i < _nextindex; ++i)
 	{
-		file.Write (wxString::Format (wxT("%d\t%s\n"), i, _strings[i].c_str ()));
+		file.Write (wxString::Format ("%d\t%s\n", i, _strings[i].c_str ()));
 	}
 }
 

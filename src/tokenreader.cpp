@@ -216,20 +216,20 @@ bool CCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("!=") || candidate == wxT("++") || 
-      candidate == wxT("--") || candidate == wxT("==") || 
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("||") || candidate == wxT("&&") || 
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("%=") || candidate == wxT("&=") || 
-      candidate == wxT("|=") || candidate == wxT("^=") || 
-      candidate == wxT("::") || candidate == wxT("->") || 
-      candidate == wxT("//") || candidate == wxT("<<") || 
-      candidate == wxT(">>") || candidate == wxT("##") || 
-      candidate == wxT("/*") || candidate == wxT("*/") || 
-      candidate == wxT(".*") || candidate == wxT("->*") ||
-      candidate == wxT("<<=") || candidate == wxT(">>=") 
+      candidate == "!=" || candidate == "++" || 
+      candidate == "--" || candidate == "==" || 
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "||" || candidate == "&&" || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || candidate == "&=" || 
+      candidate == "|=" || candidate == "^=" || 
+      candidate == "::" || candidate == "->" || 
+      candidate == "//" || candidate == "<<" || 
+      candidate == ">>" || candidate == "##" || 
+      candidate == "/*" || candidate == "*/" || 
+      candidate == ".*" || candidate == "->*" ||
+      candidate == "<<=" || candidate == ">>=" 
       );
 }
 
@@ -237,20 +237,20 @@ bool CSharpCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("++") || candidate == wxT("--") || 
-      candidate == wxT("->") || 
-      candidate == wxT("<<") || candidate == wxT(">>") || 
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("==") || candidate == wxT("!=") ||
-      candidate == wxT("||") || candidate == wxT("&&") || 
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("%=") || candidate == wxT("&=") || 
-      candidate == wxT("|=") || candidate == wxT("^=") || 
-      candidate == wxT("<<=") || candidate == wxT(">>=") ||
-      candidate == wxT("??") || candidate == wxT("///") ||
-      candidate == wxT("/*") || candidate == wxT("*/") ||
-      candidate == wxT("//")
+      candidate == "++" || candidate == "--" || 
+      candidate == "->" || 
+      candidate == "<<" || candidate == ">>" || 
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "==" || candidate == "!=" ||
+      candidate == "||" || candidate == "&&" || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || candidate == "&=" || 
+      candidate == "|=" || candidate == "^=" || 
+      candidate == "<<=" || candidate == ">>=" ||
+      candidate == "??" || candidate == "///" ||
+      candidate == "/*" || candidate == "*/" ||
+      candidate == "//"
   );
 }
 
@@ -258,17 +258,17 @@ bool HaskellCodeReader::IsSymbol (wxString token, wxChar c)
 {
   wxString candidate = token + c;
   return (
-      candidate == wxT("--") || candidate == wxT("{-") ||
-      candidate == wxT("-}") || candidate == wxT("^^") ||
-      candidate == wxT("**") || candidate == wxT("&&") ||
-      candidate == wxT("||") || candidate == wxT("<=") ||
-      candidate == wxT("==") || candidate == wxT("/=") ||
-      candidate == wxT(">=") || candidate == wxT("++") ||
-      candidate == wxT("..") || candidate == wxT("::") ||
-      candidate == wxT("!!") || candidate == wxT("\\\\") ||
-      candidate == wxT("->") || candidate == wxT("<-") ||
-      candidate == wxT("=>") || candidate == wxT(">>") ||
-      candidate == wxT(">>=") || candidate == wxT(">@>")
+      candidate == "--" || candidate == "{-" ||
+      candidate == "-}" || candidate == "^^" ||
+      candidate == "**" || candidate == "&&" ||
+      candidate == "||" || candidate == "<=" ||
+      candidate == "==" || candidate == "/=" ||
+      candidate == ">=" || candidate == "++" ||
+      candidate == ".." || candidate == "::" ||
+      candidate == "!!" || candidate == "\\\\" ||
+      candidate == "->" || candidate == "<-" ||
+      candidate == "=>" || candidate == ">>" ||
+      candidate == ">>=" || candidate == ">@>"
   );
 }
 
@@ -276,24 +276,24 @@ bool GroovyCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("!=") || candidate == wxT("++") || 
-      candidate == wxT("--") || candidate == wxT("==") || 
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("||") || candidate == wxT("&&") || 
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("%=") || candidate == wxT("&=") || 
-      candidate == wxT("|=") || candidate == wxT("^=") || 
-      candidate == wxT("//") || candidate == wxT("<<") || 
-      candidate == wxT(">>") || candidate == wxT("##") || 
-      candidate == wxT("/*") || candidate == wxT("*/") || 
-      candidate == wxT("/**") ||
-      candidate == wxT("<<=") || candidate == wxT(">>=") ||
-      candidate == wxT(">>>") || candidate == wxT(">>>=") ||
-      candidate == wxT("*.@") || candidate == wxT("<=>") ||
-      candidate == wxT("=~") || candidate == wxT("==~") ||
-      candidate == wxT("*.") || candidate == wxT(".@") ||
-      candidate == wxT("?:") || candidate == wxT("?.") 
+      candidate == "!=" || candidate == "++" || 
+      candidate == "--" || candidate == "==" || 
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "||" || candidate == "&&" || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || candidate == "&=" || 
+      candidate == "|=" || candidate == "^=" || 
+      candidate == "//" || candidate == "<<" || 
+      candidate == ">>" || candidate == "##" || 
+      candidate == "/*" || candidate == "*/" || 
+      candidate == "/**" ||
+      candidate == "<<=" || candidate == ">>=" ||
+      candidate == ">>>" || candidate == ">>>=" ||
+      candidate == "*.@" || candidate == "<=>" ||
+      candidate == "=~" || candidate == "==~" ||
+      candidate == "*." || candidate == ".@" ||
+      candidate == "?:" || candidate == "?." 
   );
 }
 
@@ -301,20 +301,20 @@ bool JavaCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("!=") || candidate == wxT("++") || 
-      candidate == wxT("--") || candidate == wxT("==") || 
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("||") || candidate == wxT("&&") || 
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("%=") || candidate == wxT("&=") || 
-      candidate == wxT("|=") || candidate == wxT("^=") || 
-      candidate == wxT("//") || candidate == wxT("<<") || 
-      candidate == wxT(">>") || candidate == wxT("##") || 
-      candidate == wxT("/*") || candidate == wxT("*/") || 
-      candidate == wxT("/**") ||
-      candidate == wxT("<<=") || candidate == wxT(">>=") ||
-      candidate == wxT(">>>") || candidate == wxT(">>>=")
+      candidate == "!=" || candidate == "++" || 
+      candidate == "--" || candidate == "==" || 
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "||" || candidate == "&&" || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || candidate == "&=" || 
+      candidate == "|=" || candidate == "^=" || 
+      candidate == "//" || candidate == "<<" || 
+      candidate == ">>" || candidate == "##" || 
+      candidate == "/*" || candidate == "*/" || 
+      candidate == "/**" ||
+      candidate == "<<=" || candidate == ">>=" ||
+      candidate == ">>>" || candidate == ">>>="
   );
 }
 
@@ -322,13 +322,13 @@ bool VbCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("<>") || candidate == wxT("==") ||
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("\\=") || candidate == wxT("&=") ||  
-      candidate == wxT("^=") || candidate == wxT("<<") ||
-      candidate == wxT(">>") 
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "<>" || candidate == "==" ||
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "\\=" || candidate == "&=" ||  
+      candidate == "^=" || candidate == "<<" ||
+      candidate == ">>" 
   );
 }
 
@@ -336,20 +336,20 @@ bool RubyCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("**") || 
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("<<") || candidate == wxT(">>") || 
-      candidate == wxT("<=>") || candidate == wxT("=~") ||
-      candidate == wxT("==") || candidate == wxT("===") || 
-      candidate == wxT("!=") || candidate == wxT("!~") || 
-      candidate == wxT("||") || candidate == wxT("&&") || 
-      candidate == wxT("..") || candidate == wxT("...") || 
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("%=") || candidate == wxT("&=") || 
-      candidate == wxT("||=") || candidate == wxT("&&=") || 
-      candidate == wxT("<<=") || candidate == wxT(">>=") || 
-      candidate == wxT("**=")
+      candidate == "**" || 
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "<<" || candidate == ">>" || 
+      candidate == "<=>" || candidate == "=~" ||
+      candidate == "==" || candidate == "===" || 
+      candidate == "!=" || candidate == "!~" || 
+      candidate == "||" || candidate == "&&" || 
+      candidate == ".." || candidate == "..." || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || candidate == "&=" || 
+      candidate == "||=" || candidate == "&&=" || 
+      candidate == "<<=" || candidate == ">>=" || 
+      candidate == "**="
   );
 }
 
@@ -357,9 +357,9 @@ bool PrologCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("=<") || candidate == wxT(">=") || 
-      candidate == wxT("==") || candidate == wxT("=:=") || 
-      candidate == wxT(":-") || candidate == wxT("?-")
+      candidate == "=<" || candidate == ">=" || 
+      candidate == "==" || candidate == "=:=" || 
+      candidate == ":-" || candidate == "?-"
   );
 }
 
@@ -367,15 +367,15 @@ bool PythonCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("**") || candidate == wxT("//") ||
-      candidate == wxT(">=") || candidate == wxT("<=") || 
-      candidate == wxT("==") || candidate == wxT("!=") || 
-      candidate == wxT("<>") || candidate == wxT("!=") || 
-      candidate == wxT("+=") || candidate == wxT("-=") || 
-      candidate == wxT("*=") || candidate == wxT("/=") || 
-      candidate == wxT("%=") || 
-      candidate == wxT("**=") || candidate == wxT("//=") ||
-      candidate == wxT("<<") || candidate == wxT(">>") 
+      candidate == "**" || candidate == "//" ||
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "==" || candidate == "!=" || 
+      candidate == "<>" || candidate == "!=" || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || 
+      candidate == "**=" || candidate == "//=" ||
+      candidate == "<<" || candidate == ">>" 
   );
 }
 
@@ -383,8 +383,8 @@ bool XmlCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
   return (
-      candidate == wxT("<?") || candidate == wxT("?>") ||
-      candidate == wxT("</") || candidate == wxT("/>") ||
-      candidate == wxT("<!--") || candidate == wxT("-->")
+      candidate == "<?" || candidate == "?>" ||
+      candidate == "</" || candidate == "/>" ||
+      candidate == "<!--" || candidate == "-->"
   );
 }

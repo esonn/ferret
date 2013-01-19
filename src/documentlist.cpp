@@ -38,12 +38,12 @@ bool DocumentList::AddDocumentsFromDefinitionFile (wxString pathname)
 		line.Trim ();       // remove white space from right
 		line.Trim (false);  // and from left
 
-		if (line.IsSameAs (wxT("START GROUP"), false)) // -- ignore case on comparison
+		if (line.IsSameAs ("START GROUP", false)) // -- ignore case on comparison
 		{
 			within_group = true;
 			current_id = GetNewGroupId (); // get a new id for this group
 		}
-		else if (line.IsSameAs (wxT("END GROUP"), false))
+		else if (line.IsSameAs ("END GROUP", false))
 		{
 			within_group = false;
 		}
@@ -281,10 +281,10 @@ bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_
 
 wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2)
 {
-	wxString tuple = wxT("");
+	wxString tuple = "";
 	tuple += _token_set.GetStringFor (t0);
-	tuple += wxT(" ") + _token_set.GetStringFor (t1);
-	tuple += wxT(" ") + _token_set.GetStringFor (t2);
+	tuple += " " + _token_set.GetStringFor (t1);
+	tuple += " " + _token_set.GetStringFor (t2);
 	
 	return tuple;
 }
@@ -324,21 +324,21 @@ void DocumentList::SaveDocumentList (wxString path)
 	wxFile file;
 	if (file.Open (path, wxFile::write))
 	{
-		file.Write (wxString::Format (wxT("next-group-id\t%d\n"), _last_group_id));
-		file.Write (wxT("begin-documents\n"));
+		file.Write (wxString::Format ("next-group-id\t%d\n", _last_group_id));
+		file.Write ("begin-documents\n");
 		for (unsigned int i = 0, n = _documents.size (); i < n; ++i)
 		{
 			_documents[i]->Save (file);
 		}
-		file.Write (wxT("end-documents\n"));
+		file.Write ("end-documents\n");
 
-		file.Write (wxT("begin-tokens\n"));
+		file.Write ("begin-tokens\n");
 		_token_set.Save (file);
-		file.Write (wxT("end-tokens\n"));
+		file.Write ("end-tokens\n");
 
-		file.Write (wxT("begin-tuples\n"));
+		file.Write ("begin-tuples\n");
 		_tuple_set.Save (file);
-		file.Write (wxT("end-tuples\n"));
+		file.Write ("end-tuples\n");
 
 
 		file.Close ();
@@ -367,15 +367,15 @@ bool DocumentList::ReadDocumentDefinitions (wxTextInputStream & stored_data)
 	wxString line = stored_data.ReadLine ();
 	wxString data;
 
-	if (!line.StartsWith (wxT("next-group-id\t"), & data)) return false;
+	if (!line.StartsWith ("next-group-id\t", & data)) return false;
 	_last_group_id = wxAtoi (data);
 
 	line = stored_data.ReadLine ();
-	if (!line.IsSameAs (wxT("begin-documents"))) return false; // did not find start of group
+	if (!line.IsSameAs ("begin-documents")) return false; // did not find start of group
 	line = stored_data.ReadLine ();
-	while (!line.IsSameAs (wxT("end-documents"))) // repeat until hit end of group
+	while (!line.IsSameAs ("end-documents")) // repeat until hit end of group
 	{
-		if (line.IsSameAs (wxT("start-document")))
+		if (line.IsSameAs ("start-document"))
 		{
 			ReadSingleDocumentDefinition (stored_data);
 			line = stored_data.ReadLine ();
@@ -397,26 +397,26 @@ bool DocumentList::ReadSingleDocumentDefinition (wxTextInputStream & stored_data
 	int num_trigrams;
 
 	wxString line = stored_data.ReadLine ();
-	while (!line.IsSameAs (wxT("end-document")))
+	while (!line.IsSameAs ("end-document"))
 	{
 		wxString data;
-		if (line.StartsWith (wxT("path\t"), & data))
+		if (line.StartsWith ("path\t", & data))
 		{
 			pathname = data;
 		}
-		else if (line.StartsWith (wxT("original-path\t"), & data))
+		else if (line.StartsWith ("original-path\t", & data))
 		{
 			original_pathname = data;
 		}
-		else if (line.StartsWith (wxT("name\t"), & data))
+		else if (line.StartsWith ("name\t", & data))
 		{
 			name = data;
 		}
-		else if (line.StartsWith (wxT("num-trigrams\t"), & data))
+		else if (line.StartsWith ("num-trigrams\t", & data))
 		{
 			num_trigrams = wxAtoi (data);
 		}
-		else if (line.StartsWith (wxT("group-id\t"), & data))
+		else if (line.StartsWith ("group-id\t", & data))
 		{
 			id = wxAtoi (data);
 		}
@@ -444,11 +444,11 @@ bool DocumentList::ReadTokenDefinitions (wxTextInputStream & stored_data)
 	wxString index;
 	wxString word;
 	
-	if (!line.StartsWith (wxT("next-index\t"), & index)) return false;
+	if (!line.StartsWith ("next-index\t", & index)) return false;
 	_token_set.SetNextIndex (wxAtoi (index));
 
 	line = stored_data.ReadLine ();
-	while (!line.IsSameAs (wxT("end-tokens")))
+	while (!line.IsSameAs ("end-tokens"))
 	{
 		index = line.BeforeFirst ('\t');
 		word = line.AfterFirst ('\t');
@@ -464,18 +464,18 @@ bool DocumentList::ReadTupleDefinitions (wxTextInputStream & stored_data)
 	wxString line = stored_data.ReadLine ();
 	line = stored_data.ReadLine ();
 
-	while (!line.IsSameAs (wxT("end-tuples")))
+	while (!line.IsSameAs ("end-tuples"))
 	{
-		wxStringTokenizer items (line, wxT(" "));
+		wxStringTokenizer items (line, " ");
 		if (items.CountTokens () < 5) return false; // not enough tokens!
 		int index0 = wxAtoi (items.GetNextToken ());
 		int index1 = wxAtoi (items.GetNextToken ());
 		int index2 = wxAtoi (items.GetNextToken ());
-		if (!items.GetNextToken().IsSameAs (wxT("FILES:["))) return false; // error!
+		if (!items.GetNextToken().IsSameAs ("FILES:[")) return false; // error!
 		while (items.HasMoreTokens ())
 		{
 			wxString next = items.GetNextToken ();
-			if (next.IsSameAs (wxT("]"))) break; // finish loop
+			if (next.IsSameAs ("]")) break; // finish loop
 			_tuple_set.AddDocument (index0, index1, index2, wxAtoi (next));
 		}
 

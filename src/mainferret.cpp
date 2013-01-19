@@ -7,52 +7,52 @@ bool isNamedOption (wxString test_string, wxString shortcut, wxString longform)
 
 bool isHelpOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-h"), wxT("--help"));
+	return isNamedOption (test_string, "-h", "--help");
 }
 
 bool isDataTableOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-d"), wxT("--data-table"));
+	return isNamedOption (test_string, "-d", "--data-table");
 }
 
 bool isListTrigramsOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-l"), wxT("--list-trigrams"));
+	return isNamedOption (test_string, "-l", "--list-trigrams");
 }
 
 bool isAllComparisonsOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-a"), wxT("--all-comparisons"));
+	return isNamedOption (test_string, "-a", "--all-comparisons");
 }
 
 bool isRemoveCommonTrigramsOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-r"), wxT("--remove-common"));
+	return isNamedOption (test_string, "-r", "--remove-common");
 }
 
 bool isHtmlTableOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-w"), wxT("--html-table"));
+	return isNamedOption (test_string, "-w", "--html-table");
 }
 
 bool isPdfOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-p"), wxT("--pdf-report"));
+	return isNamedOption (test_string, "-p", "--pdf-report");
 }
 
 bool isXmlOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-x"), wxT("--xml-report"));
+	return isNamedOption (test_string, "-x", "--xml-report");
 }
 
 bool isDefinitionOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-f"), wxT("--definition-file"));
+	return isNamedOption (test_string, "-f", "--definition-file");
 }
 
 bool isStoredDataOption (wxString test_string)
 {
-	return isNamedOption (test_string, wxT("-u"), wxT("--use-stored-data"));
+	return isNamedOption (test_string, "-u", "--use-stored-data");
 }
 
 bool isCommandOption (wxString test_string)
@@ -308,9 +308,9 @@ bool FerretApp::OnInit ()
 	{
 		Report report_type = DATA_TABLE;	// assume data table is required
 		int filenames_start = 1; 		// index within argv of first filename
-		wxString definition_file = wxT("");	// string to hold path to definition file
-		wxString stored_data = wxT("");		// string to hold path to stored data
-		wxString upload_dir = wxT("");		// string to hold path to upload_dir, for html-table
+		wxString definition_file = "";	// string to hold path to definition file
+		wxString stored_data = "";		// string to hold path to stored data
+		wxString upload_dir = "";		// string to hold path to upload_dir, for html-table
     bool remove_common_trigrams = false; // flag to change type of similarity measure used
 
 		// work through command options, leaving filenames_start pointing at next argument

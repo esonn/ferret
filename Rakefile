@@ -17,6 +17,7 @@ task :todo do
   puts "- engagement chart (count of trigrams also in provided code)"
   puts "- display of groups of copied code"
   puts "- unicode, including Chinese etc processing (Bao et al 2006)"
+  puts "  (the issue here is more display/output of non-ASCII characters)"
 end
 
 desc "build ferret"

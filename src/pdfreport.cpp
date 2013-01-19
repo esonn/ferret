@@ -69,32 +69,32 @@ void * SaveTableThread::Entry ()
 {
 	PdfTable pdf;
 	wxArrayString header;
-	header.Add (wxT("Document 1"));
-	header.Add (wxT("Document 2"));
-	header.Add (wxT("Similarity"));
+	header.Add ("Document 1");
+	header.Add ("Document 2");
+	header.Add ("Similarity");
 
 	pdf.AliasNbPages();
 	pdf.AddPage ();
 	// put initial summary information
 	pdf.SetFont (_T("Arial"), _T("B"), 14);
 	pdf.Cell (50);
-	pdf.Cell (50, 10, wxT("Table of Similarity Scores from Ferret"), 
+	pdf.Cell (50, 10, "Table of Similarity Scores from Ferret", 
 			0, 1, wxPDF_ALIGN_CENTER);
   if (_resemblanceObserver.RemoveCommonTrigramsSet ())
   {
-    pdf.Cell (50, 10, wxT("(Pairwise similarity ignores trigrams in common with other documents)"),
+    pdf.Cell (50, 10, "(Pairwise similarity ignores trigrams in common with other documents)",
         0, 1, wxPDF_ALIGN_CENTER);
   }
 	pdf.SetFont (_T("Arial"), _T(""), 11);
-	pdf.PrintLine (wxString::Format(wxT("Number of documents compared: %d"),
+	pdf.PrintLine (wxString::Format("Number of documents compared: %d",
 				_documentlist.Size()));
-	pdf.PrintLine (wxString::Format(wxT("Number of pairs of documents: %d"),
+	pdf.PrintLine (wxString::Format("Number of pairs of documents: %d",
 				_documentlist.NumberOfPairs ()));
 
 	// add summary of problem or ignored files, if appropriate
-	pdf.PrintList (wxT("Files from which text could not be extracted:"),
+	pdf.PrintList ("Files from which text could not be extracted:",
 			wxGetApp().GetProblemFiles ());
-	pdf.PrintList (wxT("Files which were ignored, due to unknown filetypes:"),
+	pdf.PrintList ("Files which were ignored, due to unknown filetypes:",
 			wxGetApp().GetIgnoredFiles ());
 	pdf.Ln (5);
 
@@ -125,7 +125,7 @@ void PdfDocumentComparison::Footer()
 	// Position at 1.5 cm from bottom
 	SetY (-15);
 	SetFont (_T("Arial"), _T("I"), 9);
-	SetTextColour (wxColour (wxT("BLACK")));
+	SetTextColour (wxColour ("BLACK"));
 	WriteCell (10, wxGetApp().GetGeneratedByString ());
 	Cell (0, 10, wxString::Format(_T("Page %d of {nb}"), PageNo()),
 			0, 0, wxPDF_ALIGN_RIGHT);
@@ -142,33 +142,33 @@ void PdfReport::WritePdfReport (wxString save_report_path, int document1, int do
 	_pdf.AddPage ();
 	// initial summary
 	_pdf.SetFont (_T("Arial"), _T("B"), 14);
-	PrintLine (wxString::Format (wxT("Comparing '%s' with '%s'"),
+	PrintLine (wxString::Format ("Comparing '%s' with '%s'",
 				_doclist[document1]->GetName().c_str(), 
 				_doclist[document2]->GetName().c_str()), 
 			wxPDF_ALIGN_CENTER);
 	_pdf.SetFont (_T("Arial"), _T(""), 11);
-	PrintLine (wxString::Format (wxT("Document 1 source: %s"),
+	PrintLine (wxString::Format ("Document 1 source: %s",
 				_doclist[document1]->GetOriginalPathname().c_str()));
-	PrintLine (wxString::Format (wxT("Document 2 source: %s"),
+	PrintLine (wxString::Format ("Document 2 source: %s",
 				_doclist[document2]->GetOriginalPathname().c_str()));
-	PrintLine (wxString::Format (wxT("Number of trigrams in Document 1: %d"),
+	PrintLine (wxString::Format ("Number of trigrams in Document 1: %d",
 				_doclist.CountTrigrams (document1, _unique)));
-	PrintLine (wxString::Format (wxT("Number of trigrams in Document 2: %d"),
+	PrintLine (wxString::Format ("Number of trigrams in Document 2: %d",
 				_doclist.CountTrigrams (document2, _unique)));
-	PrintLine (wxString::Format (wxT("Number of common trigrams: %d"),
+	PrintLine (wxString::Format ("Number of common trigrams: %d",
 				_doclist.CountMatches (document1, document2, _unique)));
-	PrintLine (wxString::Format (wxT("Similarity measure: %f"),
+	PrintLine (wxString::Format ("Similarity measure: %f",
 				_doclist.ComputeResemblance (document1, document2, _unique)));
-	PrintLine (wxString::Format (wxT("Containment of Document 1 in Document 2: %f"),
+	PrintLine (wxString::Format ("Containment of Document 1 in Document 2: %f",
 				_doclist.ComputeContainment (document1, document2, _unique)));
-	PrintLine (wxString::Format (wxT("Containment of Document 2 in Document 1: %f"),
+	PrintLine (wxString::Format ("Containment of Document 2 in Document 1: %f",
 				_doclist.ComputeContainment (document2, document1, _unique)));
 	_pdf.Ln();
   if (_unique)
   {
-    PrintLine (wxT("(Pairwise similarity ignores trigrams in common with other documents)"));
+    PrintLine ("(Pairwise similarity ignores trigrams in common with other documents)");
   }
-	PrintLine (wxT("(Text highlighted in bold/blue is duplicated in the two documents)"));
+	PrintLine ("(Text highlighted in bold/blue is duplicated in the two documents)");
 	// do documents
 	PrintDocument (1, document1, document2);
 	PrintDocument (2, document2, document1);
@@ -214,13 +214,13 @@ void PdfReport::EndBlock ()
 void PdfReport::StartCopiedBlock ()
 {
 	_pdf.SetFont (_T(""), _T("B"));
-	_pdf.SetTextColour (wxColour (wxT("BLUE")));
+	_pdf.SetTextColour (wxColour ("BLUE"));
 }
 
 void PdfReport::StartNormalBlock ()
 {
 	_pdf.SetFont (_T(""), _T(""));
-	_pdf.SetTextColour (wxColour (wxT("BLACK")));
+	_pdf.SetTextColour (wxColour ("BLACK"));
 }
 
 void PdfReport::WriteString (wxString str)
