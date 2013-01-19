@@ -35,7 +35,6 @@ wxSpinCtrl * MakeSpinCtrl (wxWindow * parent, int id, wxString tooltip, int min_
 	return value;
 }
 
-
 // make the names of the comparison structure visible
 std::vector<wxString> * DocumentListCtrl::namecmp::names;
 std::vector<int> * DocumentListCtrl::namecmp::documents;
@@ -376,6 +375,7 @@ BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_RANK_2, ComparisonTableView::OnRank2)
 	EVT_BUTTON(ID_RANK_R, ComparisonTableView::OnRank3)
 	EVT_BUTTON(ID_SAVE_REPORT, ComparisonTableView::OnSaveReport)
+  EVT_BUTTON(ID_UNIQUE_VIEW, ComparisonTableView::OnShowUniqueView)
 	EVT_BUTTON(ID_DISPLAY_TEXTS, ComparisonTableView::OnDisplayTexts)
 	EVT_BUTTON(ID_CREATE_REPORT, ComparisonTableView::OnCreateReport)
   EVT_CHECKBOX(ID_REMOVE_COMMON, ComparisonTableView::OnCheckRemoveCommon)
@@ -448,6 +448,14 @@ void ComparisonTableView::OnSaveReport (wxCommandEvent & WXUNUSED(event))
 	}
 }
 
+void ComparisonTableView::OnShowUniqueView (wxCommandEvent & WXUNUSED(event))
+{
+ 	wxBusyCursor wait;
+	wxGetApp().Yield ();
+	UniqueTrigramsView * view = new UniqueTrigramsView (this, _documentlist);
+	view->Show (true);
+}
+
 void ComparisonTableView::OnQuit (wxCommandEvent & WXUNUSED(event))
 {
 	wxGetApp().CloseHelp ();
@@ -486,7 +494,7 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 
 ComparisonTableView::ComparisonTableView()
 	: wxFrame(NULL, wxID_ANY, wxT("Ferret: Table of comparisons"), 
-		wxDefaultPosition, wxSize (600, 500))
+		wxDefaultPosition, wxSize (650, 500))
 {
 	CentreOnScreen ();
 	CreateStatusBar(3);
@@ -523,9 +531,13 @@ ComparisonTableView::ComparisonTableView()
 	// -- note, buttons must be defined before their staticboxsizer, 
 	// else tooltips do not display
 	wxBoxSizer  * buttonSizer = new wxBoxSizer (wxVERTICAL);
-	buttonSizer->Add (MakeButton (this, ID_SAVE_REPORT, wxT("Save Report ..."),
-				wxT("Save the table of comparisons and other details")),
-		       	0, wxGROW | wxALL, 5);
+  buttonSizer->Add (MakeButton (this, ID_SAVE_REPORT, wxT("Save Report ..."),
+        wxT("Save the table of comparisons and other details")),
+      0, wxGROW | wxALL, 5);
+  buttonSizer->Add (MakeButton (this, ID_UNIQUE_VIEW, wxT("Show Uniqueness"), 
+        wxT("Show number of unique trigrams per document")),
+      0, wxGROW | wxALL, 5);
+
 	wxButton * rank_1 = MakeButton (this, ID_RANK_1, wxT("Document 1"),
 				wxT("Put table into alphabetical order of first document"));
 	wxButton * rank_2 = MakeButton (this, ID_RANK_2, wxT("Document 2"),
@@ -550,6 +562,8 @@ ComparisonTableView::ComparisonTableView()
   buttonSizer->Add (MakeCheckBox (this, ID_REMOVE_COMMON, "Remove Common Trigrams",
       "Compute similarity only from trigrams for the two documents", false), 
       0, wxGROW | wxALL, 5);
+	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
+
 	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
 	buttonSizer->Add (new wxButton (this, wxID_HELP), 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (new wxButton (this, wxID_EXIT), 0, wxGROW | wxALL, 5);

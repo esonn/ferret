@@ -279,9 +279,10 @@ bool Document::IsXmlCodeType () const
  
 bool Document::IsCodeType () const
 {
-  return IsCCodeType () || IsJavaCodeType () || IsVBCodeType () ||
+  return IsCCodeType () || IsGroovyCodeType () || IsHaskellCodeType () ||
+    IsJavaCodeType () || IsVBCodeType () || IsPrologCodeType () ||
     IsRubyCodeType () || IsPythonCodeType () || IsLispCodeType () ||
-    IsXmlCodeType ();
+    IsXmlCodeType () || IsCSharpCodeType ();
 }
 
 // Test if file is not a known type

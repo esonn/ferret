@@ -1,9 +1,7 @@
 #if !defined results_table_h 
 #define results_table_h
 
-/** written by Peter Lane, 2006-2008
-  * (c) School of Computer Science, University of Hertfordshire
-  */
+/* Copyright (c) Peter Lane, 2006-2008 */
 
 #include <algorithm>
 
@@ -29,6 +27,7 @@
 #include "documentlist.h"
 #include "pdfreport.h"
 #include "xmlreport.h"
+#include "uniqueview.h"
 #include "ferretapp.h"
 #include "helpframe.h"
 
@@ -39,7 +38,8 @@ enum { 	ID_RANK_1 = wxID_HIGHEST + 1,
 	ID_SAVE_REPORT,
 	ID_CREATE_REPORT,
 	ID_DISPLAY_TEXTS,
-  ID_REMOVE_COMMON
+  ID_REMOVE_COMMON,
+  ID_UNIQUE_VIEW
 };
 
 // *** helper functions
@@ -111,6 +111,7 @@ class ComparisonTableView: public wxFrame
 		void OnCreateReport (wxCommandEvent & event);
 		void OnHelp   	   (wxCommandEvent & event);
 		void OnSaveReport  (wxCommandEvent & event);
+    void OnShowUniqueView (wxCommandEvent & event);
 		void OnQuit        (wxCommandEvent & event);
     void OnCheckRemoveCommon (wxCommandEvent & event);
 		void OnClose (wxCloseEvent & event);
