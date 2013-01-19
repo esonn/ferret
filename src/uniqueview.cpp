@@ -8,9 +8,28 @@ wxButton * UMakeButton (wxWindow * parent, int id, wxString title, wxString tool
 	return button;
 }
 
+BEGIN_EVENT_TABLE(UniqueTrigramsView, wxFrame)
+  EVT_BUTTON(ID_RANK_F, UniqueTrigramsView::OnRankDoc)
+  EVT_BUTTON(ID_RANK_U, UniqueTrigramsView::OnRankCount)
+  EVT_CLOSE(UniqueTrigramsView::OnClose)
+  EVT_SIZE(UniqueTrigramsView::OnResize)
+  EVT_BUTTON(wxID_CLOSE, UniqueTrigramsView::OnCloseEvent)
+END_EVENT_TABLE()
+
+void UniqueTrigramsView::OnRankDoc (wxCommandEvent & WXUNUSED(event))
+{
+  _uniqueObserver->SortOnDocument ();
+}
+
+void UniqueTrigramsView::OnRankCount (wxCommandEvent & WXUNUSED(event))
+{
+  _uniqueObserver->SortOnCount ();
+}
+
 UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentList & documentlist)
   : wxFrame((wxFrame *)parent, wxID_ANY, wxT("Ferret: Unique Trigrams View"),
-    wxDefaultPosition, wxSize (650, 500)),
+    wxGetApp().GetNextFramePosition (650, 350), 
+    wxSize (650, 350)),
   _documentlist (documentlist)
 {
   CreateStatusBar (2);
@@ -51,6 +70,9 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
 	rankSizer->Add (rank_u, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (rankSizer, 0, wxGROW);
 
+	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
+	buttonSizer->Add (new wxButton (this, wxID_CLOSE), 0, wxGROW | wxALL, 5);
+
   topsizer->Add (buttonSizer, 0, wxGROW | wxALL, 5);
   topsizer->Insert (0, tableView, 1, wxGROW);
 
@@ -67,6 +89,52 @@ void UniqueTrigramsView::OnClose (wxCloseEvent & WXUNUSED(event))
   Destroy ();
 }
 
+void UniqueTrigramsView::OnCloseEvent (wxCommandEvent & WXUNUSED(event))
+{
+  Destroy ();
+}
+
+// Set column widths of list control to fill out the available space on screen
+void UniqueTrigramsView::OnResize (wxSizeEvent & event)
+{
+	if (_uniqueObserver == NULL) return;  // just forget it, if there is nothing to observe
+
+	wxPanel * button = (wxPanel *) FindWindow (ID_RANK_F); // pick a widget off frame for width
+
+	// TODO: Get this to work without need for - 35
+	int new_width = GetClientSize().GetWidth () - button->GetSize().GetWidth() - 35;
+	int current_width = _uniqueObserver->GetColumnWidth (0) + 
+		_uniqueObserver->GetColumnWidth (1);
+	if (new_width > 0 && current_width > 0)
+	{
+		double scale_factor = (double)new_width / (double)current_width;
+		for (int i = 0; i < 2; ++i)
+		{
+			int newcolwidth = (int)(_uniqueObserver->GetColumnWidth (i) * scale_factor);
+			_uniqueObserver->SetColumnWidth (i, newcolwidth);
+		}
+	}
+	event.Skip (); // process resize event for superclasses
+}
+
+BEGIN_EVENT_TABLE(UniqueTrigramsListCtrl, wxListCtrl)
+  EVT_LIST_COL_CLICK (wxID_ANY, UniqueTrigramsListCtrl::OnSortColumn)
+END_EVENT_TABLE()
+
+UniqueTrigramsListCtrl::UniqueTrigramsListCtrl (UniqueTrigramsView * ferretparent, wxPanel * parent)
+  : wxListCtrl (parent, wxID_ANY,
+    wxDefaultPosition, wxDefaultSize,
+    wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_VIRTUAL | wxSIMPLE_BORDER ),
+  _ferretparent (ferretparent)
+{
+  // create list of indices - position in list altered by sorting
+  _sortedIndices.clear ();
+  for (int i=0; i < _ferretparent->GetDocumentList().Size (); i++)
+  {
+    _sortedIndices.push_back (i);
+  }
+}
+
 int UniqueTrigramsListCtrl::GetNumberItems () const
 {
   _ferretparent->GetDocumentList().Size ();
@@ -75,11 +143,77 @@ int UniqueTrigramsListCtrl::GetNumberItems () const
 // TODO: Include sorted indices
 wxString UniqueTrigramsListCtrl::OnGetItemText (long item, long column) const
 {
+  int sorteditem = _sortedIndices[(int)item];
+
   switch (column)
   {
     case 0:
-      return _ferretparent->GetDocumentList()[item]->GetName ();
+      return _ferretparent->GetDocumentList()[sorteditem]->GetName ();
     case 1:
-      return wxString::Format("%d", _ferretparent->GetDocumentList()[item]->GetUniqueTrigramCount ());
+      return wxString::Format("%d", _ferretparent->GetDocumentList()[sorteditem]->GetUniqueTrigramCount ());
   }
 }
+
+std::vector<wxString> * UniqueTrigramsListCtrl::namecmp::names;
+
+void UniqueTrigramsListCtrl::SortOnDocument ()
+{
+  if (_lastsort == sortDoc) return;
+  _lastsort = sortDoc;
+
+  std::vector<int> newIndices;
+
+  for (int i = 0 ; i < _sortedIndices.size (); ++i)
+  {
+    newIndices.push_back (_sortedIndices[i]);
+  }
+
+  // cache the names
+  std::vector<wxString> names;
+  for (int i=0; i<_ferretparent->GetDocumentList().Size (); i++)
+  {
+    names.push_back (_ferretparent->GetDocumentList()[i]->GetName ());
+  }
+  // set up sort
+  namecmp comparer;
+  comparer.names = &names;
+  std::sort (newIndices.begin(), newIndices.end (), comparer);
+  _sortedIndices = newIndices;
+  RefreshItems (0, _sortedIndices.size()-1);
+  _ferretparent->SetStatusText (wxT("Rearranged table by document name"), 0);
+
+}
+
+void UniqueTrigramsListCtrl::SortOnCount ()
+{
+  if (_lastsort == sortCount) return;
+  _lastsort = sortCount;
+  
+  std::vector<int> newIndices;
+ 
+  // initialise the set of new indices
+  for (int i = 0; i < _sortedIndices.size (); ++i)
+  {
+    newIndices.push_back (_sortedIndices[i]);
+  }
+  
+  std::sort (newIndices.begin(), newIndices.end(), 
+      _ferretparent->GetDocumentList().GetUniqueCountComparer ());
+
+  _sortedIndices = newIndices;
+  RefreshItems (0, _sortedIndices.size()-1);
+  _ferretparent->SetStatusText (wxT("Rearranged table by uniqueness count"), 0);
+}
+
+void UniqueTrigramsListCtrl::OnSortColumn (wxListEvent & event)
+{
+  if (event.GetColumn () == 0)
+  {
+    SortOnDocument ();
+  }
+  else
+  {
+    SortOnCount ();
+  }
+}
+

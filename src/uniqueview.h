@@ -16,24 +16,38 @@ enum { ID_RANK_F = wxID_HIGHEST + 10,
 class UniqueTrigramsView;
 class UniqueTrigramsListCtrl: public wxListCtrl
 {
+  enum Sort { sortDoc, sortCount };
+  struct namecmp {
+    static std::vector<wxString> * names;
+
+    bool operator() (int x, int y) const
+    {
+      return ((*names)[x] < (*names)[y]);
+    }
+  };
   public:
-    UniqueTrigramsListCtrl (UniqueTrigramsView * ferretparent, wxPanel * parent)
-      : wxListCtrl (parent, wxID_ANY,
-          wxDefaultPosition, wxDefaultSize,
-          wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_VIRTUAL | wxSIMPLE_BORDER ),
-      _ferretparent (ferretparent)
-  {}
-  int GetNumberItems () const;
-  wxString OnGetItemText (long item, long column) const;
+    UniqueTrigramsListCtrl (UniqueTrigramsView * ferretparent, wxPanel * parent);
+    void SortOnDocument ();
+    void SortOnCount ();
+    void OnSortColumn (wxListEvent & event);
+    int GetNumberItems () const;
+    wxString OnGetItemText (long item, long column) const;
   private:
+    DECLARE_EVENT_TABLE()
     UniqueTrigramsView * _ferretparent;
+    std::vector<int> _sortedIndices;
+    Sort _lastsort;
 };
 
 class UniqueTrigramsView: public wxFrame
 {
   public:
     UniqueTrigramsView (ComparisonTableView * parent, DocumentList & documentlist);
+    void OnRankDoc (wxCommandEvent & event);
+    void OnRankCount (wxCommandEvent & event);
     void OnClose (wxCloseEvent & event);
+    void OnCloseEvent (wxCommandEvent & WXUNUSED(event));
+    void OnResize (wxSizeEvent & event);
     DocumentList & GetDocumentList ()
 		{ 
 			return _documentlist;
@@ -41,7 +55,7 @@ class UniqueTrigramsView: public wxFrame
   private:
     DocumentList & _documentlist;
     UniqueTrigramsListCtrl * _uniqueObserver;
-//    DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -269,6 +269,11 @@ float DocumentList::ComputeContainment (int doc_i, int doc_j, bool unique)
 	return num_matches/target_trigrams;
 }
 
+int DocumentList::UniqueCount (int doc)
+{
+  return _documents[doc]->GetUniqueTrigramCount ();
+}
+
 bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique)
 {
 	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2, unique);
@@ -287,6 +292,16 @@ wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::s
 wxSortedArrayString DocumentList::CollectMatchingTrigrams (int doc1, int doc2, bool unique) 
 {
 	return _tuple_set.CollectMatchingTuples (doc1, doc2, _token_set, unique);
+}
+
+// make names of comparison structure visible
+DocumentList * DocumentList::uniquecountcmp::doclist;
+struct DocumentList::uniquecountcmp DocumentList::GetUniqueCountComparer ()
+{
+  uniquecountcmp comparer;
+  comparer.doclist = this;
+
+  return comparer;
 }
 
 // make names of comparison structure visible

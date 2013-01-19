@@ -559,10 +559,10 @@ ComparisonTableView::ComparisonTableView()
 	showSizer->Add (saveButton, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (showSizer, 0, wxGROW);
 
+	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
   buttonSizer->Add (MakeCheckBox (this, ID_REMOVE_COMMON, "Remove Common Trigrams",
       "Compute similarity only from trigrams for the two documents", false), 
       0, wxGROW | wxALL, 5);
-	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
 
 	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
 	buttonSizer->Add (new wxButton (this, wxID_HELP), 0, wxGROW | wxALL, 5);
