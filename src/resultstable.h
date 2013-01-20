@@ -27,9 +27,9 @@
 #include "documentlist.h"
 #include "pdfreport.h"
 #include "xmlreport.h"
-#include "uniqueview.h"
 #include "ferretapp.h"
 #include "helpframe.h"
+#include "uniqueview.h"
 
 // some constants, for identifying widgets in the different displays
 enum { 	ID_RANK_1 = wxID_HIGHEST + 1,

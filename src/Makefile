@@ -46,7 +46,7 @@ xmlreport.o: xmlreport.cpp xmlreport.h outputreport.h \
 		tokenset.h tokenreader.h document.h documentlist.h
 	$(CC) `wx-config --cxxflags` -c xmlreport.cpp -o xmlreport.o
 
-uniqueview.o: uniqueview.cpp uniqueview.h 
+uniqueview.o: uniqueview.cpp uniqueview.h documentlist.h documentview.h
 	$(CC) `wx-config --cxxflags` -c uniqueview.cpp -o uniqueview.o
 
 # coreferret -- the main functions for Ferret dealing with documents

@@ -13,13 +13,11 @@
 #include "tokenset.h"
 #include "document.h"
 #include "ferretapp.h"
-#include "outputreport.h"
 #include "resultstable.h"
 
 // the document view displays the given two documents, with matching text highlighted
 // ComparisonTableView is provided as a parent, so these new frames are automatically closed 
 // on exiting the main window.
-class ComparisonTableView; // forward declaration
 
 // A parent panel for a document display
 class DocumentView: public wxPanel

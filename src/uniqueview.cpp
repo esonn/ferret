@@ -140,7 +140,6 @@ int UniqueTrigramsListCtrl::GetNumberItems () const
   _ferretparent->GetDocumentList().Size ();
 }
 
-// TODO: Include sorted indices
 wxString UniqueTrigramsListCtrl::OnGetItemText (long item, long column) const
 {
   int sorteditem = _sortedIndices[(int)item];

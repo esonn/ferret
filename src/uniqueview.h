@@ -7,7 +7,7 @@
 #include <wx/listctrl.h>
 
 #include "documentlist.h"
-#include "documentview.h"
+#include "resultstable.h"
 
 enum { ID_RANK_F = wxID_HIGHEST + 10,
   ID_RANK_U
@@ -39,6 +39,7 @@ class UniqueTrigramsListCtrl: public wxListCtrl
     Sort _lastsort;
 };
 
+class ComparisonTableView; // forward declaration, for compiling documentview.h
 class UniqueTrigramsView: public wxFrame
 {
   public:
