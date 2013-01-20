@@ -6,6 +6,7 @@
       h1 {background-color: #d0d0d0} <!-- add a background to make headings stand out -->
       h2 {background-color: #d0d0d0}
       .highlight {font-weight:bold; color:blue}  <!-- highlighted text style -->
+      .unique {font-weight:bold; color:red}      <!-- unique match text style -->
       .normal {font-weight:normal}               <!-- normal text style      -->
     </style> 
   </head>
@@ -28,6 +29,9 @@
       <xsl:for-each select="text/block">
         <xsl:if test="@text='copied'">
           <span class="highlight"><xsl:value-of select="."/></span>
+        </xsl:if>
+        <xsl:if test="@text='unique'">
+          <span class="unique"><xsl:value-of select="."/></span>
         </xsl:if>
         <xsl:if test="@text='normal'">
           <span style="normal"><xsl:value-of select="."/></span>

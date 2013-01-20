@@ -21,7 +21,7 @@ class XmlReport : public OutputReport
 		void WriteDocumentHeader (int source_doc, int target_doc);
 		void WriteDocumentFooter ();
 		void EndBlock ();
-		void StartCopiedBlock ();
+		void StartCopiedBlock (bool unique);
 		void StartNormalBlock ();
 		void WriteString (wxString str);
 	private: 

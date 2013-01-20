@@ -98,7 +98,7 @@ More details on using Ferret can be found in the manual (in preparation).
 
 The following list gives the recognised types of file or computer code within 
 Ferret, with the recognised file extension in brackets. For any additions to this 
-list, contact the author.
+list, raise an issue at <https://github.com/petercrlane/ferret> or contact the author.
 
 - Text documents (.txt)
 - Word processor formats (.doc, .docx, .rtf, .abw)

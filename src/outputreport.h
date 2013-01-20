@@ -19,7 +19,7 @@ class OutputReport
 		virtual void ProcessTrigram (wxString trigram, int start, int end);
 		virtual void WriteDocumentFooter ();
 		virtual void EndBlock ();
-		virtual void StartCopiedBlock ();
+		virtual void StartCopiedBlock (bool unique);
 		virtual void StartNormalBlock ();
 		virtual void WriteString (wxString str);
 		void WriteDocument (int doc1, int doc2);

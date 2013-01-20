@@ -211,10 +211,10 @@ void PdfReport::EndBlock ()
 	StartNormalBlock (); // change font to black text
 }
 
-void PdfReport::StartCopiedBlock ()
+void PdfReport::StartCopiedBlock (bool unique)
 {
 	_pdf.SetFont (_T(""), _T("B"));
-	_pdf.SetTextColour (wxColour ("BLUE"));
+	_pdf.SetTextColour (wxColour ((unique ? "RED" : "BLUE")));
 }
 
 void PdfReport::StartNormalBlock ()

@@ -63,9 +63,17 @@ void XmlReport::EndBlock ()
 	_file.Write ("]]></block>");
 }
 
-void XmlReport::StartCopiedBlock ()
+void XmlReport::StartCopiedBlock (bool unique)
 {
-	_file.Write ("<block text=\"copied\"><![CDATA[");
+  if (unique)
+  {
+    _file.Write ("<block text=\"unique\"");
+  }
+  else
+  {
+  	_file.Write ("<block text=\"copied\"");
+  }
+  _file.Write ("><![CDATA[");
 }
 
 void XmlReport::StartNormalBlock ()

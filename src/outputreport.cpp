@@ -9,7 +9,7 @@ OutputReport::OutputReport (DocumentList & doclist, bool unique)
 void OutputReport::ProcessTrigram (wxString trigram, int string, int end) {}
 void OutputReport::WriteDocumentFooter () {}
 void OutputReport::EndBlock () {}
-void OutputReport::StartCopiedBlock () {}
+void OutputReport::StartCopiedBlock (bool unique) {}
 void OutputReport::StartNormalBlock () {}
 void OutputReport::WriteString (wxString str) {}
 
@@ -29,6 +29,7 @@ void OutputReport::WriteDocument (int doc1, int doc2)
 	document1->StartInput (in, tokenset); // make document read from string of document
 	int lastwritten = 0;
 	bool insideblock = false;
+  bool insideuniqueblock = false;
 
 	while (document1->ReadTrigram (tokenset))
 	{ 
@@ -47,9 +48,57 @@ void OutputReport::WriteDocument (int doc1, int doc2)
         // write any unwritten text up to start of this block
         WriteString (txt.Mid (lastwritten, document1->GetTrigramStart()-lastwritten));
         lastwritten = document1->GetTrigramStart ();
-				StartCopiedBlock ();
+        StartCopiedBlock (_doclist.IsMatchingTrigram (
+              document1->GetToken (0),
+              document1->GetToken (1),
+              document1->GetToken (2),
+              doc1,
+              doc2,
+              true
+              )); // start style depends on uniqueness of trigram
 				insideblock = true;
+        insideuniqueblock = _doclist.IsMatchingTrigram (
+              document1->GetToken (0),
+              document1->GetToken (1),
+              document1->GetToken (2),
+              doc1,
+              doc2,
+              true
+              );
 			}
+      else // inside a block already
+      {
+        // check if change from 'shared' to 'unique' copying
+        // -- have we moved to a unique copied block?
+        if (!insideuniqueblock && _doclist.IsMatchingTrigram (
+              document1->GetToken (0),
+              document1->GetToken (1),
+              document1->GetToken (2),
+              doc1,
+              doc2,
+              true
+              ))
+        {
+          EndBlock ();
+          insideuniqueblock = true;
+          StartCopiedBlock (true);
+        }
+        // -- have we moved to a shared block?
+        else if (insideuniqueblock && !_doclist.IsMatchingTrigram (
+              document1->GetToken (0),
+              document1->GetToken (1),
+              document1->GetToken (2),
+              doc1,
+              doc2,
+              true
+              ))
+        {
+          EndBlock ();
+          insideuniqueblock = false;
+          StartCopiedBlock (false);
+        }
+      }
+      // write the trigram
 			WriteString (txt.Mid (lastwritten, document1->GetTrigramEnd()-lastwritten));
 			lastwritten = document1->GetTrigramEnd ();
 			ProcessTrigram (
@@ -61,14 +110,44 @@ void OutputReport::WriteDocument (int doc1, int doc2)
 				document1->GetTrigramEnd ()
 			);
 		}
-		else
+		else // inside a block already
 		{
-			if (lastwritten < document1->GetTrigramStart (1))
+      // check if change from 'shared' to 'unique' copying
+      // -- have we moved to a unique copied block?
+			if (!insideuniqueblock && _doclist.IsMatchingTrigram (
+              document1->GetToken (0),
+              document1->GetToken (1),
+              document1->GetToken (2),
+              doc1,
+              doc2,
+              true
+              ))
+      {
+        EndBlock ();
+        insideuniqueblock = true;
+        StartCopiedBlock (true);
+      }
+      // -- have we moved to a shared block?
+      else if (insideuniqueblock && !_doclist.IsMatchingTrigram (
+              document1->GetToken (0),
+              document1->GetToken (1),
+              document1->GetToken (2),
+              doc1,
+              doc2,
+              true
+              ))
+      {
+        EndBlock ();
+        insideuniqueblock = false;
+        StartCopiedBlock (false);
+      }
+      if (lastwritten < document1->GetTrigramStart (1))
 			{
-				if (insideblock || (lastwritten == 0)) // moving from inside block to not
+				if (insideblock || insideuniqueblock || (lastwritten == 0)) // moving from inside block to not
 				{
 					if (lastwritten > 0) EndBlock ();
 					insideblock = false;
+          insideuniqueblock = false;
 					StartNormalBlock ();
 				}
 				WriteString (txt.Mid (lastwritten, document1->GetTrigramStart(1)-lastwritten));
@@ -78,10 +157,11 @@ void OutputReport::WriteDocument (int doc1, int doc2)
 	}
 	if (lastwritten < txt.length ())
 	{
-		if (insideblock)
+		if (insideblock || insideuniqueblock)
 		{
 			EndBlock ();
 			insideblock = false;
+      insideuniqueblock = false;
 			StartNormalBlock ();
 		}
 		WriteString (txt.Mid (lastwritten, txt.length () - lastwritten));

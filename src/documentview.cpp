@@ -18,6 +18,7 @@ void TextctrlReport::WriteReport (wxTextCtrl * text, int doc1, int doc2)
 	wxFont bold_font = _text->GetFont ();
 	bold_font.SetWeight (wxFONTWEIGHT_BOLD);
 	_bold_style = wxTextAttr (*wxBLUE, wxNullColour, bold_font);
+  _bold_red_style = wxTextAttr (*wxRED, wxNullColour, bold_font);
 
 	_text->Freeze ();
 	WriteDocument (doc1, doc2);
@@ -25,9 +26,9 @@ void TextctrlReport::WriteReport (wxTextCtrl * text, int doc1, int doc2)
 	_text->SetInsertionPoint (0); // make sure display shows beginning
 }
 
-void TextctrlReport::StartCopiedBlock ()
+void TextctrlReport::StartCopiedBlock (bool unique)
 {
-	_text->SetDefaultStyle (_bold_style);
+	_text->SetDefaultStyle ((unique ? _bold_red_style : _bold_style));
 }
 
 void TextctrlReport::StartNormalBlock ()
@@ -180,13 +181,12 @@ void DocumentView::StartTupleSearch (wxString tuple)
 	// if already in a search, clear out old highlighting
 	wxFont bold_font = GetFont ();
 	bold_font.SetWeight (wxFONTWEIGHT_BOLD);
-	wxTextAttr plain (*wxBLUE, *wxWHITE, bold_font);
 
 	if (_inside_search)
 	{
 		for (int i=0, n=_search_starts.size(); i<n; ++i)
 		{
-			_docObserver->SetStyle(_search_starts[i], _search_ends[i], plain);
+			_docObserver->SetStyle(_search_starts[i], _search_ends[i], _search_style[i]);
 		}
 	}
 
@@ -194,11 +194,15 @@ void DocumentView::StartTupleSearch (wxString tuple)
 	_inside_search = true;
 	_search_starts = _trigram_starts[tuple];
 	_search_ends = _trigram_ends[tuple];
+  _search_style.clear ();
 	// and highlight the tuples
 	wxColour yellow_colour = wxTheColourDatabase->Find ("YELLOW");
-	wxTextAttr yellow (*wxBLUE, yellow_colour, bold_font);
 	for (int i=0, n=_search_starts.size(); i<n; ++i)
 	{
+    wxTextAttr style;
+     _docObserver->GetStyle ((long)_search_starts[i], style);
+    _search_style.push_back (style);
+	  wxTextAttr yellow (style.GetTextColour(), yellow_colour, bold_font);
 		_docObserver->SetStyle(_search_starts[i], _search_ends[i], yellow);
 	}	
 	StartFind ();

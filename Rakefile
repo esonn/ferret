@@ -8,7 +8,6 @@ task :todo do
   puts "- support student grouping"
   puts "- display minimal paths in similarity list"
   puts "- use numbered files in converted files (to support directories of similar code)"
-  puts "- add 'red' colour for unique-shared trigrams to comparison display/output"
   puts "- remove FerretAppFolder on quit"
   puts "- catch 'close' and 'quit' events, make sure all parts of window finished (e.g. documentview)"
   puts "\nLater versions:"

@@ -59,7 +59,7 @@ class PdfReport : public OutputReport
 		void PrintLine (wxString line, int alignment = wxPDF_ALIGN_LEFT);
 		void WriteDocumentFooter ();
 		void EndBlock ();
-		void StartCopiedBlock ();
+		void StartCopiedBlock (bool unique);
 		void StartNormalBlock ();
 		void WriteString (wxString str);
 	private:

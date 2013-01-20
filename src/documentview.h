@@ -45,6 +45,7 @@ class DocumentView: public wxPanel
 		bool			  _inside_search;
 		std::vector<int>	  _search_starts;
 		std::vector<int>	  _search_ends;
+    std::vector<wxTextAttr> _search_style;
 		int			  _search_posn;
     bool      _unique; // display unique trigrams only
 		DECLARE_EVENT_TABLE()
@@ -58,7 +59,7 @@ class TextctrlReport : public OutputReport
 		void WriteReport (wxTextCtrl * text, int doc1, int doc2);
 	private:
 		void ProcessTrigram (wxString trigram, int start, int end);
-		void StartCopiedBlock ();
+		void StartCopiedBlock (bool unique);
 		void StartNormalBlock ();
 		void WriteString (wxString str);
 	private:
@@ -66,6 +67,7 @@ class TextctrlReport : public OutputReport
 		wxTextCtrl * _text;
 		wxTextAttr _normal_style;
 		wxTextAttr _bold_style;
+		wxTextAttr _bold_red_style;
 };
 
 // implement our own form of list control to display the tuples
