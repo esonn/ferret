@@ -20,7 +20,8 @@ detect copying ( _collusion_ ) within a given set of files.
 - choice of similarity measures to highlight individual or group similarity
 - quick loading and comparison of documents, up to computer's memory capacity
 - display of _all_ document comparisons, ranked by a similarity score
-- detailed display of _individual_ document comparisons, highlighting any copied text
+- detailed display of _individual_ document comparisons, highlighting any text
+  in common with the group or uniquely with compared document
 - save result table and comparisons to pdf or xml formats, for printing or further analysis.
 - display of unique trigrams per document/student
 
@@ -133,6 +134,10 @@ For a version designed for embedding in your own scripts, see
 ## License ##
 
 Ferret is released under the [GPL](http://www.gnu.org/licenses/gpl.html).
+It may be used freely, with the only restriction that it may not be sold 
+or distributed as a component of a proprietary (closed-source) product.
+Please read the license for more details, or otherwise contact the author 
+for clarification.
 
 ## History ##
 
@@ -144,4 +149,5 @@ Version 5.3:
 - drag and drop files onto Select Files dialog
 - include option to compute similarities after excluding trigrams common to other files
 - added display of document-unique trigram count
+- red-blue-black colour for confirming pairwise copying implemented on displays/pdf/xml
 

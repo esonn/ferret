@@ -25,6 +25,7 @@ END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE (SelectFiles, wxFrame)
 	EVT_BUTTON (ID_ADD_FILES, SelectFiles::OnAdd)
+  EVT_BUTTON (ID_ADD_DIR, SelectFiles::OnAddDir)
 	EVT_BUTTON (ID_CLEAR_FILES, SelectFiles::OnClear)
 	EVT_BUTTON (ID_SETTINGS, SelectFiles::OnOptions)
 	EVT_BUTTON (wxID_HELP, SelectFiles::OnHelp)
@@ -33,7 +34,7 @@ BEGIN_EVENT_TABLE (SelectFiles, wxFrame)
 END_EVENT_TABLE()
 	
 SelectFiles::SelectFiles ()
-	: wxFrame (NULL, wxID_ANY, "Ferret: Select document filenames for comparison",
+	: wxFrame (NULL, wxID_ANY, "Ferret: Select documents for comparison",
 			wxDefaultPosition, wxSize (600, 550))
 {
 	CentreOnScreen ();
@@ -64,7 +65,10 @@ SelectFiles::SelectFiles ()
 	
 	selection_buttons_sizer->Add (MakeButton (this, ID_ADD_FILES,  "Add Documents ...",
 				"Use a file selector to identify files containing documents for comparison"),
-		       	0, wxGROW | wxALL, 5);
+		 	0, wxGROW | wxALL, 5);
+  selection_buttons_sizer->Add (MakeButton (this, ID_ADD_DIR, "Add Directory ...",
+        "Use a file selector to identify a directory for comparison"),
+      0, wxGROW | wxALL, 5);
 	selection_buttons_sizer->Add (MakeButton (this, ID_CLEAR_FILES, "Clear Documents",
 			       "Remove every document filename from the list", false),
 			0, wxGROW | wxALL, 5);
@@ -125,6 +129,16 @@ void SelectFiles::OnAdd (wxCommandEvent & WXUNUSED(event))
 		dialog.GetPaths (paths);
 		AddDocuments (paths);
 	}
+}
+
+void SelectFiles::OnAddDir (wxCommandEvent & WXUNUSED(event))
+{
+  wxDirDialog dialog (NULL, "Select directory for comparison",
+      wxEmptyString, wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+  if (dialog.ShowModal () == wxID_OK)
+  {
+    std::cout << "Add directory " << dialog.GetPath () << std::endl;
+  }
 }
 
 void SelectFiles::UpdateButtons ()

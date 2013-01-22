@@ -22,6 +22,7 @@
 
 // some constants, for identifying widgets in the different displays
 enum { 	ID_ADD_FILES = wxID_HIGHEST + 100,
+  ID_ADD_DIR,
 	ID_CLEAR_FILES,
 	ID_RUN_FERRET,
 	ID_EXTRACT_BROWSE,
@@ -66,6 +67,7 @@ class SelectFiles: public wxFrame
 		void DownloadFiles ();
 		bool ExtractFiles (int start_from = 0);
 		void OnAdd (wxCommandEvent & event);
+    void OnAddDir (wxCommandEvent & event);
 		void OnSearchClicked (wxCommandEvent & event);
 		void UpdateButtons ();
 		void OnClear (wxCommandEvent & event);
