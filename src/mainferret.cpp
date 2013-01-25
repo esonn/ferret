@@ -30,11 +30,6 @@ bool isRemoveCommonTrigramsOption (wxString test_string)
 	return isNamedOption (test_string, "-r", "--remove-common");
 }
 
-bool isHtmlTableOption (wxString test_string)
-{
-	return isNamedOption (test_string, "-w", "--html-table");
-}
-
 bool isPdfOption (wxString test_string)
 {
 	return isNamedOption (test_string, "-p", "--pdf-report");
@@ -62,7 +57,6 @@ bool isCommandOption (wxString test_string)
 		|| isListTrigramsOption (test_string) 
 		|| isAllComparisonsOption (test_string) 
     || isRemoveCommonTrigramsOption (test_string)
-		|| isHtmlTableOption (test_string)
 		|| isPdfOption (test_string)
 		|| isXmlOption (test_string)
 		|| isDefinitionOption (test_string)
@@ -73,13 +67,12 @@ void aboutMessage ()
 {
 	std::cout 
 		<< "Ferret 5.3: start with no arguments for graphical version" << std::endl
-		<< "Usage: ferret [-h] [-d] [-l] [-a] [-r] [-w] [-p] [-x] [-f] [-u]" << std::endl
+		<< "Usage: ferret [-h] [-d] [-l] [-a] [-r] [-p] [-x] [-f] [-u]" << std::endl
 		<< "  -h, --help           	displays help on command-line parameters" << std::endl
 		<< "  -d, --data-table     	produce similarity table (default)" << std::endl
 		<< "  -l, --list-trigrams  	produce trigram list report" << std::endl
 		<< "  -a, --all-comparisons	produce list of all comparisons" << std::endl
     << "  -r, --remove-common   removes common trigrams" << std::endl
-		<< "  -w, --html-table     	produce similarity table in html format" << std::endl
 		<< "  -p, --pdf-report     	source-1 source-2 results-file : create pdf report" << std::endl
 		<< "  -x, --xml-report     	source-1 source-2 results-file : create xml report" << std::endl
 		<< "  -f, --definition-file	use file with document list" << std::endl
@@ -191,104 +184,6 @@ void writeSimilarityTable (DocumentList & docs, bool remove_common_trigrams)
 		}
 }
 
-// Write the data as an HTML page 
-void writeHtmlSimilarityTable (wxString & folder, DocumentList & docs, bool remove_common_trigrams)
-{
-	// create a set of indices, sorted, so table can be displayed in similarity order
-	std::vector<int> document1;
-	std::vector<int> document2;
-		for (int i = 0;   i < docs.Size (); ++i)
-		for (int j = i+1; j < docs.Size (); ++j)
-		{
-			if (docs[i]->GetGroupId () != docs[j]->GetGroupId ())
-			{ // only add pair if not in same group
-				document1.push_back (i);
-				document2.push_back (j);
-			}
-		}
-	assert (document1.size () == document2.size ()); // must be same number of items in both
-	// -- sorted indices into the document lists
-	std::vector<int> sorted_indices;
-	for (int i = 0; i < document1.size (); ++i)
-	{
-		sorted_indices.push_back (i);
-	}
-	sort (sorted_indices.begin (), sorted_indices.end (), 
-			docs.GetSimilarityComparer (&document1, &document2, remove_common_trigrams));
-	
-	std::cout << "<html><body>" << std::endl;
-	std::cout << "<h1>Ferret: Table of Comparisons</h1>";
-	std::cout << "<p>Return to <a href=\"/ferret/home\">Ferret home page.</a></p>";
-	std::cout << "<table border=\"1\"><tbody><tr><th>Index</th><th>Document 1</th><th>Document 2</th><th>Similarity</th><th>Pdf report</th></tr>" 
-		<< std::endl;
-	for (int idx = 0; idx < sorted_indices.size () && idx < MAX_TABLE_SIZE; ++idx)
-	{
-		int i = document1[sorted_indices[idx]];
-		int j = document2[sorted_indices[idx]];
-		std::cout 
-			<< "<tr>"
-			<< "<td>" << idx+1 << "</td>"
-			<< "<td>" << docs[i]->GetName () << "</td>"
-			<< "<td>" << docs[j]->GetName () << "</td>"
-			<< "<td>" << docs.ComputeResemblance (i, j) << "</td>"
-			<< "<td><a href=\"/ferret/report?"
-			<< "upload=" << folder
-			<< "&filename1=" << docs[i]->GetName () // web application
-			<< "&filename2=" << docs[j]->GetName () 
-			<< "\">Download</a></td>" // web application
-			<< "</tr>"
-			<< std::endl;
-	}
-	std::cout << "</tbody></table>";
-	std::cout << "<p>Total number of documents: " << docs.Size () << "</p>";
-	std::cout << "<p>Total number of pairs: " << docs.NumberOfPairs (); 
-	if (sorted_indices.size () > MAX_TABLE_SIZE) 
-	{
-		std::cout << "  (maximum of " << MAX_TABLE_SIZE << " shown)";
-	}
-	std::cout << "</p>";
-        wxSortedArrayString problemFiles = wxGetApp().GetProblemFiles ();
-	if (problemFiles.size () > 0)
-	{
-        	std::cout << "<hr><br>";
-	        std::cout << "Files from which text could not be extracted:<br />";
-        	for (int i = 0; i < problemFiles.size (); ++i)
-		{
-			std::cout << problemFiles[i] << "<br />";
-		}
-	}
-        wxSortedArrayString ignoredFiles = wxGetApp().GetIgnoredFiles ();
-        if (ignoredFiles.size () > 0)
-	{
-        	std::cout << "<hr><br>";
-        	std::cout << "Files from which text could not be extracted:<br />";
-		for (int i = 0; i < ignoredFiles.size (); ++i)
-		{
-			std::cout << ignoredFiles[i] << "<br />";
-		}
-	}
-        std::cout << "<hr>";
-	std::cout << "<p>Return to <a href=\"/ferret/home\">Ferret home page.</a>";
-	std::cout << "<hr><font size=-1>"
-		<< wxGetApp().GetGeneratedByString () 
-		<< "</font>";
-	std::cout << "</body></html>" << std::endl;
-}
-
-void writeHtmlErrorPage ()
-{
-	std::cout << "<html><body>" << std::endl;
-	std::cout << "<h1>Ferret: Table of Comparisons</h1>" 
-		<< "<p />" << std::endl;
-	std::cout << "<p>There was an error -- probably Ferret could not find enough documents.</p>"
-		<< std::endl;
-	std::cout << "<p>Return to <a href=\"/ferret/home\">Ferret home page.</a>";
-	std::cout << "<hr><font size=-1>"
-		<< wxGetApp().GetGeneratedByString () 
-		<< "</font>";
-	std::cout << "</body></html>" << std::endl;
-}
-
 // Note this must return false if the command-line operation has completed
 // -- in wxWidgets returning false from OnInit ceases the application
 // This returns true if no command-line options provided, and the application
@@ -341,12 +236,6 @@ bool FerretApp::OnInit ()
         remove_common_trigrams = true;
         filenames_start += 1;
       }
-			else if (isHtmlTableOption (argv[filenames_start]))
-			{
-				report_type = HTML_TABLE;
-				upload_dir = argv[filenames_start+1];
-				filenames_start += 2;
-			}
 			else if (isPdfOption (argv[filenames_start]))
 			{
 				report_type = PDF_REPORT;
@@ -376,14 +265,6 @@ bool FerretApp::OnInit ()
 				(report_type == PDF_REPORT && num_filenames != 3) ||
 				(report_type == XML_REPORT && num_filenames != 3))
 		{	// not enough filenames, or incorrect use of PDF/XML_REPORT option
-			if (report_type == HTML_TABLE)
-			{
-				writeHtmlErrorPage ();
-			}
-			else
-			{
-				aboutMessage ();
-			}
 			return false;
 		}
 		else if (report_type == PDF_REPORT || report_type == XML_REPORT) // num_filenames must be 3
@@ -459,10 +340,6 @@ bool FerretApp::OnInit ()
 			else if (report_type == DATA_TABLE)
 			{
 				writeSimilarityTable (docs, remove_common_trigrams);
-			}
-			else if (report_type == HTML_TABLE)
-			{
-				writeHtmlSimilarityTable (upload_dir, docs, remove_common_trigrams);
 			}
 			// optionally save out the document table
 			if (!stored_data.IsEmpty ())

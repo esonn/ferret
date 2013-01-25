@@ -20,7 +20,7 @@
 
 class HelpFrame; // forward declaration
 
-enum Report { LIST_TRIGRAMS, ALL_COMPARISONS, DATA_TABLE, HTML_TABLE, PDF_REPORT, XML_REPORT };
+enum Report { LIST_TRIGRAMS, ALL_COMPARISONS, DATA_TABLE, PDF_REPORT, XML_REPORT };
 
 #endif
 

@@ -87,7 +87,6 @@ Ferret can also be used from the command line. The command-line options are:
       -l, --list-trigrams  	produce trigram list report
       -a, --all-comparisons	produce list of all comparisons
       -r, --remove-common   removes common trigrams
-      -w, --html-table     	produce similarity table in html format
       -p, --pdf-report     	source-1 source-2 results-file : create pdf report
       -x, --xml-report     	source-1 source-2 results-file : create xml report
       -f, --definition-file	use file with document list

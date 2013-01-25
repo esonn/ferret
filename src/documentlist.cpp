@@ -7,16 +7,24 @@ DocumentList::~DocumentList ()
 
 // pathname may be a single file or a directory name
 // -- recurse through directories, and add all files to the list
-// TODO use status of group check box to give all files in same dir the same ID
-void DocumentList::AddDocument (wxString pathname)
+// -- if grouped is set, give all files in directory same id
+void DocumentList::AddDocument (wxString pathname, bool grouped)
 {
   if (wxFileName::DirExists (pathname))
   {
     wxArrayString files;
     wxDir::GetAllFiles (pathname, &files, wxEmptyString);
+
+    int id = -1;
     for (int i=0; i < files.GetCount (); i += 1)
     {
-      _documents.push_back (new Document (files[i], GetNewGroupId ()));
+      // give document a new id if this is the first document (id == -1)
+      // or if grouped is not set
+      if ((id == -1) || (!grouped))
+      {
+        id = GetNewGroupId ();
+      }
+      _documents.push_back (new Document (files[i], id));
     }
   }
   else 

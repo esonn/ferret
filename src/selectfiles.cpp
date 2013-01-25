@@ -189,7 +189,8 @@ bool SelectFiles::ContainsOnlyDirectories ()
 void SelectFiles::UpdateButtons ()
 {
 	// -- only allow 'runferret' if at least two files
-	if (_document_list->Size () >= 2)
+  // -- TODO: Count files in directories
+	if (((MyListCtrl *) FindWindow (ID_FILE_LIST))->GetCount () >= 2)
   {
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (true);
 	}
@@ -223,6 +224,14 @@ void SelectFiles::OnHelp (wxCommandEvent & WXUNUSED(event))
 
 void SelectFiles::OnRun (wxCommandEvent & WXUNUSED(event))
 {
+  // put documents into document list
+	MyListCtrl * file_list = (MyListCtrl *) FindWindow (ID_FILE_LIST);
+  bool grouped = ((wxCheckBox *) FindWindow (ID_GROUP_DIRS))->IsChecked ();
+  for (int i = 0; i < file_list->GetCount (); i += 1)
+  {
+		_document_list->AddDocument (file_list->GetItem (i), grouped);
+  }
+  // prepare document list for reading tuples
 	_document_list->ResetReading ();
 	// perform text extraction
 	if (!ExtractFiles ()) return; // abort, if cancel clicked in conversion
@@ -250,11 +259,10 @@ void SelectFiles::OnClose (wxCloseEvent & WXUNUSED(event))
 void SelectFiles::AddDocuments (wxArrayString & paths)
 {
 	MyListCtrl * file_list = (MyListCtrl *) FindWindow (ID_FILE_LIST);
+
 	for (int i = 0, n = paths.GetCount (); i < n; ++i)
 	{
 		file_list->AddPath (paths[i]);
-		wxFileName filename (paths[i]);
-		_document_list->AddDocument (paths[i]); // TODO pass status of group check box
 	}
 	if (paths.IsEmpty ())
 	{

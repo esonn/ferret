@@ -65,7 +65,7 @@ class DocumentList
 	public:
 		DocumentList () : _last_group_id (0) {}
 		~DocumentList ();
-		void AddDocument (wxString pathname);
+		void AddDocument (wxString pathname, bool grouped=false);
 		void AddDocument (wxString pathname, int id);
 		void AddDocument (wxString pathname, wxString name, int id);
 		bool AddDocumentsFromDefinitionFile (wxString pathname);
