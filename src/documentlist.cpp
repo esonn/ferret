@@ -5,21 +5,52 @@ DocumentList::~DocumentList ()
 	Clear ();
 }
 
+// pathname may be a single file or a directory name
+// -- recurse through directories, and add all files to the list
 void DocumentList::AddDocument (wxString pathname)
 {
-	_documents.push_back (new Document (pathname, GetNewGroupId ()));
+  if (wxFileName::DirExists (pathname))
+  {
+    wxArrayString files;
+    wxDir::GetAllFiles (pathname, &files, wxEmptyString);
+    for (int i=0; i < files.GetCount (); i += 1)
+    {
+      _documents.push_back (new Document (files[i], GetNewGroupId ()));
+    }
+  }
+  else 
+  {
+    wxFileName filename (pathname);
+    if (filename.IsFileReadable ())
+    {
+  	  _documents.push_back (new Document (pathname, GetNewGroupId ()));
+    }
+  }
 }
 
+// add document with given id to list
+// -- ignores any pathnames which are not readable files
 void DocumentList::AddDocument (wxString pathname, int id)
 {
-	_documents.push_back (new Document (pathname, id));
+  wxFileName filename (pathname);
+  if (filename.IsFileReadable ())
+  {
+    _documents.push_back (new Document (pathname, id));
+  }
 }
 
+// add document with given id and given name to list
+// -- ignores any pathnames which are not readable files
+// -- this method is used during file conversion, to keep the file's earlier name
 void DocumentList::AddDocument (wxString pathname, wxString name, int id)
 {
-	Document * doc = new Document (pathname, id);
-	doc->SetName (name);
-	_documents.push_back (doc);
+  wxFileName filename (pathname);
+  if (filename.IsFileReadable ())
+  {
+  	Document * doc = new Document (pathname, id);
+  	doc->SetName (name);
+  	_documents.push_back (doc);
+  }
 }
 
 // Use file defined in pathname as a list of definitions

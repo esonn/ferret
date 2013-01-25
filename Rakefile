@@ -4,7 +4,6 @@ desc "display planned features"
 task :todo do
   puts "Planned/possible additional functionality for Ferret"
   puts "\nVersion #{VERSION}:"
-  puts "- add directories to select files"
   puts "- support student grouping"
   puts "- display minimal paths in similarity list"
   puts "- use numbered files in converted files (to support directories of similar code)"
@@ -17,6 +16,7 @@ task :todo do
   puts "- display of groups of copied code"
   puts "- unicode, including Chinese etc processing (Bao et al 2006)"
   puts "  (the issue here is more display/output of non-ASCII characters)"
+  puts "- show mean/mode of scores below result tables"
 end
 
 desc "build ferret"

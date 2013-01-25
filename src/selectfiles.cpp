@@ -6,11 +6,10 @@ bool DropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames
   wxSortedArrayString result;
 
   for (int i = 0; i < filenames.GetCount (); i++) {
-    if (!wxFileName::DirExists (filenames[i])) {
-      wxFileName filename (filenames[i]);
-      if (filename.IsFileReadable ()) {
-        result.Add (filenames[i]);
-      }
+    wxFileName filename (filenames[i]); 
+    // allow any kind of filename, file or directory, so long as readable
+    if (filename.IsFileReadable ()) {
+      result.Add (filenames[i]);
     }
   }
   _document_list->AddDocuments (result);
@@ -137,7 +136,9 @@ void SelectFiles::OnAddDir (wxCommandEvent & WXUNUSED(event))
       wxEmptyString, wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
   if (dialog.ShowModal () == wxID_OK)
   {
-    std::cout << "Add directory " << dialog.GetPath () << std::endl;
+    wxArrayString paths;
+    paths.Add (dialog.GetPath ());
+    AddDocuments (paths);
   }
 }
 
