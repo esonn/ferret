@@ -27,18 +27,12 @@ enum { 	ID_ADD_FILES = wxID_HIGHEST + 100,
 	ID_RUN_FERRET,
 	ID_EXTRACT_BROWSE,
 	ID_EXTRACT_DIR_NAME,
-	ID_DOWNLOAD_BROWSE,
-	ID_DOWNLOAD_DIR_NAME,
 	ID_COPY_ALL,
 	ID_EXTRACT_ALL,
 	ID_IGNORE_UNKNOWN,
-	ID_TYPE_SELECTION,
 	ID_FILE_LIST,
 	ID_SETTINGS,
-	ID_WEBFERRET,
-	ID_MAX_DOWNLOADS,
-	ID_MAX_RESULTS,
-	ID_MAX_TUPLE_SEARCHES
+  ID_GROUP_DIRS
 };
 
 // *** Utility class: ListCtrl without choice of selection, used for main document list
@@ -50,10 +44,15 @@ class MyListCtrl: public wxListCtrl
 					wxDefaultPosition, wxDefaultSize,
 					wxLC_LIST | wxLC_SINGLE_SEL | wxSIMPLE_BORDER)
 			{}
+    void ClearPaths ();
+    void AddPath (wxString path);
+    int GetCount () const;
+    wxString GetItem (int i) const;
 	private:
 		void OnMouseEvent (wxMouseEvent & WXUNUSED(event)) { ; }
 		void OnKeyEvent (wxKeyEvent & WXUNUSED(event)) { ; }
 		DECLARE_EVENT_TABLE()
+    wxArrayString _paths;
 };
 
 /** SelectFiles is the initial frame seen in the main ferret program.
@@ -69,6 +68,7 @@ class SelectFiles: public wxFrame
 		void OnAdd (wxCommandEvent & event);
     void OnAddDir (wxCommandEvent & event);
 		void OnSearchClicked (wxCommandEvent & event);
+    bool ContainsOnlyDirectories ();
 		void UpdateButtons ();
 		void OnClear (wxCommandEvent & event);
 		void OnOptions (wxCommandEvent & event);

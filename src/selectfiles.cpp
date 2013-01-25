@@ -1,5 +1,28 @@
 #include "selectfiles.h"
 
+void MyListCtrl::ClearPaths ()
+{
+  DeleteAllItems ();
+  _paths.Clear ();
+}
+
+void MyListCtrl::AddPath (wxString path)
+{
+  _paths.Add (path);
+  wxFileName filename (path);
+  InsertItem (GetItemCount (), filename.GetFullName ());
+}
+
+int MyListCtrl::GetCount () const
+{
+  return _paths.GetCount ();
+}
+
+wxString MyListCtrl::GetItem (int i) const
+{
+  return _paths[i];
+}
+
 // Process the dropped files
 bool DropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
 {
@@ -75,7 +98,7 @@ SelectFiles::SelectFiles ()
 	frame_sizer->Add (selection_buttons_sizer, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	// -- list control, to hold names of selected files
-	frame_sizer->Add (MakeStaticText (this, "List of document filenames, to analyse for signs of copying:"),
+	frame_sizer->Add (MakeStaticText (this, "List of document filenames and directories, to analyse for signs of copying:"),
 		       	0, wxTOP | wxLEFT, 5);
 
 	MyListCtrl * file_list = new MyListCtrl (this, ID_FILE_LIST);
@@ -88,6 +111,9 @@ SelectFiles::SelectFiles ()
 	button_sizer->Add (MakeButton (this, ID_SETTINGS, "Settings ...",
 				"Advanced users: Control how Ferret converts your files"), 
 			0, wxGROW | wxLEFT | wxRIGHT, 5);
+  button_sizer->Add (MakeCheckBox (this, ID_GROUP_DIRS, "Group files in directories",
+        "Do not compare files in directories with each other"),
+      0, wxGROW | wxLEFT | wxRIGHT, 5);
 	button_sizer->AddStretchSpacer (1);
 	button_sizer->Add (MakeButton (this, ID_RUN_FERRET, "Run Ferret",
 			"Finish selecting documents, and perform comparison", false),
@@ -111,6 +137,7 @@ SelectFiles::SelectFiles ()
 	SetSizer (frame_sizer);
 
   SetDropTarget (new DropFiles (this));
+  UpdateButtons (); // set visibility of buttons
 #if __WXMSW__
 	SetBackgroundColour (wxNullColour); // ensure background coloured, on Windows
 #endif
@@ -142,6 +169,23 @@ void SelectFiles::OnAddDir (wxCommandEvent & WXUNUSED(event))
   }
 }
 
+// return true if there are only directories in file list, and at least one directory
+bool SelectFiles::ContainsOnlyDirectories ()
+{
+  MyListCtrl * file_list = (MyListCtrl *) FindWindow (ID_FILE_LIST);
+  bool result = (file_list->GetCount () > 0);
+  
+  for (int i = 0; i < file_list->GetCount (); i += 1)
+  {
+    if (!wxFileName::DirExists (file_list->GetItem (i)))
+    {
+      result = false;
+    }
+  }
+
+  return result;
+}
+
 void SelectFiles::UpdateButtons ()
 {
 	// -- only allow 'runferret' if at least two files
@@ -153,11 +197,13 @@ void SelectFiles::UpdateButtons ()
 	{
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (false);
 	}
+  // -- only enable checkbox if all pathnames are directories
+  ((wxCheckBox *) FindWindow (ID_GROUP_DIRS))->Enable (ContainsOnlyDirectories ());
 }
 
 void SelectFiles::OnClear (wxCommandEvent & WXUNUSED(event))
 {
-	((wxListCtrl *) FindWindow (ID_FILE_LIST))->DeleteAllItems ();
+	((MyListCtrl *) FindWindow (ID_FILE_LIST))->ClearPaths ();
 	_document_list->Clear ();
 	((wxButton *) FindWindow (ID_CLEAR_FILES))->Enable (false);
 	((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (false);
@@ -203,12 +249,12 @@ void SelectFiles::OnClose (wxCloseEvent & WXUNUSED(event))
 
 void SelectFiles::AddDocuments (wxArrayString & paths)
 {
-	wxListCtrl * file_list = (wxListCtrl *) FindWindow (ID_FILE_LIST);
+	MyListCtrl * file_list = (MyListCtrl *) FindWindow (ID_FILE_LIST);
 	for (int i = 0, n = paths.GetCount (); i < n; ++i)
 	{
+		file_list->AddPath (paths[i]);
 		wxFileName filename (paths[i]);
-		file_list->InsertItem (file_list->GetItemCount (), filename.GetFullName ());
-		_document_list->AddDocument (paths[i]);
+		_document_list->AddDocument (paths[i]); // TODO pass status of group check box
 	}
 	if (paths.IsEmpty ())
 	{

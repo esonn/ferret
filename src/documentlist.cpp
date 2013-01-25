@@ -7,6 +7,7 @@ DocumentList::~DocumentList ()
 
 // pathname may be a single file or a directory name
 // -- recurse through directories, and add all files to the list
+// TODO use status of group check box to give all files in same dir the same ID
 void DocumentList::AddDocument (wxString pathname)
 {
   if (wxFileName::DirExists (pathname))
