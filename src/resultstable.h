@@ -39,6 +39,7 @@ enum { 	ID_RANK_1 = wxID_HIGHEST + 1,
 	ID_CREATE_REPORT,
 	ID_DISPLAY_TEXTS,
   ID_REMOVE_COMMON,
+  ID_SHOW_SHORT,
   ID_UNIQUE_VIEW
 };
 
@@ -68,7 +69,8 @@ class DocumentListCtrl: public wxListCtrl
 					wxDefaultPosition, wxDefaultSize,
 					wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_VIRTUAL | wxSIMPLE_BORDER ),
 			  _ferretparent (ferretparent),
-        _remove_common_trigrams (false)
+        _remove_common_trigrams (false),
+        _show_short (true)
 		{}
 		void UpdatedDocumentList ();
 		void SelectFirstItem ();
@@ -85,7 +87,13 @@ class DocumentListCtrl: public wxListCtrl
 		int GetNumberItems () const;
 		wxString GetPathname (int i) const;
 		wxString GetName (int i) const;
+		wxString GetDisplayName (int i) const;
     bool RemoveCommonTrigramsSet () const;
+    void SetShowShort (bool value) 
+    { 
+      _show_short = value; 
+      RefreshItems (0, GetItemCount () - 1);
+    }
 	private:
 		void SortOnDocument (int num_doc, bool force_sort = false);
 		void ShowItem (long item_number);
@@ -96,6 +104,7 @@ class DocumentListCtrl: public wxListCtrl
 		std::vector<int> _sortedIndices;
 		Sort         _lastsort;
     bool        _remove_common_trigrams;
+    bool        _show_short;
 };
 
 // The ComparisonTableView displays the list of compared document pairs, allowing the user to 
@@ -114,6 +123,7 @@ class ComparisonTableView: public wxFrame
     void OnShowUniqueView (wxCommandEvent & event);
 		void OnQuit        (wxCommandEvent & event);
     void OnCheckRemoveCommon (wxCommandEvent & event);
+    void OnCheckShortNames (wxCommandEvent & event);
 		void OnClose (wxCloseEvent & event);
 		void SetDocumentList (DocumentList & documentlist);
 		void SaveReportFor (int document1, int document2, bool unique);

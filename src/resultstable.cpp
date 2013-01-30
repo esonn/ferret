@@ -129,7 +129,7 @@ void DocumentListCtrl::SortOnDocument (int doc_num, bool force_sort)
 	std::vector<wxString> names;
 	for (int i=0; i<num_docs; ++i)
 	{
-		names.push_back (GetName (i));
+		names.push_back (GetDisplayName (i));
 	}
 
 	// set up sort
@@ -225,11 +225,11 @@ wxString DocumentListCtrl::OnGetItemText (long item, long column) const
 		int position = 0;
 		if (column == 0)
 		{
-			return GetName (doc1);
+			return GetDisplayName (doc1);
 		}
 		else if (column == 1)
 		{
-			return GetName (doc2);
+			return GetDisplayName (doc2);
 		}
 		else // if (column == 2)
 		{
@@ -365,6 +365,22 @@ wxString DocumentListCtrl::GetName (int i) const
 	return _ferretparent->GetDocumentList()[i]->GetName ();
 }
 
+// Return the file or pathname for given document
+// by retrieving item from parent document list.
+wxString DocumentListCtrl::GetDisplayName (int i) const
+{
+  wxString result;
+  if (_show_short)
+  {
+    result = _ferretparent->GetDocumentList()[i]->GetName ();
+  }
+  else
+  {
+	  result = _ferretparent->GetDocumentList()[i]->GetOriginalPathname ();
+  }
+  return result;
+}
+
 bool DocumentListCtrl::RemoveCommonTrigramsSet () const
 {
   return _remove_common_trigrams;
@@ -379,6 +395,7 @@ BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_DISPLAY_TEXTS, ComparisonTableView::OnDisplayTexts)
 	EVT_BUTTON(ID_CREATE_REPORT, ComparisonTableView::OnCreateReport)
   EVT_CHECKBOX(ID_REMOVE_COMMON, ComparisonTableView::OnCheckRemoveCommon)
+  EVT_CHECKBOX(ID_SHOW_SHORT, ComparisonTableView::OnCheckShortNames)
 	EVT_BUTTON(wxID_HELP, ComparisonTableView::OnHelp)
 	EVT_BUTTON(wxID_EXIT,  ComparisonTableView::OnQuit)
 	EVT_CLOSE (ComparisonTableView::OnClose)
@@ -414,6 +431,19 @@ void ComparisonTableView::OnCheckRemoveCommon (wxCommandEvent & WXUNUSED(event))
 {
   wxCheckBox * box = (wxCheckBox *) FindWindow (ID_REMOVE_COMMON);
   _resemblanceObserver->SetSimilarityType (box->IsChecked ());
+}
+
+void ComparisonTableView::OnCheckShortNames (wxCommandEvent & WXUNUSED(event))
+{
+  wxCheckBox * box = (wxCheckBox *) FindWindow (ID_SHOW_SHORT);
+  if (box != 0 && box->IsChecked ())
+  {
+    _resemblanceObserver->SetShowShort (true);
+  }
+  else
+  {
+    _resemblanceObserver->SetShowShort (false);
+  }
 }
 
 void ComparisonTableView::OnHelp (wxCommandEvent & WXUNUSED(event))
@@ -494,7 +524,7 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 
 ComparisonTableView::ComparisonTableView()
 	: wxFrame(NULL, wxID_ANY, "Ferret: Table of comparisons", 
-		wxDefaultPosition, wxSize (650, 500))
+		wxDefaultPosition, wxSize (650, 550))
 {
 	CentreOnScreen ();
 	CreateStatusBar(3);
@@ -562,6 +592,9 @@ ComparisonTableView::ComparisonTableView()
 	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
   buttonSizer->Add (MakeCheckBox (this, ID_REMOVE_COMMON, "Remove Common Trigrams",
       "Compute similarity only from trigrams for the two documents", false), 
+      0, wxGROW | wxALL, 5);  
+  buttonSizer->Add (MakeCheckBox (this, ID_SHOW_SHORT, "Show Short Names",
+      "Uncheck to show full pathnames in table", true), 
       0, wxGROW | wxALL, 5);
 
 	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
