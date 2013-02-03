@@ -394,7 +394,7 @@ bool SelectFiles::ExtractFiles (int start_from)
 			}
 		}
 
-		if (!(*_document_list)[i]->ExtractDocument (extract_folder))
+		if (!(*_document_list)[i]->ExtractDocument (extract_folder, i))
 		{
 			to_remove.push_back ((*_document_list)[i]);
 		}

@@ -11,7 +11,7 @@ ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
 
 mainferret.o: mainferret.cpp mainferret.h \
-		documentlist.h ferretapp.h
+		documentlist.h ferretapp.h document.h
 	$(CC) `wx-config --cxxflags` -c mainferret.cpp -o mainferret.o
 
 # graphical and pdf functionality

@@ -4,7 +4,6 @@ desc "display planned features"
 task :todo do
   puts "Planned/possible additional functionality for Ferret"
   puts "\nVersion #{VERSION}:"
-  puts "- use numbered files in converted files (to support directories of similar code)"
   puts "- use groups in uniqueness display"
   puts "- balance split window on document-comparison view"
   puts "- remove FerretAppFolder on quit"

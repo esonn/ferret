@@ -83,9 +83,9 @@ class Document
 		bool IsCodeType () const;
 		bool IsUnknownType () const;
 		// extract from non-text formats
-		bool ExtractDocument (wxString & extract_folder); // return true if file should be removed from list
-		void ExtractFromWordProcessor (wxString & extract_folder);
-		void ExtractFromPdf (wxString & extract_folder);
+		bool ExtractDocument (wxString & extract_folder, int index); // return true if file should be removed from list
+		void ExtractFromWordProcessor (wxString & extract_folder, int index);
+		void ExtractFromPdf (wxString & extract_folder, int index);
 		// for save/retrieve document data
 		void Save (wxFile & file);
 	private:

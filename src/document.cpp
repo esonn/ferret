@@ -314,7 +314,7 @@ bool Document::IsUnknownType () const
 // -- returns true to indicate the document is in text form, or has been successfully converted,
 //            and so can be processed by caller
 // -- adds to list of problem files and returns false if there is a problem in conversion
-bool Document::ExtractDocument (wxString & extract_folder)
+bool Document::ExtractDocument (wxString & extract_folder, int index)
 {
 	wxFileName this_file (_pathname);
 	// consider extension on file and user's selection
@@ -324,11 +324,11 @@ bool Document::ExtractDocument (wxString & extract_folder)
 	if ((wxGetApp().GetConvertAll () || IsWordProcessorType ()) &&
 			(!IsUnknownType () || !wxGetApp().GetIgnoreUnknown ()))
 	{
-		ExtractFromWordProcessor (extract_folder);
+		ExtractFromWordProcessor (extract_folder, index);
 	}
 	else if (IsPdfType ())
 	{
-		ExtractFromPdf (extract_folder);
+		ExtractFromPdf (extract_folder, index);
 	}
 	else if (wxGetApp().GetCopyAll () &&
 			(IsTxtType () || IsCodeType () || !wxGetApp().GetIgnoreUnknown ()))
@@ -358,11 +358,12 @@ bool Document::ExtractDocument (wxString & extract_folder)
 
 // Call out to abiword to convert document
 // -- note use of paths so that converted file ends in extract_folder
-void Document::ExtractFromWordProcessor (wxString & extract_folder)
+void Document::ExtractFromWordProcessor (wxString & extract_folder, int index)
 {
 	wxFileName this_file (_pathname);
-	wxFileName new_file (extract_folder, this_file.GetFullName ());
-	new_file.SetExt ("txt");
+  wxString new_name = "";
+  new_name.Printf("file-%d.txt", index);
+	wxFileName new_file (extract_folder, new_name);
 #if __WXGTK__
 	wxExecute ("abiword --to=txt " + 
 			this_file.GetFullPath () + 
@@ -390,11 +391,12 @@ void Document::ExtractFromWordProcessor (wxString & extract_folder)
 
 // Call out to pdftotext to convert document
 // -- note use of paths so that converted files ends in extract_folder
-void Document::ExtractFromPdf (wxString & extract_folder)
+void Document::ExtractFromPdf (wxString & extract_folder, int index)
 {
 	wxFileName this_file (_pathname);
-	wxFileName new_file (extract_folder, this_file.GetFullName ());
-	new_file.SetExt ("txt");
+  wxString new_name = "";
+  new_name.Printf("file-%d.txt", index);
+	wxFileName new_file (extract_folder, new_name);
 #if __WXGTK__
 	wxExecute ("pdftotext -layout -enc ASCII7 -nopgbrk " + // changed Latin1 to ASCII7
 			this_file.GetFullPath () +

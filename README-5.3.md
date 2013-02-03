@@ -150,4 +150,5 @@ Version 5.3:
 - include option to compute similarities after excluding trigrams common to other files
 - added display of document-unique trigram count
 - red-blue-black colour for confirming pairwise copying implemented on displays/pdf/xml
+- grouping of files based on base directory in select files display
 

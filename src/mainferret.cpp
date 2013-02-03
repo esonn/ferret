@@ -315,7 +315,7 @@ bool FerretApp::OnInit ()
 			for (int i = 0, n = docs.Size(); i < n; ++i)
 			{
 				wxString extract_folder = wxGetApp().GetExtractFolder ();
-				if (!docs[i]->ExtractDocument (extract_folder))
+				if (!docs[i]->ExtractDocument (extract_folder, i))
 				{
 					to_remove.push_back (docs[i]);
 				}
