@@ -489,6 +489,7 @@ void ComparisonTableView::OnShowUniqueView (wxCommandEvent & WXUNUSED(event))
 void ComparisonTableView::OnQuit (wxCommandEvent & WXUNUSED(event))
 {
 	wxGetApp().CloseHelp ();
+  wxGetApp().RemoveFolders ();
 	Destroy ();
 }
 

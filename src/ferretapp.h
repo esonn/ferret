@@ -6,6 +6,8 @@
   */
 
 #include <wx/wx.h>
+#include <wx/dir.h>
+#include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/stdpaths.h>
 
@@ -21,6 +23,7 @@ class FerretApp: public wxApp
 		FerretApp ();
 		virtual bool OnInit ();
 		void CloseHelp ();
+    void RemoveFolders ();
 		void ShowSelectionHelp ();
 		void ShowTableHelp ();
 		void ShowComparisonHelp ();

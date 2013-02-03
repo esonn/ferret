@@ -28,6 +28,17 @@ void FerretApp::CloseHelp ()
 	_ferret_help->Destroy ();
 }
 
+void FerretApp::RemoveFolders ()
+{
+  wxArrayString files;
+  wxDir::GetAllFiles (_extract_folder, &files);
+  for (int i=0; i<files.GetCount (); i+=1)
+  {
+    wxRemoveFile (files[i]);
+  }
+  wxRmdir (_extract_folder, 0);
+}
+
 void FerretApp::ShowSelectionHelp ()
 {
 	_ferret_help->ShowSelectionHelp ();

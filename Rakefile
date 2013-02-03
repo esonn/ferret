@@ -6,7 +6,6 @@ task :todo do
   puts "\nVersion #{VERSION}:"
   puts "- use groups in uniqueness display"
   puts "- balance split window on document-comparison view"
-  puts "- remove FerretAppFolder on quit"
   puts "- catch 'close' and 'quit' events, make sure all parts of window finished (e.g. documentview)"
   puts "- RunFerret must be sensitive to number of files in directory"
   puts "\nLater versions:"
