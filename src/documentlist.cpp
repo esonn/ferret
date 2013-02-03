@@ -12,6 +12,9 @@ void DocumentList::AddDocument (wxString pathname, bool grouped)
 {
   if (wxFileName::DirExists (pathname))
   {
+    wxFileName filename (pathname);
+    wxString short_name = filename.GetName ();
+
     wxArrayString files;
     wxDir::GetAllFiles (pathname, &files, wxEmptyString);
 
@@ -24,7 +27,9 @@ void DocumentList::AddDocument (wxString pathname, bool grouped)
       {
         id = GetNewGroupId ();
       }
-      _documents.push_back (new Document (files[i], id));
+      Document * newDocument = new Document (files[i], id);
+      newDocument->SetShortPath (short_name); // use the last directory name
+      _documents.push_back (newDocument);
     }
   }
   else 

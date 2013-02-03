@@ -3,6 +3,7 @@
 Document::Document (wxString pathname, int id)
 	: _pathname (pathname),
 	  _original_pathname (pathname),
+    _short_path (""),
 	  _num_trigrams (0),
     _num_unique_trigrams (0),
 	  _group_id (id)
@@ -14,6 +15,7 @@ Document::Document (wxString pathname, int id)
 Document::Document (Document * document)
 	: _pathname (document->_pathname),
 	  _original_pathname (document->_original_pathname),
+    _short_path (document->_short_path),
 	  _name (document->_name),
 	  _num_trigrams (0),
     _num_unique_trigrams (0),
@@ -43,6 +45,11 @@ void Document::SetPathname (wxString pathname)
 	_pathname = pathname;
 }
 
+void Document::SetShortPath (wxString pathname)
+{
+  _short_path = pathname;
+}
+
 void Document::SetName (wxString name)
 {
 	_name = name;
@@ -51,6 +58,18 @@ void Document::SetName (wxString name)
 wxString Document::GetName () const
 {
 	return _name;
+}
+
+wxString Document::GetShortName () const
+{
+  if (_short_path != "")
+  {
+    return _short_path + "/.../" + _name;
+  }
+  else
+  {
+    return _name;
+  }
 }
 
 int Document::GetGroupId () const

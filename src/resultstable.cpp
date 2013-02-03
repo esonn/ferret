@@ -372,7 +372,7 @@ wxString DocumentListCtrl::GetDisplayName (int i) const
   wxString result;
   if (_show_short)
   {
-    result = _ferretparent->GetDocumentList()[i]->GetName ();
+    result = _ferretparent->GetDocumentList()[i]->GetShortName ();
   }
   else
   {

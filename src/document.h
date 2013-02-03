@@ -24,6 +24,8 @@
   *    _original_pathname -- this is the path to the original source form of the document
   *    _pathname -- this is the path to the displayed text form of the document
   *                 When files have been converted to text, this holds the converted file's path.
+  *    _short_path -- this is the base directory for the file provided in select files
+  *                   used in results table to show short pathname
   *    _name -- this is the 'name' of the document.  For user files, it is the name of the 
   *             document.
   * -- the important part of the class is the set of methods for iterating 
@@ -39,8 +41,10 @@ class Document
 		wxString GetOriginalPathname () const;
 		void SetOriginalPathname (wxString pathname);
 		void SetPathname (wxString pathname);
+    void SetShortPath (wxString pathname);
 		void SetName (wxString name);
 		wxString GetName () const;
+    wxString GetShortName () const;
 		// accessor/setter for group_id
 		int GetGroupId () const;
 		void SetGroupId (int id);
@@ -89,6 +93,7 @@ class Document
 		void InitialiseInput (TokenSet & tokenset);
 		wxString	  _pathname; 		// -- [converted] source for this document
 		wxString	  _original_pathname;   // -- original source for this document
+    wxString    _short_path;  // -- base directory from select files (if present)
 		wxString 	  _name;		// -- filename (without path)
 		int 		    _num_trigrams;
     int         _num_unique_trigrams;

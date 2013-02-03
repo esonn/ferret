@@ -9,7 +9,7 @@ detect copying ( _collusion_ ) within a given set of files.
 - document analysis, tracking changes to documents
 - software developers, looking for duplicate code to refactor
 - software evolution, studying how code has changed over time
-- teachers, scanning for collusion in student work
+- teachers, looking for collusion or plagiarism in student work
 - tracking the amount of new material in the current version of a text or program 
 
 *Features:*
@@ -61,7 +61,8 @@ Download and install [wxWidgets](http://wxwidgets.org) and
 (To obtain a static executable (with all the wx libraries contained within the 
 ferret executable) use the configure flag '--disable-shared'.)
 
-Download the [source code](https://github.com/petercrlane/ferret).
+Checkout the [source code](https://github.com/petercrlane/ferret) or download 
+as a zipped folder by clicking on the ZIP button.
 
     > cd src
     > make
