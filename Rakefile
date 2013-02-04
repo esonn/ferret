@@ -5,7 +5,6 @@ task :todo do
   puts "Planned/possible additional functionality for Ferret"
   puts "\nVersion #{VERSION}:"
   puts "- use groups in uniqueness display"
-  puts "- balance split window on document-comparison view"
   puts "- catch 'close' and 'quit' events, make sure all parts of window finished (e.g. documentview)"
   puts "- RunFerret must be sensitive to number of files in directory"
   puts "\nLater versions:"
@@ -102,8 +101,8 @@ end
 desc 'create Ferret manual'
 task :manual do
   Dir.chdir("manual") do
-    `asciidoc-bib manual.txt`
-    `a2x -fpdf -darticle --dblatex-opts "-P latex.output.revhistory=0" manual-ref.txt`
-    `mv manual-ref.pdf manual.pdf`
+    sh "asciidoc-bib -s chicago-author-date manual.txt"
+    sh "a2x -fpdf -darticle --dblatex-opts \"-P latex.output.revhistory=0\" manual-ref.txt"
+    sh "mv manual-ref.pdf manual.pdf"
   end
 end

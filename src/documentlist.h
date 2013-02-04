@@ -6,6 +6,7 @@
   */
 
 #include <assert.h>
+#include <map>
 #include <vector>
 #include <wx/wx.h>
 #include <wx/dir.h>
@@ -108,6 +109,7 @@ class DocumentList
 		bool ReadTupleDefinitions (wxTextInputStream & stored_data);
 	private:
 		std::vector<Document *>	_documents;
+    std::map<int, wxString> _group_names;
 		TokenSet		_token_set;
 		TupleSet		_tuple_set;
 		std::vector<MatchPair *>	_matches;

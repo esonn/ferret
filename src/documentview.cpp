@@ -375,6 +375,7 @@ DocumentComparisonView::DocumentComparisonView (ComparisonTableView * parent, wx
 	docSplitter->SplitHorizontally (_document1_view, _document2_view, 0);
 	docSplitter->SetMinimumPaneSize (50);
 	docSplitter->SetSashGravity (0.5);
+  docSplitter->SetSashPosition (60);
 }
 
 DocumentComparisonView::~DocumentComparisonView ()

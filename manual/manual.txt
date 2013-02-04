@@ -1,32 +1,80 @@
-= Using the Ferret Copy Detector (Version 5.2) =
+= Using the Ferret Copy Detector (Version 5.3) =
 :author: Peter Lane
 :email: peter.lane@bcs.org.uk
 
 == Overview ==
 
-The Ferret copy detector takes a number of documents and finds similar passages
-in any two. This version can be used for up to 300 documents of 10,000 words
-each. It can be used for essays and reports, in English, or else a version for
-programming code can be selected. Material from the web can be used for
-comparison too. If you wish to use the Ferret on other European languages or on
-Chinese please contact the authors via
-http://homepages.feis.herts.ac.uk/~pdgroup/ 
+Ferret is a copy-detection tool, locating duplicate text or code in 
+multiple text documents or source files.  Ferret is designed to  
+detect copying ( _collusion_ ) within a given set of files.
 
-The similar passages do not have to be identical. This software is used for
-detecting plagiarism in students' work where there may be an attempt to avoid
-detection by changing some words and phrases.  
+*Ferret is useful for:*
 
-The steps in running the Ferret are: 
+- document analysis, tracking changes to documents
+- software developers, looking for duplicate code to refactor
+- software evolution, studying how code has changed over time
+- teachers, looking for collusion or plagiarism in student work
+- tracking the amount of new material in the current version of a text or program 
 
-. Documents are pre-processed.  Diagrams and figures are ignored.  
-. Comparison of each document with every other one is done.  
-. Results are shown in a table with a measure of similarity between each pair.
-. Any pair can be displayed side by side to show matching passages highlighted 
+*Features:*
 
-== Installation ==
+- compares text documents containing natural language or computer language
+- automatic conversion of standard word processor or pdf formats to text
+- processing specialised for major programming languages
+- choice of similarity measures to highlight individual or group similarity
+- quick loading and comparison of documents, up to computer's memory capacity
+- display of _all_ document comparisons, ranked by a similarity score
+- detailed display of _individual_ document comparisons, highlighting any text
+  in common with the group or uniquely with compared document
+- save result table and comparisons to pdf or xml formats, for printing or further analysis.
+- display of unique trigrams per document/student
 
-Download from your disk or from http://homepages.feis.herts.ac.uk/~pdgroup/
-Follow the wizard taking you through the easy installation steps.  
+*Similarity Measure*
+
+Ferret computes a similarity measure based on the trigrams found within each of
+the two documents under comparison; this measure is a number from 0 (no
+copying) to 1 (everything has been copied). This measure should _not_ be taken
+as an absolute measure of the amount of copying. Instead, the measure is
+intended to indicate the _relative_ amount of copying that the current pair has
+compared with the rest of the group. Pairs which appear on top of the table of 
+all similarity comparisons should be examined for possible copying, but the 
+measure itself does not imply any reliable conclusion.
+
+=== Supported Document Types ===
+
+Ferret identifies the major word-processor formats and converts them to text 
+automatically before further processing.  A wide selection of computer 
+languages are also recognised, and tokenised in a manner specific to that 
+language.  All recognised file types are in the following list:
+
+- Text documents (.txt)
+** Word processor formats (.doc, .docx, .rtf, .abw)
+** Pdf documents (.pdf)
+- Computer languages
+** C/C++ (.h, .c, .cpp)
+** C# (.cs)
+** Clojure (.clj)
+** Groovy (.groovy)
+** Haskell (.hs, .lhs)
+** Java (.java)
+** Lisp (.lisp, .lsp)
+** Prolog (.pl)
+** Python (.py)
+** Racket (.rkt)
+** Ruby (.rb)
+** Scheme (.scm, .ss)
+** Visual Basic (.vb)
+** XML/HTML (.xml, .html)
+
+
+=== Installation ===
+
+Installable versions for a range of operating systems are available from 
+http://peterlane.info/ferret.html[]
+
+The source code for Ferret is available at http://github.com/petercrlane/ferret[]
+and may be downloaded and compiled on a platform of your choice.
+
 
 == Ferret Application ==
 
@@ -135,15 +183,12 @@ input options.  The full range of options can be listed by running
 
 ------------------------------------------------------------------
 > uhferret --help
-Ferret 5.2: start with no arguments for graphical version
-Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-u]
+Ferret 5.3: start with no arguments for graphical version
+Usage: ferret [-h] [-d] [-l] [-a] [-p] [-x] [-u]
   -h, --help           	displays help on command-line parameters
-  -t, --text           	text document type (default)
-  -c, --code           	code document type
   -d, --data-table     	produce similarity table (default)
   -l, --list-trigrams  	produce trigram list report
   -a, --all-comparisons	produce list of all comparisons
-  -w, --html-table     	produce similarity table in html format
   -p, --pdf-report     	source-1 source-2 results-file : create pdf report
   -x, --xml-report     	source-1 source-2 results-file : create xml report
   -f, --definition-file	use file with document list
@@ -154,7 +199,9 @@ Notice that all switches have both a long and a short form.  You can either
 write +uhferret --help+ or +uhferret -h+.  Switches cannot be combined.
 To list trigrams with code documents:
 
-+uhferret -l -c filename1 .. +
+-----------------------------
+> uhferret -l -c filename1 ..
+-----------------------------
 
 Not all combinations of the different options make sense, and you may get 
 unexpected results.  For example, you cannot use a definition file with the 
@@ -325,8 +372,7 @@ This will compare +text-1.txt+ and +text-2.txt+ with +text-3.txt+
 and +text-4.txt+, and +text-3.txt+ with +text-4.txt+, but
 +text-1.txt+ and +text-2.txt+ will not be compared.
 
-You can have as many groups as you need.  You _must_ provide the file type,
-if you want to specify that Ferret treat the documents as program code.
+You can have as many groups as you need.  
 
 == Ruby Gem ==
 
@@ -399,6 +445,8 @@ Ferret has been used to help data preparation by [citenp:Green11].
 
 A comparison with other plagiarism-detection tools can be found in
 [citenp:Green12].
+
+Other papers referring to Ferret include [citenp:Ahn11;Clough12]
 
 [sect1]
 == References ==
