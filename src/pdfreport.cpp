@@ -152,9 +152,9 @@ void PdfReport::WritePdfReport (wxString save_report_path, int document1, int do
 	PrintLine (wxString::Format ("Document 2 source: %s",
 				_doclist[document2]->GetOriginalPathname().c_str()));
 	PrintLine (wxString::Format ("Number of trigrams in Document 1: %d",
-				_doclist.CountTrigrams (document1, _unique)));
+				_doclist.CountTrigrams (document1)));
 	PrintLine (wxString::Format ("Number of trigrams in Document 2: %d",
-				_doclist.CountTrigrams (document2, _unique)));
+				_doclist.CountTrigrams (document2)));
 	PrintLine (wxString::Format ("Number of common trigrams: %d",
 				_doclist.CountMatches (document1, document2, _unique)));
 	PrintLine (wxString::Format ("Similarity measure: %f",

@@ -6,7 +6,6 @@ task :todo do
   puts "\nVersion #{VERSION}:"
   puts "- use groups in uniqueness display"
   puts "- catch 'close' and 'quit' events, make sure all parts of window finished (e.g. documentview)"
-  puts "- RunFerret must be sensitive to number of files in directory"
   puts "\nLater versions:"
   puts "- ignore comments in code files (option in gui and command-line)"
   puts "- option to check with user about type of unknown files"

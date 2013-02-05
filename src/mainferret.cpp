@@ -176,8 +176,8 @@ void writeSimilarityTable (DocumentList & docs, bool remove_common_trigrams)
 					<< docs[i]->GetPathname () << " ; "
 					<< docs[j]->GetPathname () << " ; "
 					<< docs.CountMatches (i, j, remove_common_trigrams) << " ; "
-					<< docs.CountTrigrams (i, remove_common_trigrams) << " ; " 
-					<< docs.CountTrigrams (j, remove_common_trigrams) << " ; "
+					<< docs.CountTrigrams (i) << " ; " 
+					<< docs.CountTrigrams (j) << " ; "
 					<< docs.ComputeResemblance (i, j, remove_common_trigrams)
 					<< std::endl;
 			}

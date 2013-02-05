@@ -85,7 +85,7 @@ class DocumentList
 		void ClearSimilarities ();
 		void ComputeSimilarities ();
 		int GetTotalTrigramCount ();
-		int CountTrigrams (int doc_i, bool unique=false);
+		int CountTrigrams (int doc_i);
 		int CountMatches (int doc_i, int doc_j, bool unique=false);
 		float ComputeResemblance (int doc_i, int doc_j, bool unique=false);
 		float ComputeContainment (int doc_i, int doc_j, bool unique=false);

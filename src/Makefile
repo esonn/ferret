@@ -28,7 +28,7 @@ resultstable.o: resultstable.cpp resultstable.h \
 	$(CC) `wx-config --cxxflags` -c resultstable.cpp -o resultstable.o
 
 documentview.o: documentview.cpp documentview.h \
-		tokenset.h document.h ferretapp.h resultstable.h
+		tokenset.h document.h ferretapp.h resultstable.h documentlist.h
 	$(CC) `wx-config --cxxflags` -c documentview.cpp -o documentview.o
 
 helpframe.o: helpframe.cpp helpframe.h \

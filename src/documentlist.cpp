@@ -270,18 +270,9 @@ int DocumentList::GetTotalTrigramCount ()
 }
 
 // return a count of the trigrams in document i
-// use 'unique count' if unique is set,
-// else use 'total count'
-int DocumentList::CountTrigrams (int doc_i, bool unique) 
+int DocumentList::CountTrigrams (int doc_i) 
 {
-  if (unique)
-  {
-    return _documents[doc_i]->GetUniqueTrigramCount ();
-  }
-  else
-  {
-  	return _documents[doc_i]->GetTrigramCount ();
-  }
+ return _documents[doc_i]->GetTrigramCount ();
 }
 
 int DocumentList::CountMatches (int doc_i, int doc_j, bool unique)
@@ -301,7 +292,7 @@ int DocumentList::CountMatches (int doc_i, int doc_j, bool unique)
 float DocumentList::ComputeResemblance (int doc_i, int doc_j, bool unique)
 {
 	float num_matches = (float)CountMatches (doc_i, doc_j, unique);
-	float total_trigrams = (float)(CountTrigrams (doc_i, unique) + CountTrigrams (doc_j, unique) - CountMatches (doc_i, doc_j, unique));
+	float total_trigrams = (float)(CountTrigrams (doc_i) + CountTrigrams (doc_j) - num_matches);
 	if (total_trigrams == 0.0) return 0.0; // check for divide by zero
 	return num_matches/total_trigrams;
 }
@@ -309,7 +300,7 @@ float DocumentList::ComputeResemblance (int doc_i, int doc_j, bool unique)
 float DocumentList::ComputeContainment (int doc_i, int doc_j, bool unique)
 {
 	float num_matches = (float)(doc_j > doc_i ? CountMatches (doc_i, doc_j, unique) : CountMatches (doc_j, doc_i, unique));
-	float target_trigrams = (float)(CountTrigrams (doc_j, unique));
+	float target_trigrams = (float)(CountTrigrams (doc_j));
 	if (target_trigrams == 0.0) return 0.0; // check for divide by zero
 	return num_matches/target_trigrams;
 }

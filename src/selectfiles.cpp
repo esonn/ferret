@@ -13,6 +13,27 @@ void MyListCtrl::AddPath (wxString path)
   InsertItem (GetItemCount (), filename.GetFullName ());
 }
 
+int MyListCtrl::GetAllFileCount () const
+{
+  int count = 0;
+
+  for (int i = 0, n = _paths.GetCount (); i < n; i += 1)
+  {
+    if (wxFileName::DirExists (_paths[i]))
+    {
+      wxArrayString files;
+      wxDir::GetAllFiles (_paths[i], &files, wxEmptyString);
+      count += files.GetCount ();
+    }
+    else
+    {
+      count += 1;
+    }
+  }
+
+  return count;
+}
+
 int MyListCtrl::GetCount () const
 {
   return _paths.GetCount ();
@@ -189,8 +210,7 @@ bool SelectFiles::ContainsOnlyDirectories ()
 void SelectFiles::UpdateButtons ()
 {
 	// -- only allow 'runferret' if at least two files
-  // -- TODO: Count files in directories
-	if (((MyListCtrl *) FindWindow (ID_FILE_LIST))->GetCount () >= 2)
+	if (((MyListCtrl *) FindWindow (ID_FILE_LIST))->GetAllFileCount () >= 2)
   {
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (true);
 	}
