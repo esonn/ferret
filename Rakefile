@@ -101,7 +101,7 @@ desc 'create Ferret manual'
 task :manual do
   Dir.chdir("manual") do
     sh "asciidoc-bib -s chicago-author-date manual.txt"
-    sh "a2x -fpdf -darticle --dblatex-opts \"-P latex.output.revhistory=0\" manual-ref.txt"
+    sh "a2x -v -fpdf -darticle --dblatex-opts \"-P latex.output.revhistory=0\" manual-ref.txt"
     sh "mv manual-ref.pdf manual.pdf"
   end
 end

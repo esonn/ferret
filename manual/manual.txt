@@ -45,7 +45,7 @@ measure itself does not imply any reliable conclusion.
 Ferret identifies the major word-processor formats and converts them to text 
 automatically before further processing.  A wide selection of computer 
 languages are also recognised, and tokenised in a manner specific to that 
-language.  All recognised file types are in the following list:
+language.  The recognised file types are:
 
 - Text documents (.txt)
 ** Word processor formats (.doc, .docx, .rtf, .abw)
@@ -78,65 +78,84 @@ and may be downloaded and compiled on a platform of your choice.
 
 == Ferret Application ==
 
-Click on the Ferret icon to get the starting screen as shown in Figure 1:
+The Ferret application, when run, presents the _Select Files_ dialog, as shown
+in <<Figure_1,Figure 1>>.  This dialog invites the user to collect together a
+list of documents for comparison.  Documents and directories can be added to
+the list using the 'Add ...' buttons.  Alternatively, documents and directories
+can be dragged from a file selector, and dropped onto the list.
 
-image:images/figure-1.png[]
-Figure 1
+[[Figure_1]]
+image:images/figure-1.png[height=300,align="center"]
+Figure 1: Select Files dialog.
 
-Collect all the documents you want to analyse, and put them in one or more
-folders.  They can be Word (suffix .doc), pdf (suffix .pdf), rich text (suffix
-.rtf) or text (suffix .txt).  Acceptable suffixes also include .tex, .html, and
-programming code such as .java. Documents of other types, such as .xls and zip
-files, will be rejected.  Click on button Add Documents (marked with arrow) to
-get your documents. Use the browser to get to the folder(s) where you have
-collected your documents. Tip: to select all documents in a folder, type Ctrl
-A. Having selected your documents you have a screen as in Figure 2 There is
-usually no need to go to the button Further settings for comparing text
-documents. Go to Help for an explanation of the use of these further settings.
+To remove documents and start again click on the button 'Clear Documents'.  
 
-image:images/figure-2.png[]
-Figure 2
+The 'Settings' button opens up a dialog allowing the user to change some 
+of the ways in which documents are processed.  There are four settings to 
+change.
 
-To remove documents and start again click on button Clear Documents.  
+When converting files, Ferret will save the files into the named folder.  The
+user can direct Ferret to use a different folder using the 'Browse ...' button.
+This option is particularly useful for collecting together files from multiple
+folders into one place.  Ferret will only copy the converted files to the
+destination folder; check the first box if you want every file to be copied.
+
+If you want every file to be treated as a word/rtf file (for example, with
+mislabelled student or pupil work), check the second box.
+
+If you want to ignore any unknown files (for example, output from compilers or
+image files), check the third box.  (Ferret's initial settings mean it will
+ignore unknown filetypes, so uncheck if you want Ferret to process all files.)
+
+The check box for 'Group files in directories' is only available if you only
+select directories in the list of documents or directories for comparison.  If
+you check this box, then files within each shown directory will _not_ be
+compared with each other.  Also, certain displays will use results from all
+files within the directory in aggregate, such as the display of unique trigrams
+(see below).  This option may be used where each directory represents a
+separate student's submissions, and the user wants to know how each student
+compares with other students.  Alternatively, each directory may represent a
+different version of a developing project, and the user wants to compare
+versions over time.
 
 === Processing the Documents ===
 
-If you have selected the documents you want then click on button Run Ferret
-(marked with an arrow).  The documents will first be converted to .txt format.
-On a standard desk top or laptop computer this typically takes about 2 minutes
-for 80 documents, as shown by the progress bar.  If any files are rejected this
-is reported. It is important to look at the report at the end of the process to
-see which files are rejected, as these may be suspicious ones.  Then each file
-is compared with every other one. This typically takes a few seconds.  The
-Table of Comparison then appears, as in Figure 3, with the most similar pairs
-at the top. (All the documents now have the suffix.txt)
+Once you have selected the documents or directories, you need to click on the 
+button 'Run Ferret'; this option is only available if at least two documents 
+have been selected.  Any documents in word-processor or pdf format will then 
+automatically be converted to a plain text format, before analysing the 
+similarities.  The progress bar indicates the expected amount of time. 
+After processing has completed, a warning may come up if there were any rejected 
+files; a detailed list of these rejected files is available in the report 
+which can be generated from the Table of Comparisons, Figure 3.
 
 image:images/figure-3.png[]
 Figure 3
 
-=== Explanation of the Table ===
+=== Table of Comparisons ===
 
-The first and second columns give the names of the files being compared. The
-third column headed Similarity gives a measure of the similarity of the
-documents, between 0 and 1. Two identical documents will have a score of 1. In
-practice, we find that a Similarity score below 0.04 shows that two documents
-are probably written independently, while above 0.04 the two documents should
-be examined further. However, if students have inserted text given by the
-lecturer, such as the wording of a question or other comments, the threshold
-will be higher. In the case shown in Figure 3 the threshold was 0.06 The
-documents are listed in ranked order of similarity, with the most similar at
-the top. You can reorder on first or second column - for instance to find a
-certain document pair you will want them in alphabetical or numerical order -
-by clicking on button Document 1 or Document 2. Use the scroll bar on the side
-of the window to find entries lower down.  At the bottom of the Table you can
-see how many documents are being analysed, and how many pairs this produces.
-To save this table click on the Save Report button. The default is to send it
-to the folder from which you selected documents, or chose another destination.
-Note this file can be large: it will have the same number of entries as number
-of pairs. 
+The Table of Comparisons is the central dialog within Ferret.  It holds the 
+results of comparing all pairs of documents for similarity, and provides access 
+to the other views and dialogs, through the buttons on the right-hand side.
 
-If some files have been rejected at the file conversion stage because they are
-not of the right sort a message will be given in the report.  
+The table itself has three columns.  The first two columns give the names of 
+the files being compared.  The names are given in a short form, with any 
+directory used when selecting the files preceding the name.  Uncheck the 
+box for 'Show short names' to reveal the complete pathname of each file.
+
+The third column gives the similarity score for the two documents.  This 
+score is a number from 0 (no copying) to 1 (identical).  The similarity 
+score provides a _relative_ measure of copying within the group of files, so 
+pairs at the top of the table should be examined for copying.  In practice, 
+we find similarity scores above 0.04 are likely to reveal significant 
+copying, but this threshold should be taken as indicative only (see the papers 
+listed below for discussion on this issue).
+
+The table can be reordered, by clicking on the column headings or using the 
+buttons on the right-hand side.  The table can also be saved to a pdf file 
+using the 'Save Report ...' button; this report also includes information 
+about the group of files compared and any rejected or problem files found 
+during analysis.
 
 === Displaying the Results ===
 
