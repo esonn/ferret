@@ -76,8 +76,11 @@ class DocumentList
 		TupleSet & GetTupleSet ();
 		void Clear ();
 		int GetNewGroupId ();
+    bool IsGrouped () const;
 		void ResetReading ();
 		int Size () const;
+    int GroupSize () const;
+    wxString GetGroupName (int index);
 		int NumberOfPairs () const;
 		bool MayNeedConversions () const;
 		void RunFerret (int first_document = 0);
@@ -89,7 +92,7 @@ class DocumentList
 		int CountMatches (int doc_i, int doc_j, bool unique=false);
 		float ComputeResemblance (int doc_i, int doc_j, bool unique=false);
 		float ComputeContainment (int doc_i, int doc_j, bool unique=false);
-    int UniqueCount (int doc);
+    int UniqueCount (int index) const;
 		// check if given trigram is in both the indexed documents
 		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique=false);
 		// convert given trigram into a string

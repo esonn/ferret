@@ -5,6 +5,11 @@ DocumentList::~DocumentList ()
 	Clear ();
 }
 
+bool DocumentList::IsGrouped () const
+{
+  return (_group_names.size () > 0);
+}
+
 // pathname may be a single file or a directory name
 // -- recurse through directories, and add all files to the list
 // -- if grouped is set, give all files in directory same id
@@ -27,6 +32,11 @@ void DocumentList::AddDocument (wxString pathname, bool grouped)
       {
         id = GetNewGroupId ();
       }
+      // store id->short_name in _group_names
+      if (grouped)
+      {
+        _group_names[id] = short_name;
+      }
       Document * newDocument = new Document (files[i], id);
       newDocument->SetShortPath (short_name); // use the last directory name
       _documents.push_back (newDocument);
@@ -39,6 +49,32 @@ void DocumentList::AddDocument (wxString pathname, bool grouped)
     {
   	  _documents.push_back (new Document (pathname, GetNewGroupId ()));
     }
+  }
+}
+
+// Return the number of items in the list of groups,
+// or simply the number of documents if no groups created.
+int DocumentList::GroupSize () const
+{
+  if (IsGrouped ())
+  {
+    return _group_names.size ();
+  }
+  else
+  {
+    return _documents.size ();
+  }
+}
+
+wxString DocumentList::GetGroupName (int index)
+{
+  if (IsGrouped ())
+  {
+    return _group_names[index+1]; // index == 0 special role
+  }
+  else
+  {
+    return _documents[index]->GetName ();
   }
 }
 
@@ -171,14 +207,14 @@ int DocumentList::Size () const
 // don't count pairs of documents in same group
 int DocumentList::NumberOfPairs () const
 {
-	int num_pairs = 0;
-	for (int i = 0; i < _documents.size (); ++i)
-		for (int j = i+1; j < _documents.size (); ++j)
-		{
-			if (_documents[i]->GetGroupId () != _documents[j]->GetGroupId ())
-				num_pairs++;
-		}
-	return num_pairs;
+  int num_pairs = 0;
+  for (int i = 0; i < _documents.size (); ++i)
+    for (int j = i+1; j < _documents.size (); ++j)
+    {
+      if (_documents[i]->GetGroupId () != _documents[j]->GetGroupId ())
+        num_pairs++;
+    }
+  return num_pairs;
 }
 
 bool DocumentList::MayNeedConversions () const
@@ -305,9 +341,26 @@ float DocumentList::ComputeContainment (int doc_i, int doc_j, bool unique)
 	return num_matches/target_trigrams;
 }
 
-int DocumentList::UniqueCount (int doc)
+// unique count adds up all counts for files in given group index,
+// or returns document's unique count if no groups used.
+int DocumentList::UniqueCount (int index) const
 {
-  return _documents[doc]->GetUniqueTrigramCount ();
+  if (IsGrouped ())
+  {
+    int total = 0;
+    for (int i = 0; i < _documents.size (); i++)
+    {
+      if (_documents[i]->GetGroupId () == index+1)
+      {
+        total += _documents[i]->GetUniqueTrigramCount ();
+      }
+    }
+    return total;
+  }
+  else
+  {
+    return _documents[index]->GetUniqueTrigramCount ();
+  }
 }
 
 bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique)

@@ -30,7 +30,6 @@ class UniqueTrigramsListCtrl: public wxListCtrl
     void SortOnDocument ();
     void SortOnCount ();
     void OnSortColumn (wxListEvent & event);
-    int GetNumberItems () const;
     wxString OnGetItemText (long item, long column) const;
   private:
     DECLARE_EVENT_TABLE()

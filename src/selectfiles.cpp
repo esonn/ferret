@@ -13,13 +13,13 @@ void MyListCtrl::AddPath (wxString path)
   InsertItem (GetItemCount (), filename.GetFullName ());
 }
 
-int MyListCtrl::GetAllFileCount () const
+int MyListCtrl::GetAllFileCount (bool grouped) const
 {
   int count = 0;
 
   for (int i = 0, n = _paths.GetCount (); i < n; i += 1)
   {
-    if (wxFileName::DirExists (_paths[i]))
+    if (grouped && wxFileName::DirExists (_paths[i]))
     {
       wxArrayString files;
       wxDir::GetAllFiles (_paths[i], &files, wxEmptyString);
@@ -209,8 +209,9 @@ bool SelectFiles::ContainsOnlyDirectories ()
 
 void SelectFiles::UpdateButtons ()
 {
+  wxCheckBox* grouped = (wxCheckBox *) FindWindow (ID_GROUP_DIRS);
 	// -- only allow 'runferret' if at least two files
-	if (((MyListCtrl *) FindWindow (ID_FILE_LIST))->GetAllFileCount () >= 2)
+	if (((MyListCtrl *) FindWindow (ID_FILE_LIST))->GetAllFileCount (grouped->IsChecked ()) >= 2)
   {
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (true);
 	}
@@ -219,7 +220,7 @@ void SelectFiles::UpdateButtons ()
 		((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (false);
 	}
   // -- only enable checkbox if all pathnames are directories
-  ((wxCheckBox *) FindWindow (ID_GROUP_DIRS))->Enable (ContainsOnlyDirectories ());
+  grouped->Enable (ContainsOnlyDirectories ());
 }
 
 void SelectFiles::OnClear (wxCommandEvent & WXUNUSED(event))

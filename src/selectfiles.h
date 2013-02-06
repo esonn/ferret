@@ -47,7 +47,7 @@ class MyListCtrl: public wxListCtrl
     void ClearPaths ();
     void AddPath (wxString path);
     int GetCount () const;
-    int GetAllFileCount () const;
+    int GetAllFileCount (bool grouped) const;
     wxString GetItem (int i) const;
 	private:
 		void OnMouseEvent (wxMouseEvent & WXUNUSED(event)) { ; }

@@ -48,8 +48,8 @@ languages are also recognised, and tokenised in a manner specific to that
 language.  The recognised file types are:
 
 - Text documents (.txt)
-** Word processor formats (.doc, .docx, .rtf, .abw)
-** Pdf documents (.pdf)
+- Word processor formats (.doc, .docx, .rtf, .abw)
+- Pdf documents (.pdf)
 - Computer languages
 ** C/C++ (.h, .c, .cpp)
 ** C# (.cs)

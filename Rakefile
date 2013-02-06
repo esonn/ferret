@@ -3,10 +3,6 @@ VERSION = 5.3 # number for next planned release
 desc "display planned features"
 task :todo do
   puts "Planned/possible additional functionality for Ferret"
-  puts "\nVersion #{VERSION}:"
-  puts "- use groups in uniqueness display"
-  puts "- catch 'close' and 'quit' events, make sure all parts of window finished (e.g. documentview)"
-  puts "\nLater versions:"
   puts "- ignore comments in code files (option in gui and command-line)"
   puts "- option to check with user about type of unknown files"
   puts "- engagement chart (count of trigrams also in provided code)"

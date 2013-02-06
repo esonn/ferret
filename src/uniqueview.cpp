@@ -36,7 +36,14 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
   int widths [] = {-2, -1};
   SetStatusWidths (2, widths);
   SetStatusText ("Unique trigrams view", 0);
-  SetStatusText (wxString::Format ("Documents: %d", _documentlist.Size()), 1);
+  if (_documentlist.IsGrouped ())
+  {
+    SetStatusText (wxString::Format ("Groups: %d", _documentlist.GroupSize()), 1);
+  }
+  else
+  {
+    SetStatusText (wxString::Format ("Documents: %d", _documentlist.Size()), 1);
+  }
 
   // set up internal widgets
   wxBoxSizer * topsizer = new wxBoxSizer (wxHORIZONTAL);
@@ -51,18 +58,18 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
 
   // -- insert two columns
   wxListItem itemCol;
-  itemCol.SetText ("Document");
+  itemCol.SetText (_documentlist.IsGrouped() ? "Group" : "Document");
   _uniqueObserver->InsertColumn (0, itemCol);
   _uniqueObserver->SetColumnWidth (0, wxLIST_AUTOSIZE_USEHEADER);
   itemCol.SetText ("Count");
   _uniqueObserver->InsertColumn (1, itemCol);
   _uniqueObserver->SetColumnWidth (1, wxLIST_AUTOSIZE_USEHEADER);
-  _uniqueObserver->SetItemCount (_documentlist.Size ());
+  _uniqueObserver->SetItemCount (_documentlist.GroupSize ());
 
   // 2. buttons
   wxBoxSizer * buttonSizer = new wxBoxSizer (wxVERTICAL);
-	wxButton * rank_f = UMakeButton (this, ID_RANK_F, "Document",
-				"Put table into alphabetical order of document");
+	wxButton * rank_f = UMakeButton (this, ID_RANK_F, (_documentlist.IsGrouped() ? "Group" : "Document"),
+				"Put table into alphabetical order of name");
 	wxButton * rank_u = UMakeButton (this, ID_RANK_U, "Count",
 				"Put table into order with largest unique count at top");
 	wxStaticBoxSizer * rankSizer = new wxStaticBoxSizer (wxVERTICAL, this, "Rearrange table by");
@@ -129,15 +136,10 @@ UniqueTrigramsListCtrl::UniqueTrigramsListCtrl (UniqueTrigramsView * ferretparen
 {
   // create list of indices - position in list altered by sorting
   _sortedIndices.clear ();
-  for (int i=0; i < _ferretparent->GetDocumentList().Size (); i++)
+  for (int i=0; i < _ferretparent->GetDocumentList().GroupSize (); i++)
   {
     _sortedIndices.push_back (i);
   }
-}
-
-int UniqueTrigramsListCtrl::GetNumberItems () const
-{
-  _ferretparent->GetDocumentList().Size ();
 }
 
 wxString UniqueTrigramsListCtrl::OnGetItemText (long item, long column) const
@@ -147,9 +149,9 @@ wxString UniqueTrigramsListCtrl::OnGetItemText (long item, long column) const
   switch (column)
   {
     case 0:
-      return _ferretparent->GetDocumentList()[sorteditem]->GetName ();
+      return _ferretparent->GetDocumentList().GetGroupName (sorteditem);
     case 1:
-      return wxString::Format("%d", _ferretparent->GetDocumentList()[sorteditem]->GetUniqueTrigramCount ());
+      return wxString::Format("%d", _ferretparent->GetDocumentList().UniqueCount (sorteditem));
   }
 }
 
@@ -169,9 +171,9 @@ void UniqueTrigramsListCtrl::SortOnDocument ()
 
   // cache the names
   std::vector<wxString> names;
-  for (int i=0; i<_ferretparent->GetDocumentList().Size (); i++)
+  for (int i=0; i<_ferretparent->GetDocumentList().GroupSize (); i++)
   {
-    names.push_back (_ferretparent->GetDocumentList()[i]->GetName ());
+    names.push_back (_ferretparent->GetDocumentList().GetGroupName (i));
   }
   // set up sort
   namecmp comparer;
@@ -179,7 +181,7 @@ void UniqueTrigramsListCtrl::SortOnDocument ()
   std::sort (newIndices.begin(), newIndices.end (), comparer);
   _sortedIndices = newIndices;
   RefreshItems (0, _sortedIndices.size()-1);
-  _ferretparent->SetStatusText ("Rearranged table by document name", 0);
+  _ferretparent->SetStatusText ("Rearranged table by name", 0);
 
 }
 
