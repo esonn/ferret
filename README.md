@@ -9,17 +9,21 @@ detect copying ( _collusion_ ) within a given set of files.
 - document analysis, tracking changes to documents
 - software developers, looking for duplicate code to refactor
 - software evolution, studying how code has changed over time
-- teachers, scanning for collusion in student work
+- teachers, looking for collusion or plagiarism in student work
 - tracking the amount of new material in the current version of a text or program 
 
 *Features:*
 
 - compares text documents containing natural language or computer language
 - automatic conversion of standard word processor or pdf formats to text
+- processing specialised for major programming languages
+- choice of similarity measures to highlight individual or group similarity
 - quick loading and comparison of documents, up to computer's memory capacity
 - display of _all_ document comparisons, ranked by a similarity score
-- detailed display of _individual_ document comparisons, highlighting any copied text
+- detailed display of _individual_ document comparisons, highlighting any text
+  in common with the group or uniquely with compared document
 - save result table and comparisons to pdf or xml formats, for printing or further analysis.
+- display of unique trigrams per document/group
 
 *Similarity Measure*
 
@@ -36,8 +40,8 @@ measure itself does not imply any reliable conclusion.
 
 *Download*
 
-- [Ferret 5.2](http://peterlane.info/downloads/uhferret_5.2_i386.deb) for Ubuntu
-- [Ferret 5.2](http://peterlane.info/downloads/ferret-5.2-linux.tgz) for generic Linux
+- [Ferret 5.3](http://peterlane.info/downloads/uhferret_5.3_i386.deb) for Ubuntu
+- [Ferret 5.3](http://peterlane.info/downloads/ferret-5.3-linux.tgz) for generic Linux
 - for Windows (in preparation)
 
 *Install*
@@ -57,12 +61,16 @@ Download and install [wxWidgets](http://wxwidgets.org) and
 (To obtain a static executable (with all the wx libraries contained within the 
 ferret executable) use the configure flag '--disable-shared'.)
 
-Download the [source code](https://github.com/petercrlane/ferret).
+Checkout the [source code](https://github.com/petercrlane/ferret) or download 
+as a zipped folder by clicking on the ZIP button.
 
     > cd src
     > make
 
-to build the executable 'uhferret'.
+to build the executable 'uhferret'.  
+
+Ferret is known to compile on Linux and Windows (using mingw) - it is believed to 
+compile on Mac OSX, but this is untested.
 
 ## Use ##
 
@@ -76,34 +84,44 @@ the three main stages:
 Ferret can also be used from the command line. The command-line options are:
 
     > uhferret --help
-    Ferret 5.2: start with no arguments for graphical version
-    Usage: ferret [-h] [-t] [-c] [-d] [-l] [-a] [-w] [-p] [-x] [-f] [-u]
+    Ferret 5.3: start with no arguments for graphical version
+    Usage: ferret [-h] [-d] [-l] [-a] [-r] [-w] [-p] [-x] [-f] [-u]
       -h, --help           	displays help on command-line parameters
-      -t, --text           	text document type (default)
-      -c, --code           	code document type
       -d, --data-table     	produce similarity table (default)
       -l, --list-trigrams  	produce trigram list report
       -a, --all-comparisons	produce list of all comparisons
-      -w, --html-table     	produce similarity table in html format
+      -r, --remove-common   removes common trigrams
       -p, --pdf-report     	source-1 source-2 results-file : create pdf report
       -x, --xml-report     	source-1 source-2 results-file : create xml report
       -f, --definition-file	use file with document list
       -u, --use-stored-data	store/retrieve data structure
-  
+
 More details on using Ferret can be found in the manual (in preparation).
 
 ### Supported File Types / Languages ###
 
 The following list gives the recognised types of file or computer code within 
 Ferret, with the recognised file extension in brackets. For any additions to this 
-list, contact the author.
+list, raise an issue at <https://github.com/petercrlane/ferret> or contact the author.
 
 - Text documents (.txt)
 - Word processor formats (.doc, .docx, .rtf, .abw)
 - Pdf documents (.pdf)
-- Computer languages 
+- Computer languages
   - C/C++ (.h, .c, .cpp)
+  - C# (.cs)
+  - Clojure (.clj)
+  - Groovy (.groovy)
+  - Haskell (.hs, .lhs)
   - Java (.java)
+  - Lisp (.lisp, .lsp)
+  - Prolog (.pl)
+  - Python (.py)
+  - Racket (.rkt)
+  - Ruby (.rb)
+  - Scheme (.scm, .ss)
+  - Visual Basic (.vb)
+  - XML/HTML (.xml, .html)
 
 ## Implementation ##
 
@@ -119,4 +137,21 @@ For a version designed for embedding in your own scripts, see
 ## License ##
 
 Ferret is released under the [GPL](http://www.gnu.org/licenses/gpl.html).
+It may be used freely, with the only restriction that it may not be sold 
+or distributed as a component of a proprietary (closed-source) product.
+Please read the license for more details, or otherwise contact the author 
+for clarification.
+
+## History ##
+
+Version 5.3:
+
+- file-specific tokenising of major programming languages (see list above)
+- no user-selection of text/code format (gui retains option to process 
+  unrecognised files as txt or word-processed files)
+- drag and drop files onto Select Files dialog
+- include option to compute similarities after excluding trigrams common to other files
+- added display of document-unique trigram count
+- red-blue-black colour for confirming pairwise copying implemented on displays/pdf/xml
+- grouping of files based on base directory in select files display
 
