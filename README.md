@@ -24,6 +24,8 @@ detect copying ( _collusion_ ) within a given set of files.
   in common with the group or uniquely with compared document
 - save result table and comparisons to pdf or xml formats, for printing or further analysis.
 - display of unique trigrams per document/group
+- template material, whose contents can be excluded from analysis
+- display of engagement (overlap with template material) per document/group
 
 *Similarity Measure*
 

@@ -408,6 +408,7 @@ BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_RANK_R, ComparisonTableView::OnRank3)
 	EVT_BUTTON(ID_SAVE_REPORT, ComparisonTableView::OnSaveReport)
   EVT_BUTTON(ID_UNIQUE_VIEW, ComparisonTableView::OnShowUniqueView)
+  EVT_BUTTON(ID_ENGAGEMENT_VIEW, ComparisonTableView::OnShowEngagementView)
 	EVT_BUTTON(ID_DISPLAY_TEXTS, ComparisonTableView::OnDisplayTexts)
 	EVT_BUTTON(ID_CREATE_REPORT, ComparisonTableView::OnCreateReport)
   EVT_CHECKBOX(ID_REMOVE_COMMON, ComparisonTableView::OnCheckRemoveCommon)
@@ -502,6 +503,14 @@ void ComparisonTableView::OnShowUniqueView (wxCommandEvent & WXUNUSED(event))
 	view->Show (true);
 }
 
+void ComparisonTableView::OnShowEngagementView (wxCommandEvent & WXUNUSED(event))
+{
+ 	wxBusyCursor wait;
+	wxGetApp().Yield ();
+//	EngagementView * view = new EngagementView (this, _documentlist);
+//	view->Show (true);
+}
+
 void ComparisonTableView::OnQuit (wxCommandEvent & WXUNUSED(event))
 {
 	wxGetApp().CloseHelp ();
@@ -541,7 +550,7 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 
 ComparisonTableView::ComparisonTableView()
 	: wxFrame(NULL, wxID_ANY, "Ferret: Table of comparisons", 
-		wxDefaultPosition, wxSize (650, 550))
+		wxDefaultPosition, wxSize (650, 580))
 {
 	CentreOnScreen ();
 	CreateStatusBar(4);
@@ -583,7 +592,10 @@ ComparisonTableView::ComparisonTableView()
         "Save the table of comparisons and other details"),
       0, wxGROW | wxALL, 5);
   buttonSizer->Add (MakeButton (this, ID_UNIQUE_VIEW, "Show Uniqueness", 
-        "Show number of unique trigrams per document"),
+        "Show number of unique trigrams per document or group"),
+      0, wxGROW | wxALL, 5);
+  buttonSizer->Add (MakeButton (this, ID_ENGAGEMENT_VIEW, "Show Engagement", 
+        "Show overlap with template material per document or group"),
       0, wxGROW | wxALL, 5);
 
 	wxButton * rank_1 = MakeButton (this, ID_RANK_1, "Document 1",
