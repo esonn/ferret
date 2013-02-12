@@ -13,13 +13,16 @@ void MyListCtrl::AddPath (wxString path)
   InsertItem (GetItemCount (), filename.GetFullName ());
 }
 
+// count all files within any directories,
+// but treat directories as single entities, if their files are grouped
+// i.e. we want 2 or more directories to compare
 int MyListCtrl::GetAllFileCount (bool grouped) const
 {
   int count = 0;
 
   for (int i = 0, n = _paths.GetCount (); i < n; i += 1)
   {
-    if (grouped && wxFileName::DirExists (_paths[i]))
+    if (!grouped && wxFileName::DirExists (_paths[i]))
     {
       wxArrayString files;
       wxDir::GetAllFiles (_paths[i], &files, wxEmptyString);
@@ -70,6 +73,7 @@ BEGIN_EVENT_TABLE (SelectFiles, wxFrame)
 	EVT_BUTTON (ID_ADD_FILES, SelectFiles::OnAdd)
   EVT_BUTTON (ID_ADD_DIR, SelectFiles::OnAddDir)
 	EVT_BUTTON (ID_CLEAR_FILES, SelectFiles::OnClear)
+  EVT_CHECKBOX (ID_GROUP_DIRS, SelectFiles::OnCheckGroup)
 	EVT_BUTTON (ID_SETTINGS, SelectFiles::OnOptions)
 	EVT_BUTTON (wxID_HELP, SelectFiles::OnHelp)
 	EVT_CLOSE (SelectFiles::OnClose)
@@ -119,11 +123,16 @@ SelectFiles::SelectFiles ()
 	frame_sizer->Add (selection_buttons_sizer, 0, wxALIGN_CENTER_HORIZONTAL | wxALL, 5);
 
 	// -- list control, to hold names of selected files
-	frame_sizer->Add (MakeStaticText (this, "List of document filenames and directories, to analyse for signs of copying:"),
+	frame_sizer->Add (MakeStaticText (this, "Lists of document filenames and directories, for 'analysis' or 'template':"),
 		       	0, wxTOP | wxLEFT, 5);
 
-	MyListCtrl * file_list = new MyListCtrl (this, ID_FILE_LIST);
-	frame_sizer->Add (file_list, 1, wxGROW | wxALL, 5);
+  wxNotebook * notebook = new wxNotebook (this, ID_FILE_LISTS);
+	MyListCtrl * file_list = new MyListCtrl (notebook, ID_FILE_LIST);
+  MyListCtrl * template_list = new MyListCtrl (notebook, ID_TEMPLATE_LIST);
+
+  notebook->AddPage (file_list, "Analysis", true);
+  notebook->AddPage (template_list, "Template", false);
+	frame_sizer->Add (notebook, 1, wxGROW | wxALL, 5);
 	
 	// -- buttons at bottom
 	wxBoxSizer * button_sizer = new wxBoxSizer (wxHORIZONTAL);
@@ -190,6 +199,11 @@ void SelectFiles::OnAddDir (wxCommandEvent & WXUNUSED(event))
   }
 }
 
+void SelectFiles::OnCheckGroup (wxCommandEvent & WXUNUSED(event)) 
+{
+  UpdateButtons ();
+}
+
 // return true if there are only directories in file list, and at least one directory
 bool SelectFiles::ContainsOnlyDirectories ()
 {
@@ -226,6 +240,7 @@ void SelectFiles::UpdateButtons ()
 void SelectFiles::OnClear (wxCommandEvent & WXUNUSED(event))
 {
 	((MyListCtrl *) FindWindow (ID_FILE_LIST))->ClearPaths ();
+	((MyListCtrl *) FindWindow (ID_TEMPLATE_LIST))->ClearPaths ();
 	_document_list->Clear ();
 	((wxButton *) FindWindow (ID_CLEAR_FILES))->Enable (false);
 	((wxButton *) FindWindow (ID_RUN_FERRET))->Enable (false);
@@ -279,11 +294,24 @@ void SelectFiles::OnClose (wxCloseEvent & WXUNUSED(event))
 
 void SelectFiles::AddDocuments (wxArrayString & paths)
 {
-	MyListCtrl * file_list = (MyListCtrl *) FindWindow (ID_FILE_LIST);
+  wxNotebook * file_lists = (wxNotebook *) FindWindow (ID_FILE_LISTS);
+  
+	MyListCtrl * list;
+
+  // select the list to add to depending on which tab of notebook is visible
+  switch (file_lists->GetSelection ())
+  {
+    case 0:
+      list = (MyListCtrl *) FindWindow (ID_FILE_LIST);
+      break;
+    default:  // can only be 1
+      list = (MyListCtrl *) FindWindow (ID_TEMPLATE_LIST);
+      break;
+  }
 
 	for (int i = 0, n = paths.GetCount (); i < n; ++i)
 	{
-		file_list->AddPath (paths[i]);
+		list->AddPath (paths[i]);
 	}
 	if (paths.IsEmpty ())
 	{

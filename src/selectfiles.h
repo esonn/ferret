@@ -10,6 +10,7 @@
 #include <wx/dir.h>
 #include <wx/dnd.h>
 #include <wx/filename.h>
+#include <wx/notebook.h>
 #include <wx/progdlg.h>
 #include <wx/spinctrl.h>
 #include <vector>
@@ -31,6 +32,8 @@ enum { 	ID_ADD_FILES = wxID_HIGHEST + 100,
 	ID_EXTRACT_ALL,
 	ID_IGNORE_UNKNOWN,
 	ID_FILE_LIST,
+  ID_TEMPLATE_LIST,
+  ID_FILE_LISTS,
 	ID_SETTINGS,
   ID_GROUP_DIRS
 };
@@ -68,7 +71,7 @@ class SelectFiles: public wxFrame
 		bool ExtractFiles (int start_from = 0);
 		void OnAdd (wxCommandEvent & event);
     void OnAddDir (wxCommandEvent & event);
-		void OnSearchClicked (wxCommandEvent & event);
+    void OnCheckGroup (wxCommandEvent & event);
     bool ContainsOnlyDirectories ();
 		void UpdateButtons ();
 		void OnClear (wxCommandEvent & event);
