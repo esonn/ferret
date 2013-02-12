@@ -46,6 +46,7 @@ class UniqueTrigramsView: public wxFrame
     UniqueTrigramsView (ComparisonTableView * parent, DocumentList & documentlist);
     void OnRankDoc (wxCommandEvent & event);
     void OnRankCount (wxCommandEvent & event);
+    void OnHelp (wxCommandEvent & event);
     void OnClose (wxCloseEvent & event);
     void OnCloseEvent (wxCommandEvent & WXUNUSED(event));
     void OnResize (wxSizeEvent & event);

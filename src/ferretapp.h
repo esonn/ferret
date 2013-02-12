@@ -27,6 +27,7 @@ class FerretApp: public wxApp
 		void ShowSelectionHelp ();
 		void ShowTableHelp ();
 		void ShowComparisonHelp ();
+    void ShowUniquenessHelp ();
 		wxString GetVersionString ();
 		wxString GetGeneratedByString ();
 		// BEGIN options and information maintained for ferret application

@@ -54,6 +54,11 @@ void FerretApp::ShowComparisonHelp ()
 	_ferret_help->ShowComparisonHelp ();
 }
 
+void FerretApp::ShowUniquenessHelp ()
+{
+  _ferret_help->ShowUniquenessHelp ();
+}
+
 wxString FerretApp::GetVersionString ()
 {
 	return "Ferret 5.4 (develop)";

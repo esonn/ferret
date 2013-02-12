@@ -21,7 +21,7 @@ HelpFrame::HelpFrame ()
 "More information about Ferret can be found at \nhttp://peterlane.info/ferret.html\nFor information about the Plagiarism Detection Group see: \nhttp://homepages.stca.herts.ac.uk/~pdgroup.\n\n"
 "IMPORTANT DISCLAIMER: This software comes with ABSOLUTELY NO WARRANTY; users of this software do so at their own risk.  Neither the University of Hertfordshire nor the individuals involved in any part of this software will accept any liability for any damage or harm caused to the data, computer or computer software by using this software.\n";
 	
-	wxString credits_text = "The original concept of using trigrams for measuring copying was developed by Caroline Lyon and James Malcolm.  JunPeng Bao, Ruth Barrett and Bob Dickerson also contributed to the development of earlier versions of Ferret.\n\n" 
+	wxString credits_text = "The original concept of using trigrams for measuring copying was developed by Caroline Lyon and James Malcolm.  JunPeng Bao, Ruth Barrett and Bob Dickerson also contributed to the development of earlier versions of Ferret.  The ideas for measuring uniqueness, engagement and group relationships were developed by Pam Green in her dissertation.\n\n" 
 "Since version 3.0, Ferret has been rewritten using the wxWidgets cross-platform library - Peter Lane has produced the current implementation.\n\nText conversion is achieved by calling abiword: http://www.abisource.com, and pdftotext: http://www.xpdf.com";
 
 	wxString selection_text = "The first step in running Ferret is to identify the documents to be compared.  Add the filenames of documents to the list by using the 'Add Documents ...' button, and choosing the filenames to compare.  You can repeat the operation to add documents from different folders.  (If all your files are in a single folder, you can usually open that folder, select the first item, and then press CONTROL and A together to select all the files.)\n\n"
@@ -36,6 +36,8 @@ HelpFrame::HelpFrame ()
 
 	wxString comparison_text = "The chosen documents are shown with common trigrams highlighted in blue.\n\nThe list on the right shows all of the common trigrams contained in these two documents.  Click on a trigram in the list to highlight every occurrence of that trigram in the documents.  The 'Find' buttons below each document's display will allow you to step through every occurrence of the trigram in that document.\n\nYou may save a pdf or xml report of the comparison by clicking the 'Save Analysis' button on the lower right; the report will highlight the common trigrams. (XML reports can be viewed in a browser, but also download the associated style sheet from the ferret web page.)\n";
 
+  wxString unique_text = "The uniqueness table shows a list of the documents or groups along with the total number of unique trigrams for that document or group.  Click on the column headings or buttons to resort the data.\n";
+
 	// -- add pages
 	notebook->AddPage (MakePage (notebook, wxGetApp().GetVersionString () + "\n\n", about_text), 
 			"About", true);
@@ -47,6 +49,8 @@ HelpFrame::HelpFrame ()
 			"Compare", false);
 	notebook->AddPage (MakePage (notebook, "Analysis Window\n\n", comparison_text),
 			"Analyse", false);
+  notebook->AddPage (MakePage (notebook, "Uniqueness Table\n\n", unique_text),
+      "Uniqueness", false);
 
 	top_sizer->Add (notebook, 1, wxGROW | wxALL, 5);
 
@@ -117,6 +121,11 @@ void HelpFrame::ShowTableHelp ()
 void HelpFrame::ShowComparisonHelp ()
 {
 	ShowHelpPage (4);
+}
+
+void HelpFrame::ShowUniquenessHelp ()
+{
+  ShowHelpPage (5);
 }
 
 void HelpFrame::OnUserClose (wxCommandEvent & WXUNUSED(event))

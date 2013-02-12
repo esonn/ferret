@@ -11,6 +11,7 @@ wxButton * UMakeButton (wxWindow * parent, int id, wxString title, wxString tool
 BEGIN_EVENT_TABLE(UniqueTrigramsView, wxFrame)
   EVT_BUTTON(ID_RANK_F, UniqueTrigramsView::OnRankDoc)
   EVT_BUTTON(ID_RANK_U, UniqueTrigramsView::OnRankCount)
+  EVT_BUTTON(wxID_HELP, UniqueTrigramsView::OnHelp)
   EVT_CLOSE(UniqueTrigramsView::OnClose)
   EVT_SIZE(UniqueTrigramsView::OnResize)
   EVT_BUTTON(wxID_CLOSE, UniqueTrigramsView::OnCloseEvent)
@@ -24,6 +25,11 @@ void UniqueTrigramsView::OnRankDoc (wxCommandEvent & WXUNUSED(event))
 void UniqueTrigramsView::OnRankCount (wxCommandEvent & WXUNUSED(event))
 {
   _uniqueObserver->SortOnCount ();
+}
+
+void UniqueTrigramsView::OnHelp (wxCommandEvent & WXUNUSED(event))
+{
+  wxGetApp().ShowUniquenessHelp ();
 }
 
 UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentList & documentlist)
@@ -78,6 +84,7 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
 	buttonSizer->Add (rankSizer, 0, wxGROW);
 
 	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
+	buttonSizer->Add (new wxButton (this, wxID_HELP), 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (new wxButton (this, wxID_CLOSE), 0, wxGROW | wxALL, 5);
 
   topsizer->Add (buttonSizer, 0, wxGROW | wxALL, 5);

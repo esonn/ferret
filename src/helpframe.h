@@ -23,6 +23,7 @@ class HelpFrame: public wxDialog
 		void ShowSelectionHelp ();
 		void ShowTableHelp ();
 		void ShowComparisonHelp ();
+    void ShowUniquenessHelp ();
 	private:
 		wxPanel * MakePage (wxWindow * parent, wxString title, wxString displayed_text);
 		void ShowHelpPage (int n);
