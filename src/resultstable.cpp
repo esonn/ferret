@@ -98,6 +98,8 @@ void DocumentListCtrl::SetSimilarityType (bool removeCommonTrigrams)
     case sortDoc2: SortOnDocument (1, true); break;
     case sortResemblance: SortOnResemblance (true); break;
   }
+  // update the status
+  _ferretparent->SetStatusText (wxString::Format ("Mean: %f", MeanResemblance()), 3);
 }
 
 void DocumentListCtrl::SortOnDocument (int doc_num, bool force_sort)
@@ -212,6 +214,20 @@ void DocumentListCtrl::SortOnResemblance (bool force_sort)
 
 	Refresh ();
 	_ferretparent->SetStatusText ("Rearranged table by similarity", 0);
+}
+
+float DocumentListCtrl::MeanResemblance () const
+{
+  float total = 0.0;
+  for (int i=0, n=_ferretparent->GetDocumentList().Size (); i<n; i++)
+  {
+    for (int j=i+1, m=_ferretparent->GetDocumentList().Size (); j < m; j++)
+    {
+      total += _ferretparent->GetDocumentList().ComputeResemblance (i, j, _remove_common_trigrams);
+    }
+  }
+
+  return total / _ferretparent->GetDocumentList().NumberOfPairs ();
 }
 
 wxString DocumentListCtrl::OnGetItemText (long item, long column) const
@@ -528,12 +544,13 @@ ComparisonTableView::ComparisonTableView()
 		wxDefaultPosition, wxSize (650, 550))
 {
 	CentreOnScreen ();
-	CreateStatusBar(3);
-  int widths [] = {-2, -1, -1};
-	SetStatusWidths (3, widths);
+	CreateStatusBar(4);
+  int widths [] = {-2, -1, -1, -1};
+	SetStatusWidths (4, widths);
 	SetStatusText("Welcome to Ferret", 0);
 	SetStatusText("Documents: ", 1);
 	SetStatusText("Pairs: ", 2);
+  SetStatusText("Mean: ", 3);
 	
 	// set up internal widgets
 	wxBoxSizer * topsizer = new wxBoxSizer (wxHORIZONTAL);
@@ -632,6 +649,7 @@ void ComparisonTableView::SetDocumentList (DocumentList & documentlist)
  	_resemblanceObserver->UpdatedDocumentList ();
 	_resemblanceObserver->SortOnResemblance ();
 	_resemblanceObserver->SelectFirstItem ();
+  SetStatusText (wxString::Format ("Mean: %f", _resemblanceObserver->MeanResemblance()), 3);
 }
 
 

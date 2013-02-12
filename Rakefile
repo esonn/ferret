@@ -1,4 +1,4 @@
-VERSION = 5.3 # number for next planned release
+VERSION = 5.4 # number for next planned release
 
 desc "display planned features"
 task :todo do
@@ -9,7 +9,6 @@ task :todo do
   puts "- display of groups of copied code"
   puts "- unicode, including Chinese etc processing (Bao et al 2006)"
   puts "  (the issue here is more display/output of non-ASCII characters)"
-  puts "- show mean/mode of scores below result tables"
 end
 
 desc "build ferret"

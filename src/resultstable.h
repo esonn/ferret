@@ -78,6 +78,7 @@ class DocumentListCtrl: public wxListCtrl
 		void SortOnDocument1 ();
 		void SortOnDocument2 ();
 		void SortOnResemblance (bool force_sort = false);
+    float MeanResemblance () const;
 		wxString OnGetItemText (long item, long column) const;
 		void OnListItemActivated (wxListEvent & event);
 		void ShowSelectedItem ();

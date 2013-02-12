@@ -56,7 +56,7 @@ void FerretApp::ShowComparisonHelp ()
 
 wxString FerretApp::GetVersionString ()
 {
-	return "Ferret 5.3";
+	return "Ferret 5.4 (develop)";
 }
 
 wxString FerretApp::GetGeneratedByString ()

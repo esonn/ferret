@@ -66,7 +66,7 @@ bool isCommandOption (wxString test_string)
 void aboutMessage ()
 {
 	std::cout 
-		<< "Ferret 5.3: start with no arguments for graphical version" << std::endl
+		<< "Ferret 5.4: start with no arguments for graphical version" << std::endl
 		<< "Usage: ferret [-h] [-d] [-l] [-a] [-r] [-p] [-x] [-f] [-u]" << std::endl
 		<< "  -h, --help           	displays help on command-line parameters" << std::endl
 		<< "  -d, --data-table     	produce similarity table (default)" << std::endl

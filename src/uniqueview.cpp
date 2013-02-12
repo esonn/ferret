@@ -32,9 +32,9 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
     wxSize (650, 350)),
   _documentlist (documentlist)
 {
-  CreateStatusBar (2);
-  int widths [] = {-2, -1};
-  SetStatusWidths (2, widths);
+  CreateStatusBar (3);
+  int widths [] = {-2, -1, -1};
+  SetStatusWidths (3, widths);
   SetStatusText ("Unique trigrams view", 0);
   if (_documentlist.IsGrouped ())
   {
@@ -89,6 +89,8 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
 
   SetSizer (topsizer);
   _uniqueObserver->SetFocus ();
+  _uniqueObserver->SortOnCount ();
+  SetStatusText (wxString::Format ("Mean: %f", _uniqueObserver->MeanCount ()), 2);
 }
 
 void UniqueTrigramsView::OnClose (wxCloseEvent & WXUNUSED(event))
@@ -140,6 +142,17 @@ UniqueTrigramsListCtrl::UniqueTrigramsListCtrl (UniqueTrigramsView * ferretparen
   {
     _sortedIndices.push_back (i);
   }
+}
+
+float UniqueTrigramsListCtrl::MeanCount () const
+{
+  float total = 0.0;
+  for (int i = 0, n = _ferretparent->GetDocumentList().GroupSize (); i < n; i++)
+  {
+    total += _ferretparent->GetDocumentList().UniqueCount (i);
+  }
+
+  return total / _ferretparent->GetDocumentList().GroupSize ();
 }
 
 wxString UniqueTrigramsListCtrl::OnGetItemText (long item, long column) const
