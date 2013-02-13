@@ -1,7 +1,7 @@
 #include "outputreport.h"
 
-OutputReport::OutputReport (DocumentList & doclist, bool unique)
-	: _doclist (doclist), _unique (unique)
+OutputReport::OutputReport (DocumentList & doclist, bool unique, bool ignore)
+	: _doclist (doclist), _unique (unique), _ignore (ignore)
 {
 }
 

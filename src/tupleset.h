@@ -14,6 +14,14 @@
 
 #include "tokenset.h"
 
+/* Class to hold fvector and flag for documents per tuple */
+class TupleDocs
+{
+  public:
+    std::vector<int> docs;
+    bool is_template_material;
+};
+
 /** TupleSet maintains the database mapping trigrams to identifier of documents which contain them.
   * The mapping is held as a sequence of std::maps, each map taking a std::size_t reference to 
   * a token as a key.  The end result of the three maps is a vector of document identifiers.
@@ -28,8 +36,9 @@
   */
 class TupleSet
 {
+ 
 	// typedef's to simplify declarations
-	typedef std::map<std::size_t, std::vector<int> > WordMap;
+	typedef std::map<std::size_t, TupleDocs> WordMap;
 	typedef WordMap::const_iterator WordMapIter;
 
 	typedef std::map<std::size_t, WordMap> PairMap;
@@ -42,18 +51,15 @@ class TupleSet
 		TupleSet ();
 		void Clear ();
 		int Size ();
-		// given a tuple, return the list of documents which contain that tuple
-		std::vector<int> & GetDocumentsForTuple (std::size_t token_0, 
-				std::size_t token_1, std::size_t token_2);
 		// given a tuple and a document identifier, 
 		// - make sure that the document is in the list for that tuple
 		// - returns true if the document was not already in trigram's list
 		bool AddDocument (std::size_t token_0, std::size_t token_1, std::size_t token_2, 
-				int document);
+				int document, bool is_template);
 		// check if two documents share the given tuple
-		bool IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique = false);
+		bool IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique = false, bool ignore = false);
 		// collect and return all tuples in the two given documents
-		wxSortedArrayString CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset, bool unique = false);
+		wxSortedArrayString CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset, bool unique = false, bool ignore = false);
 	private:
 		TripMap	_tuple_map;
 	public: // following methods and data structures are to handle an iterator on tupleset

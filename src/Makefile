@@ -11,7 +11,7 @@ ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
 
 mainferret.o: mainferret.cpp mainferret.h \
-		documentlist.h ferretapp.h document.h
+		documentlist.h ferretapp.h document.h outputreport.h pdfreport.h xmlreport.h
 	$(CC) `wx-config --cxxflags` -c mainferret.cpp -o mainferret.o
 
 # graphical and pdf functionality
@@ -35,7 +35,8 @@ helpframe.o: helpframe.cpp helpframe.h \
 		ferretapp.h
 	$(CC) `wx-config --cxxflags` -c helpframe.cpp -o helpframe.o
 
-outputreport.o: outputreport.cpp outputreport.h
+outputreport.o: outputreport.cpp outputreport.h \
+		documentlist.h
 	$(CC) `wx-config --cxxflags` -c outputreport.cpp -o outputreport.o
 
 pdfreport.o: pdfreport.cpp pdfreport.h resultstable.h outputreport.h \

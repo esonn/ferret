@@ -1,8 +1,8 @@
 #include "xmlreport.h"
 
 // Constructor just passes doclist to its parent class
-XmlReport::XmlReport (DocumentList & doclist, bool unique)
-	: OutputReport (doclist, unique)
+XmlReport::XmlReport (DocumentList & doclist, bool unique, bool ignore)
+	: OutputReport (doclist, unique, ignore)
 {
 }
 

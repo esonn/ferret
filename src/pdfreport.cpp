@@ -131,8 +131,8 @@ void PdfDocumentComparison::Footer()
 			0, 0, wxPDF_ALIGN_RIGHT);
 }
 
-PdfReport::PdfReport (DocumentList & doclist, bool unique)
-	: OutputReport (doclist, unique)
+PdfReport::PdfReport (DocumentList & doclist, bool unique, bool ignore)
+	: OutputReport (doclist, unique, ignore)
 {
 }
 

@@ -22,11 +22,13 @@
  * keeps a count of number of matches where only A & B are present, 
  * and of all trigrams that A & B occur in.
  */
-class MatchPair
+class MatchData
 {
   public:
     int common;
     int unique;
+    int ignore;
+    int unique_ignore;
 };
 
 /** DocumentList maintains a list of documents, a TokenSet of identified Tokens and 
@@ -40,17 +42,18 @@ class MatchPair
 class DocumentList
 {
 	struct similaritycmp { // structure for sorting indices to document by similarity
-    similaritycmp (bool unique): _unique (unique) {}
+    similaritycmp (bool unique, bool ignore): _unique (unique), _ignore (ignore) {}
 		static DocumentList * doclist;
 		static std::vector<int> * document1;
 		static std::vector<int> * document2;
     bool _unique;
+    bool _ignore;
 
 		bool operator()(int x, int y) const 
 		{
-			return (doclist->ComputeResemblance((*document1)[x], (*document2)[x], _unique)
+			return (doclist->ComputeResemblance((*document1)[x], (*document2)[x], _unique, _ignore)
 				>
-				doclist->ComputeResemblance((*document1)[y], (*document2)[y], _unique));
+				doclist->ComputeResemblance((*document1)[y], (*document2)[y], _unique, _ignore));
 		}
 	};
   struct uniquecountcmp { // structure for sorting indices to document by unique count
@@ -89,19 +92,19 @@ class DocumentList
 		void ComputeSimilarities ();
 		int GetTotalTrigramCount ();
 		int CountTrigrams (int doc_i);
-		int CountMatches (int doc_i, int doc_j, bool unique=false);
-		float ComputeResemblance (int doc_i, int doc_j, bool unique=false);
-		float ComputeContainment (int doc_i, int doc_j, bool unique=false);
+		int CountMatches (int doc_i, int doc_j, bool unique=false, bool ignore=false);
+		float ComputeResemblance (int doc_i, int doc_j, bool unique=false, bool ignore=false);
+		float ComputeContainment (int doc_i, int doc_j, bool unique=false, bool ignore=false);
     int UniqueCount (int index) const;
 		// check if given trigram is in both the indexed documents
-		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique=false);
+		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique=false, bool ignore=false);
 		// convert given trigram into a string
 		wxString MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2);
 		// collect all the matching trigrams in the two documents into a vector of strings
-		wxSortedArrayString CollectMatchingTrigrams (int doc1, int doc2, bool unique=false);
+		wxSortedArrayString CollectMatchingTrigrams (int doc1, int doc2, bool unique=false, bool ignore=false);
 		// for sorting pairs of indices
     struct uniquecountcmp GetUniqueCountComparer ();
-		struct similaritycmp GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique);
+		struct similaritycmp GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique, bool ignore);
 		// for storing/retrieving list of documents and token/tuple definitions
 		void SaveDocumentList (wxString path);
 		bool RetrieveDocumentList (wxString path);
@@ -116,7 +119,7 @@ class DocumentList
     std::map<int, wxString> _group_names;
 		TokenSet		_token_set;
 		TupleSet		_tuple_set;
-		std::vector<MatchPair *>	_matches;
+		std::vector<MatchData *>	_matches;
 		int			    _last_group_id;
     int         _has_template_material;
 };

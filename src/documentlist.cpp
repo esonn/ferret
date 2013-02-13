@@ -264,7 +264,8 @@ void DocumentList::ReadDocument (int i)
 					_documents[i]->GetToken (0),
 					_documents[i]->GetToken (1),
 					_documents[i]->GetToken (2),
-					i))
+					i,
+          _documents[i]->GetGroupId () == 0)) // True if template material
 		{
 			_documents[i]->IncrementTrigramCount ();
 		}
@@ -276,7 +277,7 @@ void DocumentList::ClearSimilarities ()
 {
 	for (int i=0; i < _documents.size() * _documents.size(); ++i)
 	{
-		_matches.push_back (new MatchPair());
+		_matches.push_back (new MatchData());
 	}
 }
 
@@ -292,6 +293,16 @@ void DocumentList::ComputeSimilarities ()
     {
       _documents[fvector[0]]->IncrementUniqueTrigramCount ();
     }
+    // if any of the files is id = 0 then the tuple is contained in template material
+    bool templateMaterial = false;
+    for (int i = 0; i < fvector.size (); i += 1)
+    {
+      if (_documents[fvector[i]]->GetGroupId () == 0)
+      {
+        templateMaterial = true;
+        break;
+      }
+    }
 
 		// take each pair of documents in the vector, and add one to matches
 		for (unsigned int fi = 0, n = fvector.size (); fi < n; ++fi)
@@ -301,11 +312,22 @@ void DocumentList::ComputeSimilarities ()
 				// ensure that first index is smaller than the second
 				int doc1 = fvector[(fi <= fj ? fi : fj)];
 				int doc2 = fvector[(fi <= fj ? fj : fi)];
-				assert (doc1 * _documents.size() + doc2 < _matches.size());
-				_matches[doc1 * _documents.size() + doc2]->common += 1;
+        int matchIndex = doc1 * _documents.size() + doc2;
+				assert (matchIndex < _matches.size());
+				_matches[matchIndex]->common += 1;
+        // when we 'ignore' the template material, want to count only 
+        // those trigrams which are not templateMaterial
+        if (!templateMaterial)
+        {
+          _matches[matchIndex]->ignore += 1;
+        }
         if (fvector.size () == 2) 
         {
-          _matches[doc1 * _documents.size() + doc2]->unique += 1;
+          _matches[matchIndex]->unique += 1;
+          if (!templateMaterial) // && fvector.size () == 2
+          {
+            _matches[matchIndex]->unique_ignore += 1;
+          }
         }
 			}
 		}
@@ -324,31 +346,40 @@ int DocumentList::CountTrigrams (int doc_i)
  return _documents[doc_i]->GetTrigramCount ();
 }
 
-int DocumentList::CountMatches (int doc_i, int doc_j, bool unique)
+int DocumentList::CountMatches (int doc_i, int doc_j, bool unique, bool ignore_template)
 {
+  int matchIndex = doc_i * _documents.size() + doc_j;
 	assert (doc_j > doc_i); // _matches is only completed from one side, with doc_j > doc_i
-	assert ((doc_i * _documents.size() + doc_j) < _matches.size());
-  if (unique)
+	assert (matchIndex < _matches.size());
+  if (unique && ignore_template)
   {
-    return _matches[doc_i * _documents.size() + doc_j]->unique;
+    return _matches[matchIndex]->unique_ignore;
   }
-  else
+  else if (unique && !ignore_template)
   {
-	  return _matches[doc_i * _documents.size() + doc_j]->common;
+    return _matches[matchIndex]->unique;
+  }
+  else if (!unique && ignore_template)
+  {
+    return _matches[matchIndex]->ignore;
+  }
+  else // (!unique && !ignore_template)
+  {
+	  return _matches[matchIndex]->common;
   }
 }
 
-float DocumentList::ComputeResemblance (int doc_i, int doc_j, bool unique)
+float DocumentList::ComputeResemblance (int doc_i, int doc_j, bool unique, bool ignore)
 {
-	float num_matches = (float)CountMatches (doc_i, doc_j, unique);
+	float num_matches = (float)CountMatches (doc_i, doc_j, unique, ignore);
 	float total_trigrams = (float)(CountTrigrams (doc_i) + CountTrigrams (doc_j) - num_matches);
 	if (total_trigrams == 0.0) return 0.0; // check for divide by zero
 	return num_matches/total_trigrams;
 }
 
-float DocumentList::ComputeContainment (int doc_i, int doc_j, bool unique)
+float DocumentList::ComputeContainment (int doc_i, int doc_j, bool unique, bool ignore)
 {
-	float num_matches = (float)(doc_j > doc_i ? CountMatches (doc_i, doc_j, unique) : CountMatches (doc_j, doc_i, unique));
+	float num_matches = (float)(doc_j > doc_i ? CountMatches (doc_i, doc_j, unique, ignore) : CountMatches (doc_j, doc_i, unique, ignore));
 	float target_trigrams = (float)(CountTrigrams (doc_j));
 	if (target_trigrams == 0.0) return 0.0; // check for divide by zero
 	return num_matches/target_trigrams;
@@ -376,9 +407,9 @@ int DocumentList::UniqueCount (int index) const
   }
 }
 
-bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique)
+bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique, bool ignore)
 {
-	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2, unique);
+	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2, unique, ignore);
 }
 
 wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2)
@@ -391,9 +422,9 @@ wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::s
 	return tuple;
 }
 
-wxSortedArrayString DocumentList::CollectMatchingTrigrams (int doc1, int doc2, bool unique) 
+wxSortedArrayString DocumentList::CollectMatchingTrigrams (int doc1, int doc2, bool unique, bool ignore) 
 {
-	return _tuple_set.CollectMatchingTuples (doc1, doc2, _token_set, unique);
+	return _tuple_set.CollectMatchingTuples (doc1, doc2, _token_set, unique, ignore);
 }
 
 // make names of comparison structure visible
@@ -411,9 +442,9 @@ DocumentList * DocumentList::similaritycmp::doclist;
 std::vector<int> * DocumentList::similaritycmp::document1;
 std::vector<int> * DocumentList::similaritycmp::document2;
 
-struct DocumentList::similaritycmp DocumentList::GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique)
+struct DocumentList::similaritycmp DocumentList::GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique, bool ignore)
 {
-	similaritycmp comparer (unique);
+	similaritycmp comparer (unique, ignore);
 	comparer.doclist = this;
 	comparer.document1 = document1;
 	comparer.document2 = document2;
@@ -583,7 +614,7 @@ bool DocumentList::ReadTupleDefinitions (wxTextInputStream & stored_data)
 		{
 			wxString next = items.GetNextToken ();
 			if (next.IsSameAs ("]")) break; // finish loop
-			_tuple_set.AddDocument (index0, index1, index2, wxAtoi (next));
+			_tuple_set.AddDocument (index0, index1, index2, wxAtoi (next), false); // TODO: true if template
 		}
 
 		line = stored_data.ReadLine ();

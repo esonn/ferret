@@ -88,9 +88,10 @@ void DocumentListCtrl::SelectFirstItem ()
 // toggle the type of displayed similarity measure
 // false : use all trigrams in comparison
 // true  : only use trigrams uniquely within the two documents
-void DocumentListCtrl::SetSimilarityType (bool removeCommonTrigrams)
+void DocumentListCtrl::SetSimilarityType (bool removeCommonTrigrams, bool ignoreTemplateMaterial)
 {
   _remove_common_trigrams = removeCommonTrigrams;
+  _ignore_template_material = ignoreTemplateMaterial;
   // repeat the last used sort
   switch (_lastsort)
   {
@@ -193,7 +194,7 @@ void DocumentListCtrl::SortOnResemblance (bool force_sort)
 	}
 	
 	std::sort (newIndices.begin(), newIndices.end(), 
-			_ferretparent->GetDocumentList().GetSimilarityComparer (&_document1, &_document2, _remove_common_trigrams));
+			_ferretparent->GetDocumentList().GetSimilarityComparer (&_document1, &_document2, _remove_common_trigrams, _ignore_template_material));
 
 	_sortedIndices = newIndices;
 	RefreshItems (0, _sortedIndices.size()-1);
@@ -223,7 +224,7 @@ float DocumentListCtrl::MeanResemblance () const
   {
     for (int j=i+1, m=_ferretparent->GetDocumentList().Size (); j < m; j++)
     {
-      total += _ferretparent->GetDocumentList().ComputeResemblance (i, j, _remove_common_trigrams);
+      total += _ferretparent->GetDocumentList().ComputeResemblance (i, j, _remove_common_trigrams, _ignore_template_material);
     }
   }
 
@@ -250,7 +251,7 @@ wxString DocumentListCtrl::OnGetItemText (long item, long column) const
 		else // if (column == 2)
 		{
 			return wxString::Format("%f", 
-					_ferretparent->GetDocumentList().ComputeResemblance (doc1, doc2, _remove_common_trigrams));
+					_ferretparent->GetDocumentList().ComputeResemblance (doc1, doc2, _remove_common_trigrams, _ignore_template_material));
 		}
 	}
 	else
@@ -269,7 +270,7 @@ void DocumentListCtrl::ShowItem (long item_number)
 	wxString title = wxString::Format("Ferret: Analysis of copying between %s and %s", 
 			name1.c_str(), name2.c_str());
 	DocumentComparisonView * view = new DocumentComparisonView (_ferretparent, title, 
-			_document1[index], _document2[index], _remove_common_trigrams);
+			_document1[index], _document2[index], _remove_common_trigrams, _ignore_template_material);
 	view->Show (true);
 	view->LoadDocuments ();
 }
@@ -289,16 +290,16 @@ void DocumentListCtrl::ShowSelectedItem ()
 	}
 }
 
-void ComparisonTableView::SaveReportFor (int document1, int document2, bool unique)
+void ComparisonTableView::SaveReportFor (int document1, int document2, bool unique, bool ignore)
 {
-	_resemblanceObserver->SaveReportFor (document1, document2, unique);
+	_resemblanceObserver->SaveReportFor (document1, document2, unique, ignore);
 }
 
 // Save report of document comparison
 // -- input is index of documents to compare
 // -- uses file dialog to locate filename and type of output
 // -- saves comparison in either .pdf or .xml format
-void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique)
+void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique, bool ignore)
 {
   wxFileName filename1 (GetPathname (document1));
   wxFileName filename2 (GetPathname (document2));
@@ -318,13 +319,13 @@ void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique)
    	if (dialog.GetFilterIndex () == 0 || (path.GetExt () == "pdf"))
    	{
     	path.SetExt ("pdf"); // force .pdf as extension
-    	PdfReport pdfreport (_ferretparent->GetDocumentList (), unique);
+    	PdfReport pdfreport (_ferretparent->GetDocumentList (), unique, ignore);
     	pdfreport.WritePdfReport (path.GetFullPath (), document1, document2);
     }
     else // if (dialog.GetFilterIndex () == 1 || (path.GetExt () == "xml"))
     {
       path.SetExt ("xml"); // force .xml as extension
-      XmlReport xmlreport (_ferretparent->GetDocumentList (), unique);
+      XmlReport xmlreport (_ferretparent->GetDocumentList (), unique, ignore);
       xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
     }
   }
@@ -340,7 +341,7 @@ void DocumentListCtrl::SaveSelectedItem ()
 	long index = _sortedIndices[item_number];
 	int document1 = _document1[index];
 	int document2 = _document2[index];
-	SaveReportFor (document1, document2, _remove_common_trigrams);
+	SaveReportFor (document1, document2, _remove_common_trigrams, _ignore_template_material);
 }
 
 // Called when user clicks top of table
@@ -407,6 +408,11 @@ bool DocumentListCtrl::RemoveCommonTrigramsSet () const
   return _remove_common_trigrams;
 }
 
+bool DocumentListCtrl::IgnoreTemplateMaterialSet () const
+{
+  return _ignore_template_material;
+}
+
 BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_RANK_1, ComparisonTableView::OnRank1)
 	EVT_BUTTON(ID_RANK_2, ComparisonTableView::OnRank2)
@@ -417,6 +423,7 @@ BEGIN_EVENT_TABLE(ComparisonTableView, wxFrame)
 	EVT_BUTTON(ID_DISPLAY_TEXTS, ComparisonTableView::OnDisplayTexts)
 	EVT_BUTTON(ID_CREATE_REPORT, ComparisonTableView::OnCreateReport)
   EVT_CHECKBOX(ID_REMOVE_COMMON, ComparisonTableView::OnCheckRemoveCommon)
+  EVT_CHECKBOX(ID_IGNORE_TEMPLATE, ComparisonTableView::OnCheckIgnoreTemplate)
   EVT_CHECKBOX(ID_SHOW_SHORT, ComparisonTableView::OnCheckShortNames)
 	EVT_BUTTON(wxID_HELP, ComparisonTableView::OnHelp)
 	EVT_BUTTON(wxID_EXIT,  ComparisonTableView::OnQuit)
@@ -451,8 +458,19 @@ void ComparisonTableView::OnCreateReport (wxCommandEvent & WXUNUSED(event))
 
 void ComparisonTableView::OnCheckRemoveCommon (wxCommandEvent & WXUNUSED(event))
 {
-  wxCheckBox * box = (wxCheckBox *) FindWindow (ID_REMOVE_COMMON);
-  _resemblanceObserver->SetSimilarityType (box->IsChecked ());
+  UpdateSimilarity ();
+}
+
+void ComparisonTableView::OnCheckIgnoreTemplate (wxCommandEvent & WXUNUSED(event))
+{
+  UpdateSimilarity ();
+}
+
+void ComparisonTableView::UpdateSimilarity ()
+{
+  wxCheckBox * remove_box = (wxCheckBox *) FindWindow (ID_REMOVE_COMMON);
+  wxCheckBox * ignore_box = (wxCheckBox *) FindWindow (ID_IGNORE_TEMPLATE);
+  _resemblanceObserver->SetSimilarityType (remove_box->IsChecked (), ignore_box->IsChecked ());
 }
 
 void ComparisonTableView::OnCheckShortNames (wxCommandEvent & WXUNUSED(event))

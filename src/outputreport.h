@@ -15,7 +15,7 @@
 class OutputReport
 {
 	public:
-		OutputReport (DocumentList & doclist, bool unique);
+		OutputReport (DocumentList & doclist, bool unique, bool ignore);
 		virtual void ProcessTrigram (wxString trigram, int start, int end);
 		virtual void WriteDocumentFooter ();
 		virtual void EndBlock ();
@@ -26,6 +26,7 @@ class OutputReport
 	protected:
 		DocumentList & _doclist;
     bool           _unique;
+    bool           _ignore;
   friend class PdfReport;
   friend class XmlReport;
 };

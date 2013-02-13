@@ -72,11 +72,12 @@ class DocumentListCtrl: public wxListCtrl
 					wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_VIRTUAL | wxSIMPLE_BORDER ),
 			  _ferretparent (ferretparent),
         _remove_common_trigrams (false),
+        _ignore_template_material (false),
         _show_short (true)
 		{}
 		void UpdatedDocumentList ();
 		void SelectFirstItem ();
-    void SetSimilarityType (bool removeCommonTrigrams);
+    void SetSimilarityType (bool removeCommonTrigrams, bool ignoreTemplateMaterial);
 		void SortOnDocument1 ();
 		void SortOnDocument2 ();
 		void SortOnResemblance (bool force_sort = false);
@@ -84,7 +85,7 @@ class DocumentListCtrl: public wxListCtrl
 		wxString OnGetItemText (long item, long column) const;
 		void OnListItemActivated (wxListEvent & event);
 		void ShowSelectedItem ();
-		void SaveReportFor (int document1, int document2, bool unique);
+		void SaveReportFor (int document1, int document2, bool unique, bool ignore);
 		void SaveSelectedItem ();
 		void OnSortColumn (wxListEvent & event);
 		int GetNumberItems () const;
@@ -92,6 +93,7 @@ class DocumentListCtrl: public wxListCtrl
 		wxString GetName (int i) const;
 		wxString GetDisplayName (int i) const;
     bool RemoveCommonTrigramsSet () const;
+    bool IgnoreTemplateMaterialSet () const;
     void SetShowShort (bool value) 
     { 
       _show_short = value; 
@@ -107,6 +109,7 @@ class DocumentListCtrl: public wxListCtrl
 		std::vector<int> _sortedIndices;
 		Sort         _lastsort;
     bool        _remove_common_trigrams;
+    bool        _ignore_template_material;
     bool        _show_short;
 };
 
@@ -127,10 +130,12 @@ class ComparisonTableView: public wxFrame
     void OnShowEngagementView (wxCommandEvent & event);
 		void OnQuit        (wxCommandEvent & event);
     void OnCheckRemoveCommon (wxCommandEvent & event);
+    void OnCheckIgnoreTemplate (wxCommandEvent & event);
+    void UpdateSimilarity ();
     void OnCheckShortNames (wxCommandEvent & event);
 		void OnClose (wxCloseEvent & event);
 		void SetDocumentList (DocumentList & documentlist);
-		void SaveReportFor (int document1, int document2, bool unique);
+		void SaveReportFor (int document1, int document2, bool unique, bool ignore);
 		wxString GetName (int document) const;
 		DocumentList & GetDocumentList ()
 		{ 

@@ -103,12 +103,12 @@ void produceComparisonReport (
 
 	if (report_type == PDF_REPORT)
 	{
-		PdfReport pdfreport (docs, remove_common_trigrams);
+		PdfReport pdfreport (docs, remove_common_trigrams, false);
 		pdfreport.WritePdfReport (target_name, 0, 1);
 	}
 	else // if (report_type == XML_REPORT)
 	{
-		XmlReport xmlreport (docs, remove_common_trigrams);
+		XmlReport xmlreport (docs, remove_common_trigrams, false);
 		xmlreport.WriteXmlReport (target_name, 0, 1);
 	}
 }
