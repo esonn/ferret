@@ -64,10 +64,9 @@ class DocumentList
 		}
 	};
 	public:
-		DocumentList () : _last_group_id (0) {}
+		DocumentList () : _last_group_id (0), _has_template_material (false) {}
 		~DocumentList ();
-		void AddDocument (wxString pathname, bool grouped=false);
-		void AddDocument (wxString pathname, int id);
+		void AddDocument (wxString pathname, bool grouped=false, bool id0=false);
 		void AddDocument (wxString pathname, wxString name, int id);
 		bool AddDocumentsFromDefinitionFile (wxString pathname);
 		Document * operator [] (std::size_t i) const;
@@ -80,6 +79,7 @@ class DocumentList
 		void ResetReading ();
 		int Size () const;
     int GroupSize () const;
+    bool IsTemplateMaterial (int i) const;
     wxString GetGroupName (int index);
 		int NumberOfPairs () const;
 		bool MayNeedConversions () const;
@@ -105,6 +105,7 @@ class DocumentList
 		// for storing/retrieving list of documents and token/tuple definitions
 		void SaveDocumentList (wxString path);
 		bool RetrieveDocumentList (wxString path);
+    bool HasTemplateMaterial () const;
 	private:
 		bool ReadDocumentDefinitions (wxTextInputStream & stored_data);
 		bool ReadSingleDocumentDefinition (wxTextInputStream & stored_data);
@@ -117,6 +118,7 @@ class DocumentList
 		TupleSet		_tuple_set;
 		std::vector<MatchPair *>	_matches;
 		int			    _last_group_id;
+    int         _has_template_material;
 };
 
 #endif

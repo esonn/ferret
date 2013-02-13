@@ -267,6 +267,12 @@ void SelectFiles::OnRun (wxCommandEvent & WXUNUSED(event))
   {
 		_document_list->AddDocument (file_list->GetItem (i), grouped);
   }
+  // put template materials into document list as id = 0
+  MyListCtrl * template_list = (MyListCtrl *) FindWindow (ID_TEMPLATE_LIST);
+  for (int i = 0; i < template_list->GetCount (); i += 1)
+  {
+    _document_list->AddDocument (template_list->GetItem (i), false, true);
+  }
   // prepare document list for reading tuples
 	_document_list->ResetReading ();
 	// perform text extraction

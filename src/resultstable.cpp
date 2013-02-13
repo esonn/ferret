@@ -385,14 +385,19 @@ wxString DocumentListCtrl::GetName (int i) const
 // by retrieving item from parent document list.
 wxString DocumentListCtrl::GetDisplayName (int i) const
 {
-  wxString result;
+  wxString result = "";
+  // add an indicator for template code
+  if (_ferretparent->GetDocumentList()[i]->GetGroupId () == 0)
+  {
+    result = "TM:";
+  }
   if (_show_short)
   {
-    result = _ferretparent->GetDocumentList()[i]->GetShortName ();
+    result += _ferretparent->GetDocumentList()[i]->GetShortName ();
   }
   else
   {
-	  result = _ferretparent->GetDocumentList()[i]->GetOriginalPathname ();
+	  result += _ferretparent->GetDocumentList()[i]->GetOriginalPathname ();
   }
   return result;
 }
@@ -531,8 +536,8 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 
 	wxPanel * button = (wxPanel *) FindWindow (ID_RANK_1); // pick a widget off frame for width
 
-	// TODO: Get this to work without need for - 35
-	int new_width = GetClientSize().GetWidth () - button->GetSize().GetWidth() - 35;
+	// TODO: Get this to work without need for - 55
+	int new_width = GetClientSize().GetWidth () - button->GetSize().GetWidth() - 55;
 	int current_width = _resemblanceObserver->GetColumnWidth (0) + 
 		_resemblanceObserver->GetColumnWidth (1) +
 		_resemblanceObserver->GetColumnWidth (2);
@@ -550,7 +555,7 @@ void ComparisonTableView::OnResize (wxSizeEvent & event)
 
 ComparisonTableView::ComparisonTableView()
 	: wxFrame(NULL, wxID_ANY, "Ferret: Table of comparisons", 
-		wxDefaultPosition, wxSize (650, 580))
+		wxDefaultPosition, wxSize (650, 610))
 {
 	CentreOnScreen ();
 	CreateStatusBar(4);
@@ -619,9 +624,13 @@ ComparisonTableView::ComparisonTableView()
 	showSizer->Add (saveButton, 0, wxGROW | wxALL, 5);
 	buttonSizer->Add (showSizer, 0, wxGROW);
 
-	buttonSizer->AddStretchSpacer (); // separate window controls from Ferret controls
+	buttonSizer->AddStretchSpacer (); // separate controls
+
   buttonSizer->Add (MakeCheckBox (this, ID_REMOVE_COMMON, "Remove Common Trigrams",
       "Compute similarity only from trigrams for the two documents", false), 
+      0, wxGROW | wxALL, 5);  
+  buttonSizer->Add (MakeCheckBox (this, ID_IGNORE_TEMPLATE, "Ignore Template Material",
+      "Compute similarity but ignore any trigrams in template material", false), 
       0, wxGROW | wxALL, 5);  
   buttonSizer->Add (MakeCheckBox (this, ID_SHOW_SHORT, "Show Short Names",
       "Uncheck to show full pathnames in table", true), 
@@ -662,6 +671,8 @@ void ComparisonTableView::SetDocumentList (DocumentList & documentlist)
 	_resemblanceObserver->SortOnResemblance ();
 	_resemblanceObserver->SelectFirstItem ();
   SetStatusText (wxString::Format ("Mean: %f", _resemblanceObserver->MeanResemblance()), 3);
+  ((wxButton *) FindWindow (ID_ENGAGEMENT_VIEW))->Enable (_documentlist.HasTemplateMaterial ());
+  ((wxCheckBox *) FindWindow (ID_IGNORE_TEMPLATE))->Enable (_documentlist.HasTemplateMaterial ());
 }
 
 

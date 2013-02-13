@@ -38,23 +38,7 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
     wxSize (650, 350)),
   _documentlist (documentlist)
 {
-  CreateStatusBar (3);
-  int widths [] = {-2, -1, -1};
-  SetStatusWidths (3, widths);
-  SetStatusText ("Unique trigrams view", 0);
-  if (_documentlist.IsGrouped ())
-  {
-    SetStatusText (wxString::Format ("Groups: %d", _documentlist.GroupSize()), 1);
-  }
-  else
-  {
-    SetStatusText (wxString::Format ("Documents: %d", _documentlist.Size()), 1);
-  }
-
-  // set up internal widgets
-  wxBoxSizer * topsizer = new wxBoxSizer (wxHORIZONTAL);
-
-  // 1. comparison table
+  // 1. comparison table -- set up so uniqueObserver can be used in display
   wxPanel * tableView = new wxPanel (this, wxID_ANY);
   wxBoxSizer * tableSizer = new wxBoxSizer (wxVERTICAL);
   tableView->SetSizer (tableSizer);
@@ -62,6 +46,24 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
   _uniqueObserver = new UniqueTrigramsListCtrl (this, tableView);
   tableSizer->Add (_uniqueObserver, 1, wxGROW);
 
+  // create the main part of the display
+  CreateStatusBar (3);
+  int widths [] = {-2, -1, -1};
+  SetStatusWidths (3, widths);
+  SetStatusText ("Unique trigrams view", 0);
+  if (_documentlist.IsGrouped ())
+  {
+    SetStatusText (wxString::Format ("Groups: %d", _uniqueObserver->GetItemCount ()), 1);
+  }
+  else
+  {
+    SetStatusText (wxString::Format ("Documents: %d", _uniqueObserver->GetItemCount ()), 1);
+  }
+
+  // set up internal widgets
+  wxBoxSizer * topsizer = new wxBoxSizer (wxHORIZONTAL);
+
+  // return to the table view
   // -- insert two columns
   wxListItem itemCol;
   itemCol.SetText (_documentlist.IsGrouped() ? "Group" : "Document");
@@ -70,7 +72,7 @@ UniqueTrigramsView::UniqueTrigramsView (ComparisonTableView * parent, DocumentLi
   itemCol.SetText ("Count");
   _uniqueObserver->InsertColumn (1, itemCol);
   _uniqueObserver->SetColumnWidth (1, wxLIST_AUTOSIZE_USEHEADER);
-  _uniqueObserver->SetItemCount (_documentlist.GroupSize ());
+  _uniqueObserver->SetItemCount (_uniqueObserver->GetItemCount ());
 
   // 2. buttons
   wxBoxSizer * buttonSizer = new wxBoxSizer (wxVERTICAL);
@@ -147,19 +149,27 @@ UniqueTrigramsListCtrl::UniqueTrigramsListCtrl (UniqueTrigramsView * ferretparen
   _sortedIndices.clear ();
   for (int i=0; i < _ferretparent->GetDocumentList().GroupSize (); i++)
   {
-    _sortedIndices.push_back (i);
+    if (!_ferretparent->GetDocumentList().IsTemplateMaterial (i)) 
+    {
+      _sortedIndices.push_back (i);
+    }
   }
+}
+
+int UniqueTrigramsListCtrl::GetItemCount () const
+{
+  return _sortedIndices.size ();
 }
 
 float UniqueTrigramsListCtrl::MeanCount () const
 {
   float total = 0.0;
-  for (int i = 0, n = _ferretparent->GetDocumentList().GroupSize (); i < n; i++)
+  for (int i = 0, n = _sortedIndices.size (); i < n; i++)
   {
-    total += _ferretparent->GetDocumentList().UniqueCount (i);
+    total += _ferretparent->GetDocumentList().UniqueCount (_sortedIndices[i]);
   }
 
-  return total / _ferretparent->GetDocumentList().GroupSize ();
+  return total / _sortedIndices.size ();
 }
 
 wxString UniqueTrigramsListCtrl::OnGetItemText (long item, long column) const

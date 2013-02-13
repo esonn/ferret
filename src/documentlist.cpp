@@ -13,8 +13,11 @@ bool DocumentList::IsGrouped () const
 // pathname may be a single file or a directory name
 // -- recurse through directories, and add all files to the list
 // -- if grouped is set, give all files in directory same id
-void DocumentList::AddDocument (wxString pathname, bool grouped)
+// -- if id0 is set, give all files id=0
+void DocumentList::AddDocument (wxString pathname, bool grouped, bool id0)
 {
+  if (id0) _has_template_material = true;
+
   if (wxFileName::DirExists (pathname))
   {
     wxFileName filename (pathname);
@@ -26,11 +29,18 @@ void DocumentList::AddDocument (wxString pathname, bool grouped)
     int id = -1;
     for (int i=0; i < files.GetCount (); i += 1)
     {
-      // give document a new id if this is the first document (id == -1)
-      // or if grouped is not set
-      if ((id == -1) || (!grouped))
+      if (id0)
+      { // set id to 0
+        id = 0;
+      }
+      else
       {
-        id = GetNewGroupId ();
+        // give document a new id if this is the first document (id == -1)
+        // or if grouped is not set
+        if (!id0 && ((id == -1) || (!grouped)))
+        {
+          id = GetNewGroupId ();
+        }
       }
       // store id->short_name in _group_names
       if (grouped)
@@ -47,7 +57,7 @@ void DocumentList::AddDocument (wxString pathname, bool grouped)
     wxFileName filename (pathname);
     if (filename.IsFileReadable ())
     {
-  	  _documents.push_back (new Document (pathname, GetNewGroupId ()));
+  	  _documents.push_back (new Document (pathname, (id0 ? 0 : GetNewGroupId ())));
     }
   }
 }
@@ -66,6 +76,20 @@ int DocumentList::GroupSize () const
   }
 }
 
+// if we are grouping the documents then given i is not a template
+// if we are not grouping the documents, then i is template if its id == 0
+bool DocumentList::IsTemplateMaterial (int i) const
+{
+  if (IsGrouped ())
+  {
+    return false;
+  }
+  else
+  {
+    return (_documents[i]->GetGroupId () == 0);
+  }
+}
+
 wxString DocumentList::GetGroupName (int index)
 {
   if (IsGrouped ())
@@ -75,17 +99,6 @@ wxString DocumentList::GetGroupName (int index)
   else
   {
     return _documents[index]->GetName ();
-  }
-}
-
-// add document with given id to list
-// -- ignores any pathnames which are not readable files
-void DocumentList::AddDocument (wxString pathname, int id)
-{
-  wxFileName filename (pathname);
-  if (filename.IsFileReadable ())
-  {
-    _documents.push_back (new Document (pathname, id));
   }
 }
 
@@ -448,6 +461,11 @@ bool DocumentList::RetrieveDocumentList (wxString path)
 	if (!ReadTupleDefinitions (stored_data)) return false;
 
 	return true;
+}
+
+bool DocumentList::HasTemplateMaterial () const
+{
+  return _has_template_material;
 }
 
 // -- currently assumes file is correct, ignoring EOF

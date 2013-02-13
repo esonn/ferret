@@ -127,10 +127,10 @@ automatically be converted to a plain text format, before analysing the
 similarities.  The progress bar indicates the expected amount of time. 
 After processing has completed, a warning may come up if there were any rejected 
 files; a detailed list of these rejected files is available in the report 
-which can be generated from the Table of Comparisons, Figure 3.
+which can be generated from the Table of Comparisons, Figure 2.
 
-image:images/figure-3.png[]
-Figure 3
+image:images/figure-2.jpg[]
+Figure 2: Table of similarity comparisons.
 
 === Table of Comparisons ===
 
@@ -157,42 +157,38 @@ using the 'Save Report ...' button; this report also includes information
 about the group of files compared and any rejected or problem files found 
 during analysis.
 
+A table of unique trigrams per document or group can be seen by clicking on 
+the 'Show Uniqueness' button: Figure 3 illustrates.
+
+image:images/figure-3.png[]
+Figure 3: Table showing the number of unique trigrams per document.
+
+The checkbox for 'Remove Common Trigrams' changes the way the trigram measures 
+are calculated to only use those trigrams within the pair of documents being 
+compared.
+
+The checkbox for 'Show Short Names' may be unchecked to show the full path of 
+files in the table.
+
 === Displaying the Results ===
 
 Any pair of documents in the Table of Comparisons can be selected and
 displayed, by clicking the button Show Analysis (marked with an arrow). This
-display comes up as in Figures 4 and 4.  Figure 4 shows passages of copied
-text with blocks of highlighted matches, contrasting with 4 which shows an
-independently written text with a sprinkling of matching phrases.
+display comes up as in Figure 4, and shows the two documents with colouring 
+to indicate the copying present.  Text in red is uniquely shared by the two 
+documents shown; text in blue is also found in other documents in the group; and 
+text in black is not shared.
 
-image:images/figure-4.png[]
-Figure 4: Blocks of matching text where copying has taken place
+The list of matching trigrams on the right-hand side of the display may be 
+clicked to located the trigram in the two documents; use the 'Find' button to 
+move between multiple matches.
 
-=== Explanation of the display ===
+The 'Save' button enables the comparison to be saved as a pdf or xml file, 
+for printing or further analysis.
 
-In the top left window is the text of the first file, its name in the top left
-corner, while below is the second file, again with its name in the top left
-corner. Matching text is highlighted in both.  On the right is a list of
-matching trigrams (3 word phrases). The analysis is based on matching trigrams.
-To find corresponding matching sections in the two files you can select a
-trigram (marked with an arrow), click on it, and the cursor will jump to the
-appropriate points in the two files. If the button marked "Find" is active,
-then clicking on it takes you to another occurrence of the same trigram.  4
+image:images/figure-4.jpg[]
+Figure 4: Comparing two documents.
 
-Use the scroll bar on the right of each window to navigate up and down.  Note
-how copied text can have words inserted, deleted or substituted, but still be
-so similar that plagiarism is suspected.
-
-=== Saving the display ===
-
-The display can be saved by clicking the button Save Analysis, either in the
-display window, or in the Table of Comparisons window. By default it will be
-saved in the folder from which you selected the documents, or chose another
-destination. Both files will be saved, with matching passages highlighted in
-blue, or bold for black and white printing.
-
-image:images/figure-5.png[]
-Figure 5: A sprinkling of matching phrases in independently written text
 
 == Text Interface to Ferret ==
 
