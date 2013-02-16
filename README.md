@@ -21,7 +21,7 @@ detect copying ( _collusion_ ) within a given set of files.
 - quick loading and comparison of documents, up to computer's memory capacity
 - display of _all_ document comparisons, ranked by a similarity score
 - detailed display of _individual_ document comparisons, highlighting any text
-  in common with the group or uniquely with compared document
+  in common with the group or template material, or uniquely with compared document
 - save result table and comparisons to pdf or xml formats, for printing or further analysis.
 - display of unique trigrams per document/group
 - template material, whose contents can be excluded from analysis
@@ -98,7 +98,7 @@ Ferret can also be used from the command line. The command-line options are:
       -f, --definition-file	use file with document list
       -u, --use-stored-data	store/retrieve data structure
 
-More details on using Ferret can be found in the manual (in preparation).
+More details on using Ferret can be found in the [manual](http://peterlane.info/downloads/ferret-manual.pdf).
 
 ### Supported File Types / Languages ###
 
