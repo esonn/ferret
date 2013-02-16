@@ -58,6 +58,7 @@ class TupleSet
 				int document, bool is_template);
 		// check if two documents share the given tuple
 		bool IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique = false, bool ignore = false);
+		bool IsTemplateTuple (std::size_t t0, std::size_t t1, std::size_t t2);
 		// collect and return all tuples in the two given documents
 		wxSortedArrayString CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset, bool unique = false, bool ignore = false);
 	private:

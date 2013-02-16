@@ -63,9 +63,12 @@ void XmlReport::EndBlock ()
 	_file.Write ("]]></block>");
 }
 
-void XmlReport::StartCopiedBlock (bool unique)
+void XmlReport::StartCopiedBlock (bool is_unique, bool is_template)
 {
-  if (unique)
+  if (is_template)
+  {
+    _file.Write ("<block text=\"template\"");
+  } else if (is_unique)
   {
     _file.Write ("<block text=\"unique\"");
   }

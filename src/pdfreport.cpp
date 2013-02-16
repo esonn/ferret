@@ -168,7 +168,9 @@ void PdfReport::WritePdfReport (wxString save_report_path, int document1, int do
   {
     PrintLine ("(Pairwise similarity ignores trigrams in common with other documents)");
   }
-	PrintLine ("(Text highlighted in bold/blue is duplicated in the two documents)");
+	PrintLine ("(Text highlighted in bold/red is uniquely copied between the two documents)");
+  PrintLine ("(Text highlighted in bold/blue is copied in the two documents and others)");
+  PrintLine ("(Text highlighted in green is shared with the template material (if provided))");
 	// do documents
 	PrintDocument (1, document1, document2);
 	PrintDocument (2, document2, document1);
@@ -211,10 +213,16 @@ void PdfReport::EndBlock ()
 	StartNormalBlock (); // change font to black text
 }
 
-void PdfReport::StartCopiedBlock (bool unique)
+void PdfReport::StartCopiedBlock (bool is_unique, bool is_template)
 {
 	_pdf.SetFont (_T(""), _T("B"));
-	_pdf.SetTextColour (wxColour ((unique ? "RED" : "BLUE")));
+  if (is_template) {
+    _pdf.SetTextColour (wxColour ("GREEN"));
+  } else if (is_unique) {
+    _pdf.SetTextColour (wxColour ("RED"));
+  } else {
+  	_pdf.SetTextColour (wxColour ("BLUE"));
+  }
 }
 
 void PdfReport::StartNormalBlock ()

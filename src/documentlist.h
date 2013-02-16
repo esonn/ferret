@@ -98,6 +98,7 @@ class DocumentList
     int UniqueCount (int index) const;
 		// check if given trigram is in both the indexed documents
 		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique=false, bool ignore=false);
+		bool IsTemplateTrigram (std::size_t t0, std::size_t t1, std::size_t t2);
 		// convert given trigram into a string
 		wxString MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2);
 		// collect all the matching trigrams in the two documents into a vector of strings

@@ -3,6 +3,7 @@ VERSION = 5.4 # number for next planned release
 desc "display planned features"
 task :todo do
   puts "Planned/possible additional functionality for Ferret"
+  puts "- include template code (green) in displays/xml/pdf"
   puts "- ignore comments in code files (option in gui and command-line)"
   puts "- option to check with user about type of unknown files"
   puts "- engagement chart (count of trigrams also in provided code)"

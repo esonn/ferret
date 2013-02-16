@@ -19,6 +19,7 @@ void TextctrlReport::WriteReport (wxTextCtrl * text, int doc1, int doc2)
 	bold_font.SetWeight (wxFONTWEIGHT_BOLD);
 	_bold_style = wxTextAttr (*wxBLUE, wxNullColour, bold_font);
   _bold_red_style = wxTextAttr (*wxRED, wxNullColour, bold_font);
+  _template_style = wxTextAttr (*wxGREEN, wxNullColour, normal_font);
 
 	_text->Freeze ();
 	WriteDocument (doc1, doc2);
@@ -26,9 +27,20 @@ void TextctrlReport::WriteReport (wxTextCtrl * text, int doc1, int doc2)
 	_text->SetInsertionPoint (0); // make sure display shows beginning
 }
 
-void TextctrlReport::StartCopiedBlock (bool unique)
+void TextctrlReport::StartCopiedBlock (bool is_unique, bool is_template)
 {
-	_text->SetDefaultStyle ((unique ? _bold_red_style : _bold_style));
+  if (is_template) 
+  {
+    _text->SetDefaultStyle (_template_style);
+  } 
+  else if (is_unique) 
+  {
+    _text->SetDefaultStyle (_bold_red_style);
+  }
+  else 
+  {
+  	_text->SetDefaultStyle (_bold_style);
+  }
 }
 
 void TextctrlReport::StartNormalBlock ()

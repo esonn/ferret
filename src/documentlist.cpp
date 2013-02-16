@@ -412,6 +412,11 @@ bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_
 	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2, unique, ignore);
 }
 
+bool DocumentList::IsTemplateTrigram (std::size_t t0, std::size_t t1, std::size_t t2)
+{
+  return _tuple_set.IsTemplateTuple (t0, t1, t2);
+}
+
 wxString DocumentList::MakeTrigramString (std::size_t t0, std::size_t t1, std::size_t t2)
 {
 	wxString tuple = "";

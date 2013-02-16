@@ -64,6 +64,12 @@ bool TupleSet::IsMatchingTuple (std::size_t t0, std::size_t t1, std::size_t t2, 
 	return ( has_doc1 && has_doc2 );
 }
 
+bool TupleSet::IsTemplateTuple (std::size_t t0, std::size_t t1, std::size_t t2) 
+{
+  TupleDocs & tuple_docs = _tuple_map[t0][t1][t2];
+  return tuple_docs.is_template_material;
+}
+
 wxSortedArrayString TupleSet::CollectMatchingTuples (int doc1, int doc2, TokenSet & tokenset, bool unique, bool ignore)
 {
 	wxSortedArrayString tuples;

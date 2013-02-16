@@ -57,7 +57,7 @@ class TextctrlReport : public OutputReport
 		void WriteReport (wxTextCtrl * text, int doc1, int doc2);
 	private:
 		void ProcessTrigram (wxString trigram, int start, int end);
-		void StartCopiedBlock (bool unique);
+		void StartCopiedBlock (bool is_unique, bool is_template);
 		void StartNormalBlock ();
 		void WriteString (wxString str);
 	private:
@@ -66,6 +66,7 @@ class TextctrlReport : public OutputReport
 		wxTextAttr _normal_style;
 		wxTextAttr _bold_style;
 		wxTextAttr _bold_red_style;
+    wxTextAttr _template_style;
 };
 
 // implement our own form of list control to display the tuples
