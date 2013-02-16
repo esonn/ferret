@@ -86,7 +86,7 @@ the three main stages:
 Ferret can also be used from the command line. The command-line options are:
 
     > uhferret --help
-    Ferret 5.3: start with no arguments for graphical version
+    Ferret 5.4: start with no arguments for graphical version
     Usage: ferret [-h] [-d] [-l] [-a] [-r] [-w] [-p] [-x] [-f] [-u]
       -h, --help           	displays help on command-line parameters
       -d, --data-table     	produce similarity table (default)
@@ -145,6 +145,12 @@ Please read the license for more details, or otherwise contact the author
 for clarification.
 
 ## History ##
+
+Version 5.4:
+
+- selection and use of template material
+- engagement table
+- added green highlighting in displays to show overlap with template material
 
 Version 5.3:
 
