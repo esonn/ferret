@@ -530,8 +530,8 @@ void ComparisonTableView::OnShowEngagementView (wxCommandEvent & WXUNUSED(event)
 {
  	wxBusyCursor wait;
 	wxGetApp().Yield ();
-//	EngagementView * view = new EngagementView (this, _documentlist);
-//	view->Show (true);
+	EngagementTrigramsView * view = new EngagementTrigramsView (this, _documentlist);
+	view->Show (true);
 }
 
 void ComparisonTableView::OnQuit (wxCommandEvent & WXUNUSED(event))

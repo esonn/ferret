@@ -24,6 +24,7 @@ class HelpFrame: public wxDialog
 		void ShowTableHelp ();
 		void ShowComparisonHelp ();
     void ShowUniquenessHelp ();
+    void ShowEngagementHelp ();
 	private:
 		wxPanel * MakePage (wxWindow * parent, wxString title, wxString displayed_text);
 		void ShowHelpPage (int n);

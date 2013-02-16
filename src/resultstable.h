@@ -29,6 +29,7 @@
 #include "xmlreport.h"
 #include "ferretapp.h"
 #include "helpframe.h"
+#include "engagementview.h"
 #include "uniqueview.h"
 
 // some constants, for identifying widgets in the different displays

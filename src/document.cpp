@@ -6,6 +6,7 @@ Document::Document (wxString pathname, int id)
     _short_path (""),
 	  _num_trigrams (0),
     _num_unique_trigrams (0),
+    _engagement_count (0),
 	  _group_id (id)
 {
 	wxFileName filename (pathname);
@@ -19,6 +20,7 @@ Document::Document (Document * document)
 	  _name (document->_name),
 	  _num_trigrams (0),
     _num_unique_trigrams (0),
+    _engagement_count (0),
 	  _group_id (document->_group_id)
 {}
 
@@ -92,6 +94,11 @@ int Document::GetUniqueTrigramCount () const
   return _num_unique_trigrams;
 }
 
+int Document::GetEngagementCount () const
+{
+  return _engagement_count;
+}
+
 // WARNING: This method should only be used when document definitions are 
 // loaded from a file.
 void Document::SetTrigramCount (int count)
@@ -112,6 +119,11 @@ void Document::IncrementTrigramCount ()
 void Document::IncrementUniqueTrigramCount ()
 {
   _num_unique_trigrams += 1;
+}
+
+void Document::IncrementEngagementTrigramCount ()
+{
+  _engagement_count += 1;
 }
 
 // Start input from the file referred to by this document

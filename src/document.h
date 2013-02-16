@@ -51,10 +51,12 @@ class Document
 		// information about trigrams in document
 		int GetTrigramCount () const;
     int GetUniqueTrigramCount () const;
+    int GetEngagementCount () const;
 		void SetTrigramCount (int count);
 		void ResetTrigramCount ();
 		void IncrementTrigramCount ();
     void IncrementUniqueTrigramCount ();
+    void IncrementEngagementTrigramCount ();
 		// following methods used to start, read and end processing of trigrams
 		bool StartInput (TokenSet & tokenset);
 		bool StartInput (wxInputStream & input, TokenSet & tokenset);
@@ -97,6 +99,7 @@ class Document
 		wxString 	  _name;		// -- filename (without path)
 		int 		    _num_trigrams;
     int         _num_unique_trigrams;
+    int         _engagement_count;
 		wxFile 		* _fb;
 		wxInputStream	* _cin;
 		TokenReader 	* _token_input; // this is a pointer, because initialised separately

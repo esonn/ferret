@@ -3,11 +3,13 @@ CC = g++ -O2
 # ferret -- main, general version of Ferret
 ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		outputreport.o xmlreport.o helpframe.o pdfreport.o uniqueview.o \
-		tokenset.o tokenreader.o tupleset.o document.o documentlist.o 
+		tokenset.o tokenreader.o tupleset.o document.o documentlist.o \
+		engagementview.o
 	$(CC) -o ferret \
 		tokenset.o tokenreader.o tupleset.o document.o documentlist.o \
 		mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
-		outputreport.o xmlreport.o helpframe.o pdfreport.o uniqueview.o \
+		outputreport.o xmlreport.o helpframe.o pdfreport.o \
+		uniqueview.o engagementview.o \
 		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
 
 mainferret.o: mainferret.cpp mainferret.h \
@@ -24,7 +26,8 @@ selectfiles.o: selectfiles.cpp selectfiles.h resultstable.h \
 	$(CC) `wx-config --cxxflags` -c selectfiles.cpp -o selectfiles.o 
 
 resultstable.o: resultstable.cpp resultstable.h \
-		tokenset.h tokenreader.h tokenset.h document.h documentlist.h
+		tokenset.h tokenreader.h tokenset.h document.h documentlist.h \
+		uniqueview.h engagementview.h
 	$(CC) `wx-config --cxxflags` -c resultstable.cpp -o resultstable.o
 
 documentview.o: documentview.cpp documentview.h \
@@ -46,6 +49,9 @@ pdfreport.o: pdfreport.cpp pdfreport.h resultstable.h outputreport.h \
 xmlreport.o: xmlreport.cpp xmlreport.h outputreport.h \
 		tokenset.h tokenreader.h document.h documentlist.h
 	$(CC) `wx-config --cxxflags` -c xmlreport.cpp -o xmlreport.o
+
+engagementview.o: engagementview.cpp engagementview.h documentlist.h documentview.h
+	$(CC) `wx-config --cxxflags` -c engagementview.cpp -o engagementview.o
 
 uniqueview.o: uniqueview.cpp uniqueview.h documentlist.h documentview.h
 	$(CC) `wx-config --cxxflags` -c uniqueview.cpp -o uniqueview.o

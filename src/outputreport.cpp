@@ -64,7 +64,7 @@ void OutputReport::WriteDocument (int doc1, int doc2)
           doc1,
           doc2,
           _unique,
-          false
+          _ignore
           ))
     { // processing a matching trigram
       if (!insideblock)

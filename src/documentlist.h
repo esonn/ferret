@@ -56,6 +56,16 @@ class DocumentList
 				doclist->ComputeResemblance((*document1)[y], (*document2)[y], _unique, _ignore));
 		}
 	};
+  struct engagementcountcmp { // structure for sorting indices to document by engagement count
+		static DocumentList * doclist;
+
+		bool operator()(int x, int y) const 
+		{
+			return (doclist->EngagementCount(x)
+				>
+				doclist->EngagementCount(y));
+		}
+	};
   struct uniquecountcmp { // structure for sorting indices to document by unique count
 		static DocumentList * doclist;
 
@@ -96,6 +106,7 @@ class DocumentList
 		float ComputeResemblance (int doc_i, int doc_j, bool unique=false, bool ignore=false);
 		float ComputeContainment (int doc_i, int doc_j, bool unique=false, bool ignore=false);
     int UniqueCount (int index) const;
+    int EngagementCount (int index) const;
 		// check if given trigram is in both the indexed documents
 		bool IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique=false, bool ignore=false);
 		bool IsTemplateTrigram (std::size_t t0, std::size_t t1, std::size_t t2);
@@ -105,6 +116,7 @@ class DocumentList
 		wxSortedArrayString CollectMatchingTrigrams (int doc1, int doc2, bool unique=false, bool ignore=false);
 		// for sorting pairs of indices
     struct uniquecountcmp GetUniqueCountComparer ();
+    struct engagementcountcmp GetEngagementCountComparer ();
 		struct similaritycmp GetSimilarityComparer (std::vector<int> * document1, std::vector<int> * document2, bool unique, bool ignore);
 		// for storing/retrieving list of documents and token/tuple definitions
 		void SaveDocumentList (wxString path);

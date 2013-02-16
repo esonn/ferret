@@ -40,6 +40,8 @@ HelpFrame::HelpFrame ()
 
   wxString unique_text = "The uniqueness table shows a list of the documents or groups along with the total number of unique trigrams for that document or group.  Click on the column headings or buttons to resort the data.\n";
 
+  wxString engagement_text = "The engagement table shows a list of the documents or groups along with the total number of trigrams shared with any template material, for that document or group.  Click on the column headings or buttons to resort the data.\n";
+
 	// -- add pages
 	notebook->AddPage (MakePage (notebook, wxGetApp().GetVersionString () + "\n\n", about_text), 
 			"About", true);
@@ -53,6 +55,8 @@ HelpFrame::HelpFrame ()
 			"Analyse", false);
   notebook->AddPage (MakePage (notebook, "Uniqueness Table\n\n", unique_text),
       "Uniqueness", false);
+  notebook->AddPage (MakePage (notebook, "Engagement Table\n\n", unique_text),
+      "Engagement", false);
 
 	top_sizer->Add (notebook, 1, wxGROW | wxALL, 5);
 
@@ -128,6 +132,11 @@ void HelpFrame::ShowComparisonHelp ()
 void HelpFrame::ShowUniquenessHelp ()
 {
   ShowHelpPage (5);
+}
+
+void HelpFrame::ShowEngagementHelp ()
+{
+  ShowHelpPage (6);
 }
 
 void HelpFrame::OnUserClose (wxCommandEvent & WXUNUSED(event))

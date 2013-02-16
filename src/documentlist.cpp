@@ -303,6 +303,17 @@ void DocumentList::ComputeSimilarities ()
         break;
       }
     }
+    // for template material, increase EngagementCount for all other documents
+    if (templateMaterial)
+    {
+      for (int i = 0; i < fvector.size (); i += 1)
+      {
+        if (_documents[fvector[i]]->GetGroupId () != 0)
+        {
+          _documents[fvector[i]]->IncrementEngagementTrigramCount ();
+        }
+      }
+    }
 
 		// take each pair of documents in the vector, and add one to matches
 		for (unsigned int fi = 0, n = fvector.size (); fi < n; ++fi)
@@ -407,6 +418,28 @@ int DocumentList::UniqueCount (int index) const
   }
 }
 
+// engagement count adds up all counts for files in given group index,
+// or returns document's unique count if no groups used.
+int DocumentList::EngagementCount (int index) const
+{
+  if (IsGrouped ())
+  {
+    int total = 0;
+    for (int i = 0; i < _documents.size (); i++)
+    {
+      if (_documents[i]->GetGroupId () == index+1)
+      {
+        total += _documents[i]->GetEngagementCount ();
+      }
+    }
+    return total;
+  }
+  else
+  {
+    return _documents[index]->GetEngagementCount ();
+  }
+}
+
 bool DocumentList::IsMatchingTrigram (std::size_t t0, std::size_t t1, std::size_t t2, int doc1, int doc2, bool unique, bool ignore)
 {
 	return _tuple_set.IsMatchingTuple (t0, t1, t2, doc1, doc2, unique, ignore);
@@ -437,6 +470,16 @@ DocumentList * DocumentList::uniquecountcmp::doclist;
 struct DocumentList::uniquecountcmp DocumentList::GetUniqueCountComparer ()
 {
   uniquecountcmp comparer;
+  comparer.doclist = this;
+
+  return comparer;
+}
+
+// make names of comparison structure visible
+DocumentList * DocumentList::engagementcountcmp::doclist;
+struct DocumentList::engagementcountcmp DocumentList::GetEngagementCountComparer ()
+{
+  engagementcountcmp comparer;
   comparer.doclist = this;
 
   return comparer;
