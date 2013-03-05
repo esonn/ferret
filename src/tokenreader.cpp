@@ -212,6 +212,28 @@ bool CodeReader::ReadToken ()
 	return true;
 }
 
+bool ActionScriptCodeReader::IsSymbol (wxString token, wxChar c)
+{
+	wxString candidate = token + c;
+  return (
+      candidate == "||=" || candidate == "&&=" ||
+      candidate == "||" || candidate == "&&" || 
+      candidate == "===" || candidate == "!==" ||
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "!=" || candidate == "==" || 
+      candidate == "/*" || candidate == "*/" || 
+      candidate == "//" || 
+      candidate == "&=" || candidate == "|=" || 
+      candidate == "<<=" || candidate == ">>=" ||
+      candidate == "^=" || candidate == "%=" || 
+      candidate == ">>>" || candidate == ">>>=" ||
+      candidate == "<<" || candidate == ">>" || 
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "++" || candidate == "--"
+  );
+}
+
 bool CCodeReader::IsSymbol (wxString token, wxChar c)
 {
 	wxString candidate = token + c;
@@ -310,11 +332,27 @@ bool JavaCodeReader::IsSymbol (wxString token, wxChar c)
       candidate == "%=" || candidate == "&=" || 
       candidate == "|=" || candidate == "^=" || 
       candidate == "//" || candidate == "<<" || 
-      candidate == ">>" || candidate == "##" || 
+      candidate == ">>" || 
       candidate == "/*" || candidate == "*/" || 
       candidate == "/**" ||
       candidate == "<<=" || candidate == ">>=" ||
       candidate == ">>>" || candidate == ">>>="
+  );
+}
+
+bool PhpCodeReader::IsSymbol (wxString token, wxChar c)
+{
+  wxString candidate = token + c;
+  return (
+      candidate == "+=" || candidate == "-=" || 
+      candidate == "*=" || candidate == "/=" || 
+      candidate == "%=" || candidate == ".=" || 
+      candidate == "++" || candidate == "--" || 
+      candidate == "!=" || candidate == "==" || 
+      candidate == "===" || candidate == "<>" ||
+      candidate == "!==" ||
+      candidate == ">=" || candidate == "<=" || 
+      candidate == "||" || candidate == "&&"
   );
 }
 

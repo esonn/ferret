@@ -71,12 +71,14 @@ class Document
 		bool IsTxtType () const;
 		bool IsWordProcessorType () const;
     bool IsTextType () const;
+    bool IsActionScriptCodeType () const;
 		bool IsCCodeType () const;
     bool IsCSharpCodeType () const;
     bool IsGroovyCodeType () const;
     bool IsHaskellCodeType () const;
 		bool IsJavaCodeType () const;
     bool IsVBCodeType () const;
+    bool IsPhpCodeType () const;
     bool IsRubyCodeType () const;
     bool IsPrologCodeType () const;
     bool IsPythonCodeType () const;

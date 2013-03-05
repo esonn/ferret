@@ -74,6 +74,14 @@ class CodeReader: public TokenReader
     virtual bool IsSymbol (wxString token, wxChar c) = 0;
 };
 
+class ActionScriptCodeReader: public CodeReader
+{
+  public:
+    ActionScriptCodeReader (wxInputStream & input) : CodeReader (input) {}
+  private:
+    bool IsSymbol (wxString token, wxChar c);
+};
+
 class CCodeReader: public CodeReader
 {
 	public:
@@ -112,6 +120,14 @@ class JavaCodeReader: public CodeReader
 		JavaCodeReader (wxInputStream & input) : CodeReader (input) {}
 	private:
 		bool IsSymbol (wxString token, wxChar c);
+};
+
+class PhpCodeReader: public CodeReader
+{
+  public:
+    PhpCodeReader (wxInputStream & input) : CodeReader (input) {}
+  private:
+    bool IsSymbol (wxString token, wxChar c);
 };
 
 class VbCodeReader: public CodeReader

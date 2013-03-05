@@ -162,6 +162,10 @@ void Document::InitialiseInput (TokenSet & tokenset)
 	{
 		_token_input = new CCodeReader (* _cin);
 	}
+  else if (IsActionScriptCodeType ())
+  {
+    _token_input = new ActionScriptCodeReader (* _cin);
+  }
   else if (IsCSharpCodeType ())
 	{
 		_token_input = new CSharpCodeReader (* _cin);
@@ -177,6 +181,10 @@ void Document::InitialiseInput (TokenSet & tokenset)
   else if (IsJavaCodeType ())
   {
     _token_input = new JavaCodeReader (* _cin);
+  }
+  else if (IsPhpCodeType ())
+  {
+    _token_input = new PhpCodeReader (* _cin);
   }
   else if (IsVBCodeType ())
   {
@@ -248,6 +256,12 @@ bool Document::IsTextType () const
   return IsWordProcessorType () || IsPdfType () || IsTxtType ();
 }
 
+bool Document::IsActionScriptCodeType () const
+{
+  return IsFileType ("as") ||
+    IsFileType ("actionscript");
+}
+
 bool Document::IsCCodeType () const
 {
 	return  IsFileType ("cpp") ||
@@ -273,6 +287,11 @@ bool Document::IsJavaCodeType () const
 bool Document::IsGroovyCodeType () const
 {
 	return IsFileType ("groovy");
+}
+
+bool Document::IsPhpCodeType () const
+{
+  return IsFileType ("php");
 }
 
 bool Document::IsVBCodeType () const
