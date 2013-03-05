@@ -110,6 +110,7 @@ list, raise an issue at <https://github.com/petercrlane/ferret> or contact the a
 - Word processor formats (.doc, .docx, .rtf, .abw)
 - Pdf documents (.pdf)
 - Computer languages
+  - ActionScript (.as, .actionscript)
   - C/C++ (.h, .c, .cpp)
   - C# (.cs)
   - Clojure (.clj)
@@ -117,6 +118,7 @@ list, raise an issue at <https://github.com/petercrlane/ferret> or contact the a
   - Haskell (.hs, .lhs)
   - Java (.java)
   - Lisp (.lisp, .lsp)
+  - PHP (.php)
   - Prolog (.pl)
   - Python (.py)
   - Racket (.rkt)
@@ -151,6 +153,7 @@ Version 5.4:
 - selection and use of template material
 - engagement table
 - added green highlighting in displays to show overlap with template material
+- added more languages
 
 Version 5.3:
 
