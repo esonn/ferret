@@ -66,7 +66,7 @@ void FerretApp::ShowEngagementHelp ()
 
 wxString FerretApp::GetVersionString ()
 {
-	return "Ferret 5.4 (develop)";
+	return "Ferret 5.4";
 }
 
 wxString FerretApp::GetGeneratedByString ()

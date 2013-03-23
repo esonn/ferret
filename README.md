@@ -2,7 +2,9 @@
 
 Ferret is a copy-detection tool, locating duplicate text or code in 
 multiple text documents or source files.  Ferret is designed to  
-detect copying ( _collusion_ ) within a given set of files.
+detect copying ( _collusion_ ) within a given set of files, and 
+distinguishes copying unique to a pair of documents, across a 
+group of documents, and against provided template material.
 
 *Ferret is useful for:*
 
@@ -42,8 +44,8 @@ measure itself does not imply any reliable conclusion.
 
 *Download*
 
-- [Ferret 5.3](http://peterlane.info/downloads/uhferret_5.3_i386.deb) for Ubuntu
-- [Ferret 5.3](http://peterlane.info/downloads/ferret-5.3-linux.tgz) for generic Linux
+- [Ferret 5.4](http://peterlane.info/downloads/uhferret_5.4_i386.deb) for Ubuntu
+- [Ferret 5.4](http://peterlane.info/downloads/ferret-5.4-linux.tgz) for generic Linux
 - for Windows (in preparation)
 
 *Install*
@@ -57,7 +59,7 @@ For more information and options, see <http://peterlane.info/ferret.html>
 
 ## Install From Source ##
 
-Download and install [wxWidgets](http://wxwidgets.org) and
+Download and install [wxWidgets](http://wxwidgets.org) (version 2.9+) and
 [wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
 
 (To obtain a static executable (with all the wx libraries contained within the 
@@ -98,12 +100,13 @@ Ferret can also be used from the command line. The command-line options are:
       -f, --definition-file	use file with document list
       -u, --use-stored-data	store/retrieve data structure
 
-More details on using Ferret can be found in the [manual](http://peterlane.info/downloads/ferret-manual.pdf).
+More details on using Ferret can be found in the 
+[manual](http://peterlane.info/downloads/ferret-manual.pdf).
 
 ### Supported File Types / Languages ###
 
 The following list gives the recognised types of file or computer code within 
-Ferret, with the recognised file extension in brackets. For any additions to this 
+Ferret, with the recognised file extension in brackets. To request an addition to this 
 list, raise an issue at <https://github.com/petercrlane/ferret> or contact the author.
 
 - Text documents (.txt)
