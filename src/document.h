@@ -77,12 +77,13 @@ class Document
     bool IsGroovyCodeType () const;
     bool IsHaskellCodeType () const;
 		bool IsJavaCodeType () const;
-    bool IsVBCodeType () const;
+    bool IsLispCodeType () const;
+    bool IsLuaCodeType () const;
     bool IsPhpCodeType () const;
-    bool IsRubyCodeType () const;
     bool IsPrologCodeType () const;
     bool IsPythonCodeType () const;
-    bool IsLispCodeType () const;
+    bool IsRubyCodeType () const;
+    bool IsVBCodeType () const;
     bool IsXmlCodeType () const;
 		bool IsCodeType () const;
 		bool IsUnknownType () const;

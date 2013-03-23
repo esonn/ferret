@@ -1,13 +1,15 @@
 #if !defined tokenreader_h 
 #define tokenreader_h
 
-/** written by Peter Lane, 2006-2008
+/** written by Peter Lane, 2006-2013
   * (c) School of Computer Science, University of Hertfordshire
   */
 
 #include <ctype.h> // gives tests for if characters are numbers, alphanumerics, etc
 #include <wx/wx.h>
 #include <wx/stream.h>
+#include <wx/string.h>
+#include <set>
 
 #include "tokenset.h"
 
@@ -71,95 +73,161 @@ class CodeReader: public TokenReader
     bool ReadToken ();
   private:
     bool IsSymbol (wxChar c);
-    virtual bool IsSymbol (wxString token, wxChar c) = 0;
+    bool IsSymbol (wxString token, wxChar c) {
+      return _symbols.count (token+c) == 1;
+    }
+  protected:
+    std::set<wxString> _symbols;
 };
 
 class ActionScriptCodeReader: public CodeReader
 {
   public:
-    ActionScriptCodeReader (wxInputStream & input) : CodeReader (input) {}
-  private:
-    bool IsSymbol (wxString token, wxChar c);
+    ActionScriptCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "||=", "&&=", "||", "&&", "===", "!==", ">=",  "<=", "!=", "==",  
+        "/*",  "*/", "//", "&=",  "|=",  "<<=", ">>=", "^=", "%=", ">>>", 
+        ">>>=", "<<", ">>", "+=", "-=", "*=" , "/=", "++", "--" 
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 29);
+    }
 };
 
 class CCodeReader: public CodeReader
 {
 	public:
-		CCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+		CCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+         "!=", "++", "--", "==", ">=", "<=", "||", "&&", "+=", "-=",
+         "*=", "/=", "%=", "&=", "|=", "^=", "::", "->", "//", "<<", 
+         ">>", "##", "/*", "*/", ".*", "->*", "<<=", ">>="
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 28);
+    }
 };
 
 class CSharpCodeReader: public CodeReader
 {
 	public:
-		CSharpCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
-};
-
-class HaskellCodeReader: public CodeReader
-{
-	public:
-		HaskellCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+		CSharpCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+         "++", "--", "->", "<<", ">>", ">=", "<=", "==", "!=", "||",
+         "&&", "+=", "-=", "*=", "/=", "%=", "&=", "|=", "^=", "<<=",
+         ">>=", "??", "///", "/*", "*/", "//"
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 26);
+    }
 };
 
 class GroovyCodeReader: public CodeReader
 {
 	public:
-		GroovyCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+		GroovyCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "!=", "++", "--", "==", ">=", "<=", "||", "&&", "+=", "-=",
+        "*=", "/=", "%=", "&=", "|=", "^=", "//", "<<", ">>", "##",
+        "/*", "*/", "/**", "<<=", ">>=", ">>>", ">>>=", "*.@", "<=>", "=~",
+        "==~", "*.", ".@", "?:", "?."
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 35);
+    }
+};
+
+class HaskellCodeReader: public CodeReader
+{
+	public:
+		HaskellCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "--", "{-", "-}", "^^", "**", "&&", "||", "<=", "==", "/=",
+        ">=", "++", "..", "::", "!!", "\\\\", "->", "<-", "=>", ">>",
+        ">>=", ">@>"
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 22);
+    }
 };
 
 class JavaCodeReader: public CodeReader
 {
 	public:
-		JavaCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+		JavaCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+         "!=", "++", "--", "==", ">=", "<=", "||", "&&", "+=", "-=",
+         "*=", "/=", "%=", "&=", "|=", "^=", "//", "<<", ">>", "/*",
+         "*/", "/**", "<<=", ">>=", ">>>", ">>>="
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 26);
+    }
+};
+
+class LuaCodeReader: public CodeReader
+{
+  public:
+    LuaCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "<=", ">=", "==", "~="
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 4);
+    }
 };
 
 class PhpCodeReader: public CodeReader
 {
   public:
-    PhpCodeReader (wxInputStream & input) : CodeReader (input) {}
-  private:
-    bool IsSymbol (wxString token, wxChar c);
-};
-
-class VbCodeReader: public CodeReader
-{
-	public:
-		VbCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
-};
-
-class RubyCodeReader: public CodeReader
-{
-	public:
-		RubyCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+    PhpCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "+=", "-=", "*=", "/=", "%=", ".=", "++", "--", "!=", "==",
+        "===", "<>", "!==", ">=", "<=", "||", "&&"
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 17);
+    }
 };
 
 class PrologCodeReader: public CodeReader
 {
 	public:
-		PrologCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+		PrologCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "=<", ">=", "==", "=:=", ":-", "?-"
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 6);
+    }
 };
 
 class PythonCodeReader: public CodeReader
 {
 	public:
-		PythonCodeReader (wxInputStream & input) : CodeReader (input) {}
-	private:
-		bool IsSymbol (wxString token, wxChar c);
+		PythonCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "**", "//", ">=", "<=", "==", "!=", "<>", "!=", "+=", "-=",
+        "*=", "/=", "%=", "**=", "//=", "<<", ">>" 
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 17);
+    }
+};
+
+class RubyCodeReader: public CodeReader
+{
+	public:
+		RubyCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "**", ">=", "<=", "<<", ">>", "<=>", "=~", "==", "===", "!=",
+        "!~", "||", "&&", "..", "...", "+=", "-=", "*=", "/=", "%=",
+        "&=", "||=", "&&=", "<<=", ">>=", "**="
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 26);
+    }
+};
+
+class VbCodeReader: public CodeReader
+{
+	public:
+		VbCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        ">=", "<=", "<>", "==", "+=", "-=", "*=", "/=", "\\=", "&=",
+        "^=", "<<", ">>" 
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 13);
+    }
 };
 
 // For reading XML/HTML, simply recognise the tokens such as '<? />' etc
@@ -168,9 +236,12 @@ class PythonCodeReader: public CodeReader
 class XmlCodeReader: public CodeReader
 {
   public:
-    XmlCodeReader (wxInputStream & input) : CodeReader (input) {}
-  private:
-    bool IsSymbol (wxString token, wxChar c);
+    XmlCodeReader (wxInputStream & input) : CodeReader (input) {
+      wxString symbols[] = {
+        "<?", "?>", "</", "/>", "<!--", "-->"
+      };
+      _symbols = std::set<wxString> (symbols, symbols + 6);
+    }
 };
 
 #endif

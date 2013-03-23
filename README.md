@@ -118,6 +118,7 @@ list, raise an issue at <https://github.com/petercrlane/ferret> or contact the a
   - Haskell (.hs, .lhs)
   - Java (.java)
   - Lisp (.lisp, .lsp)
+  - Lua (.lua)
   - PHP (.php)
   - Prolog (.pl)
   - Python (.py)

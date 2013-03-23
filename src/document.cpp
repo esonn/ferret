@@ -170,29 +170,29 @@ void Document::InitialiseInput (TokenSet & tokenset)
 	{
 		_token_input = new CSharpCodeReader (* _cin);
 	}
-  else if (IsHaskellCodeType ())
-  {
-    _token_input = new HaskellCodeReader (* _cin);
-  }
   else if (IsGroovyCodeType ())
   {
     _token_input = new GroovyCodeReader (* _cin);
+  }
+  else if (IsHaskellCodeType ())
+  {
+    _token_input = new HaskellCodeReader (* _cin);
   }
   else if (IsJavaCodeType ())
   {
     _token_input = new JavaCodeReader (* _cin);
   }
+  else if (IsLispCodeType ())
+  {
+    _token_input = new LispCodeReader (* _cin);
+  }
+  else if (IsLuaCodeType ())
+  {
+    _token_input = new LuaCodeReader (* _cin);
+  }
   else if (IsPhpCodeType ())
   {
     _token_input = new PhpCodeReader (* _cin);
-  }
-  else if (IsVBCodeType ())
-  {
-    _token_input = new VbCodeReader (* _cin);
-  }
-  else if (IsRubyCodeType ())
-  {
-    _token_input = new RubyCodeReader (* _cin);
   }
   else if (IsPrologCodeType ())
   {
@@ -202,9 +202,13 @@ void Document::InitialiseInput (TokenSet & tokenset)
   {
     _token_input = new PythonCodeReader (* _cin);
   }
-  else if (IsLispCodeType ())
+  else if (IsRubyCodeType ())
   {
-    _token_input = new LispCodeReader (* _cin);
+    _token_input = new RubyCodeReader (* _cin);
+  }
+  else if (IsVBCodeType ())
+  {
+    _token_input = new VbCodeReader (* _cin);
   }
   else if (IsXmlCodeType ())
   {
@@ -274,6 +278,11 @@ bool Document::IsCSharpCodeType () const
 	return IsFileType ("cs");
 }
 
+bool Document::IsGroovyCodeType () const
+{
+	return IsFileType ("groovy");
+}
+
 bool Document::IsHaskellCodeType () const
 {
   return IsFileType ("hs") || IsFileType ("lhs");
@@ -284,24 +293,22 @@ bool Document::IsJavaCodeType () const
 	return IsFileType ("java");
 }
 
-bool Document::IsGroovyCodeType () const
+bool Document::IsLispCodeType () const
 {
-	return IsFileType ("groovy");
+  return IsFileType ("lisp") || IsFileType ("lsp") ||
+    IsFileType ("scm") || 
+    IsFileType ("rkt") || IsFileType ("ss") ||
+    IsFileType ("clj");
+}
+
+bool Document::IsLuaCodeType () const
+{
+  return IsFileType ("lua");
 }
 
 bool Document::IsPhpCodeType () const
 {
   return IsFileType ("php");
-}
-
-bool Document::IsVBCodeType () const
-{
-  return IsFileType ("vb");
-}
-
-bool Document::IsRubyCodeType () const
-{
-  return IsFileType ("rb");
 }
 
 bool Document::IsPrologCodeType () const
@@ -314,12 +321,14 @@ bool Document::IsPythonCodeType () const
   return IsFileType ("py");
 }
 
-bool Document::IsLispCodeType () const
+bool Document::IsRubyCodeType () const
 {
-  return IsFileType ("lisp") || IsFileType ("lsp") ||
-    IsFileType ("scm") || 
-    IsFileType ("rkt") || IsFileType ("ss") ||
-    IsFileType ("clj");
+  return IsFileType ("rb");
+}
+
+bool Document::IsVBCodeType () const
+{
+  return IsFileType ("vb");
 }
 
 bool Document::IsXmlCodeType () const
@@ -332,7 +341,7 @@ bool Document::IsCodeType () const
   return IsCCodeType () || IsGroovyCodeType () || IsHaskellCodeType () ||
     IsJavaCodeType () || IsVBCodeType () || IsPrologCodeType () ||
     IsRubyCodeType () || IsPythonCodeType () || IsLispCodeType () ||
-    IsXmlCodeType () || IsCSharpCodeType ();
+    IsXmlCodeType () || IsCSharpCodeType () || IsLuaCodeType ();
 }
 
 // Test if file is not a known type
