@@ -62,7 +62,7 @@ END
     rescue # ignore error when no .deb files present
     end
     # construct the deb file
-    `sudo fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://peterlane.info/ferret.html' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v #{VERSION} /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
+    `fpm -s dir -t deb --description 'Ferret is a copy-detection tool' --url 'http://peterlane.info/ferret.html' -m 'Peter Lane<peter.lane@bcs.org.uk>' -n uhferret -v #{VERSION} /usr/local/bin/uhferret /usr/share/applications/uhferret.desktop /usr/share/icons/uhferret.ico`
     puts "Deb package:"
     puts `md5sum *.deb`
   end
