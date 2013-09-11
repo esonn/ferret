@@ -44,8 +44,8 @@ measure itself does not imply any reliable conclusion.
 
 *Download*
 
-- [Ferret 5.4](http://peterlane.info/downloads/uhferret_5.4_i386.deb) for Ubuntu
-- [Ferret 5.4](http://peterlane.info/downloads/ferret-5.4-linux.tgz) for generic Linux
+- [Ferret 5.4](http://peterlane.info/downloads/uhferret_5.4_i386.deb) for Ubuntu (32-bit)
+- [Ferret 5.4](http://peterlane.info/downloads/ferret-5.4-linux.tgz) for generic Linux (32-bit)
 - for Windows (in preparation)
 
 *Install*
@@ -73,8 +73,8 @@ as a zipped folder by clicking on the ZIP button.
 
 to build the executable 'uhferret'.  
 
-Ferret is known to compile on Linux and Windows (using mingw) - it is believed to 
-compile on Mac OSX, but this is untested.
+Ferret is known to compile on Linux (using GTK2) and Windows (using mingw) - it
+is believed to compile on Mac OSX, but this is untested.
 
 ## Use ##
 
