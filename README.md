@@ -44,11 +44,7 @@ measure itself does not imply any reliable conclusion.
 
 *Download*
 
-- [Ferret 5.4](http://peterlane.info/downloads/uhferret_5.4_i386.deb) for Ubuntu (32-bit)
-- [Ferret 5.4](http://peterlane.info/downloads/ferret-5.4-linux.tgz) for generic Linux (32-bit)
-- [Ferret 5.4](http://peterlane.info/downloads/uhferret_5.4_amd64.deb) for Ubuntu (64-bit)
-- [Ferret 5.4](http://peterlane.info/downloads/ferret-5.4-linux-i686.tgz) for generic Linux (64-bit)
-- for Windows (in preparation)
+In Preparation
 
 *Install*
 
