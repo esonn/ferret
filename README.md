@@ -1,3 +1,5 @@
+*THIS PROJECT IS CURRENTLY NOT UNDER DEVELOPMENT*
+
 # ferret #
 
 Ferret is a copy-detection tool, locating duplicate text or code in 
@@ -98,8 +100,7 @@ Ferret can also be used from the command line. The command-line options are:
       -f, --definition-file	use file with document list
       -u, --use-stored-data	store/retrieve data structure
 
-More details on using Ferret can be found in the 
-[manual](http://peterlane.info/downloads/ferret-manual.pdf).
+
 
 ### Supported File Types / Languages ###
 
