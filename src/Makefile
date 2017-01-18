@@ -10,7 +10,7 @@ ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		outputreport.o xmlreport.o helpframe.o pdfreport.o \
 		uniqueview.o engagementview.o \
-		-l wxcode_gtk2u_pdfdoc-2.9 `wx-config --libs`
+		`wx-config --libs`
 
 mainferret.o: mainferret.cpp mainferret.h \
 		documentlist.h ferretapp.h document.h outputreport.h pdfreport.h xmlreport.h
@@ -78,4 +78,7 @@ tokenset.o: tokenset.cpp tokenset.h
 	
 clean:
 	rm *.o
+
+mrproper:
+	rm *.o ferret
 

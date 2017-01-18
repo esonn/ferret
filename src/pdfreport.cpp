@@ -2,6 +2,7 @@
 
 void PdfTable::FancyTable(wxArrayString& header, wxArrayPtrVoid & data)
 {
+    /*
 	//Colours, line width and bold font
 	SetFillColour (wxColour (255, 0, 0));
 	SetTextColour (255);
@@ -12,7 +13,7 @@ void PdfTable::FancyTable(wxArrayString& header, wxArrayPtrVoid & data)
 	double w[3] = {75, 75, 40};	// these give the widths of the columns
 	for (size_t i = 0; i < header.GetCount(); i++)
 	{
-		Cell(w[i], 7, header[i], wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER, 1);
+		//Cell(w[i], 7, header[i], wxPDF_BORDER_FRAME, 0, wxPDF_ALIGN_CENTER, 1);
 	}
 	Ln ();
 	// Colour and font restoration
@@ -25,38 +26,43 @@ void PdfTable::FancyTable(wxArrayString& header, wxArrayPtrVoid & data)
 	{
 		wxArrayString* row = (wxArrayString*) data[j];
 		// TODO: Check for overflowing of cells when printing
-		Cell(w[0], 6, (*row)[0], wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
-		Cell(w[1], 6, (*row)[1], wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
-		Cell(w[2], 6, (*row)[2], wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
+		//Cell(w[0], 6, (*row)[0], wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
+		//Cell(w[1], 6, (*row)[1], wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
+		//Cell(w[2], 6, (*row)[2], wxPDF_BORDER_LEFT | wxPDF_BORDER_RIGHT, 0, wxPDF_ALIGN_CENTER, fill);
 		Ln ();
 		fill = 1 - fill;
 	}
 	Cell ((w[0]+w[1]+w[2]), 0, _T(""), wxPDF_BORDER_TOP);
+	*/
 }
 
 void PdfTable::Footer()
 {
+    /*
 	SetY (-15); // position -1.5cm from bottom
 	SetFont (_T("Arial"), _T("I"), 9);
 	WriteCell (10, wxGetApp().GetGeneratedByString ());
 	Cell (0, 10, wxString::Format(_T("Page %d/{nb}"), PageNo()),
 			0, 0, wxPDF_ALIGN_RIGHT);
+			*/
 }
 
 void PdfTable::PrintLine (wxString line)
 {
-	Cell (50, 10, line, 0, 0, wxPDF_ALIGN_LEFT);
-	Ln (5);
+	//Cell (50, 10, line, 0, 0, wxPDF_ALIGN_LEFT);
+	//Ln (5);
 }
 
 void PdfTable::PrintList (wxString title, wxSortedArrayString list)
 {
+    /*
 	if (list.IsEmpty ()) return; // display nothing for an empty list
 	PrintLine (title);
 	for (int i = 0, n = list.size (); i < n; ++i)
 	{
 		PrintLine (list[i]);
 	}
+	*/
 }
 
 SaveTableThread::SaveTableThread (wxString save_report_path, DocumentList & doclist, DocumentListCtrl & resObs)
@@ -67,6 +73,7 @@ SaveTableThread::SaveTableThread (wxString save_report_path, DocumentList & docl
 
 void * SaveTableThread::Entry ()
 {
+    /*
 	PdfTable pdf;
 	wxArrayString header;
 	header.Add ("Document 1");
@@ -118,10 +125,12 @@ void * SaveTableThread::Entry ()
 	}
 
 	pdf.SaveAsFile (_save_report_path);
+	*/
 }
 
 void PdfDocumentComparison::Footer()
 {
+    /*
 	// Position at 1.5 cm from bottom
 	SetY (-15);
 	SetFont (_T("Arial"), _T("I"), 9);
@@ -129,6 +138,7 @@ void PdfDocumentComparison::Footer()
 	WriteCell (10, wxGetApp().GetGeneratedByString ());
 	Cell (0, 10, wxString::Format(_T("Page %d of {nb}"), PageNo()),
 			0, 0, wxPDF_ALIGN_RIGHT);
+			*/
 }
 
 PdfReport::PdfReport (DocumentList & doclist, bool unique, bool ignore)
@@ -138,6 +148,7 @@ PdfReport::PdfReport (DocumentList & doclist, bool unique, bool ignore)
 
 void PdfReport::WritePdfReport (wxString save_report_path, int document1, int document2)
 {
+    /*
 	_pdf.AliasNbPages ();
 	_pdf.AddPage ();
 	// initial summary
@@ -176,45 +187,53 @@ void PdfReport::WritePdfReport (wxString save_report_path, int document1, int do
 	PrintDocument (2, document2, document1);
 	// done
 	_pdf.SaveAsFile (save_report_path);
+	*/
 }
 
 void PdfReport::DocumentTitle (int num, const wxString & label)
 {
+    /*
 	_pdf.SetFont (_T("Arial"), _T(""), 12);
 	_pdf.SetFillColour (wxColour (200, 220, 255));  // colour for title
 	_pdf.MultiCell (0, 6, wxString::Format (_T("Document %d : "), num) + label, 0, wxPDF_ALIGN_LEFT, 1);
 	_pdf.Ln (4);
+	*/
 }
 
 void PdfReport::PrintDocument (int num, int doc1, int doc2)
 {
+    /*
 	_pdf.AddPage ();
 	_pdf.SetFont (_T("Times"), _T(""), 12); // set font to Times 12pt
 	DocumentTitle (num, _doclist[doc1]->GetName ());
 	WriteDocument (doc1, doc2);
+	*/
 }
 
 void PdfReport::PrintLine (wxString line, int alignment)
 {
-	_pdf.MultiCell (0, 10, line, 0, alignment); // permit printing on multiple lines
+	//_pdf.MultiCell (0, 10, line, 0, alignment); // permit printing on multiple lines
 }
 
 void PdfReport::WriteDocumentFooter ()
 {
+    /*
 	// Finish off with a comment
 	_pdf.Ln();
 	_pdf.Ln();
 	_pdf.SetFont(_T(""),_T("I"));
 	_pdf.Cell(0,5,_T("(end of document)"));
+	*/
 }
 
 void PdfReport::EndBlock ()
 {
-	StartNormalBlock (); // change font to black text
+	//StartNormalBlock (); // change font to black text
 }
 
 void PdfReport::StartCopiedBlock (bool is_unique, bool is_template)
 {
+    /*
 	_pdf.SetFont (_T(""), _T("B"));
   if (is_template) {
     _pdf.SetTextColour (wxColour ("GREEN"));
@@ -223,16 +242,19 @@ void PdfReport::StartCopiedBlock (bool is_unique, bool is_template)
   } else {
   	_pdf.SetTextColour (wxColour ("BLUE"));
   }
+  */
 }
 
 void PdfReport::StartNormalBlock ()
 {
+    /*
 	_pdf.SetFont (_T(""), _T(""));
 	_pdf.SetTextColour (wxColour ("BLACK"));
+	*/
 }
 
 void PdfReport::WriteString (wxString str)
 {
-	_pdf.WriteCell (5, str);
+	//_pdf.WriteCell (5, str);
 }
 

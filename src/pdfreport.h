@@ -6,7 +6,7 @@
   */
 
 #include <wx/wx.h>
-#include <wx/pdfdoc.h>
+//#include <wx/pdfdoc.h>
 #include <wx/sstream.h>
 
 #include "tokenset.h"
@@ -17,7 +17,7 @@
 /** PdfTable is to create a table
   * Based heavily on examples provided with wxPdfDocument
   */
-class PdfTable: public wxPdfDocument
+class PdfTable
 {
 	public:
 		void FancyTable (wxArrayString & header, wxArrayPtrVoid & data);
@@ -42,7 +42,7 @@ class SaveTableThread: public wxThread
 
 /** PdfDocumentComparison is to write the two provided documents, highlighting common tuples
   */
-class PdfDocumentComparison : public wxPdfDocument
+class PdfDocumentComparison 
 {
 	public:
 		void Footer ();
@@ -56,7 +56,7 @@ class PdfReport : public OutputReport
 	private:
 		void DocumentTitle (int num, const wxString& label);
 		void PrintDocument (int num, int doc1, int doc2);
-		void PrintLine (wxString line, int alignment = wxPDF_ALIGN_LEFT);
+		void PrintLine (wxString line, int alignment = 0);
 		void WriteDocumentFooter ();
 		void EndBlock ();
 		void StartCopiedBlock (bool is_unique, bool is_template);

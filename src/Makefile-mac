@@ -11,7 +11,7 @@ ferret: mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		tokenset.o tokenreader.o tupleset.o document.o documentlist.o \
 		mainferret.o ferretapp.o selectfiles.o resultstable.o documentview.o \
 		outputreport.o xmlreport.o helpframe.o pdfreport.o \
-		-lwxpdfdocud `wx-config --libs`
+		`wx-config --libs`
 
 mainferret.o: mainferret.cpp mainferret.h \
 		documentlist.h ferretapp.h
@@ -81,4 +81,7 @@ Ferret.app: ferret
 
 clean:
 	rm *.o
+
+mrproper:
+	rm *.o ferret
 
