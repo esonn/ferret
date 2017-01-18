@@ -1,4 +1,10 @@
-*THIS PROJECT IS CURRENTLY NOT UNDER DEVELOPMENT*
+*NOTE*: The original ferret project is hosted by Peter Lane (see link below),
+but not maintained anymore.
+
+I have plainly forked the project in order to make the code compile on modern
+Linux distributions (i.e. Arch Linux in my case), mainly by removing
+dependencies towards wxPdf. This should not degrade the PDF similarity matching,
+but removes support for PDF reports.
 
 # ferret #
 
@@ -59,13 +65,12 @@ For more information and options, see <http://peterlane.info/ferret.html>
 
 ## Install From Source ##
 
-Download and install [wxWidgets](http://wxwidgets.org) (version 2.9+) and
-[wxPdfDocument](http://wxcode.sourceforge.net/components/wxpdfdoc/).
+Download and install [wxWidgets](http://wxwidgets.org) (version 2.9+).
 
 (To obtain a static executable (with all the wx libraries contained within the 
 ferret executable) use the configure flag '--disable-shared'.)
 
-Checkout the [source code](https://github.com/petercrlane/ferret) or download 
+Checkout the [source code](https://github.com/esonn/ferret) or download 
 as a zipped folder by clicking on the ZIP button.
 
     > cd src
