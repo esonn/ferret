@@ -50,25 +50,12 @@ measure itself does not imply any reliable conclusion.
 
 ## Installation ##
 
-*Download*
-
-In Preparation
-
-*Install*
-
-Either unpack or follow the instructions in the installer.  The installer will 
-create a menu entry for Ferret in your applications menu, under 'Office' for Linux.
-
-*More information*
-
-For more information and options, see <http://peterlane.info/ferret.html>
+For more information and options, see Ferret's original homepage by Peter Lane
+still available at <http://peterlane.info/ferret.html>.
 
 ## Install From Source ##
 
 Download and install [wxWidgets](http://wxwidgets.org) (version 2.9+).
-
-(To obtain a static executable (with all the wx libraries contained within the 
-ferret executable) use the configure flag '--disable-shared'.)
 
 Checkout the [source code](https://github.com/esonn/ferret) or download 
 as a zipped folder by clicking on the ZIP button.
@@ -76,14 +63,14 @@ as a zipped folder by clicking on the ZIP button.
     > cd src
     > make
 
-to build the executable 'uhferret'.  
+to build the executable 'ferret'. 
 
 Ferret is known to compile on Linux (using GTK2) and Windows (using mingw) - it
-is believed to compile on Mac OSX, but this is untested.
+is believed to compile on MacOS, but this is untested.
 
 ## Use ##
 
-Start 'uhferret' to run the program.  The graphical interface leads the user through 
+Start 'ferret' to run the program.  The graphical interface leads the user through 
 the three main stages:
 
 1. select files to analyse, using your computer's file browser
@@ -92,7 +79,7 @@ the three main stages:
 
 Ferret can also be used from the command line. The command-line options are:
 
-    > uhferret --help
+    > ferret --help
     Ferret 5.4: start with no arguments for graphical version
     Usage: ferret [-h] [-d] [-l] [-a] [-r] [-w] [-p] [-x] [-f] [-u]
       -h, --help           	displays help on command-line parameters
@@ -100,7 +87,6 @@ Ferret can also be used from the command line. The command-line options are:
       -l, --list-trigrams  	produce trigram list report
       -a, --all-comparisons	produce list of all comparisons
       -r, --remove-common   removes common trigrams
-      -p, --pdf-report     	source-1 source-2 results-file : create pdf report
       -x, --xml-report     	source-1 source-2 results-file : create xml report
       -f, --definition-file	use file with document list
       -u, --use-stored-data	store/retrieve data structure
@@ -139,12 +125,10 @@ list, raise an issue at <https://github.com/petercrlane/ferret> or contact the a
 
 This project defines a version of ferret runnable as a standalone 
 application.  Ferret is written in C++ and uses the 
-[wxWidgets](http://wxwidgets.org) and [wxPdfDocument](http://wxcode.org)
-libraries. Text conversion from word processor or pdf formats is through 
+[wxWidgets](http://wxwidgets.org) library.
+Text conversion from word processor or pdf formats is through 
 calling [abiword](http://www.abisource.com) or [pdftotext](http://www.xpdf.com).
 
-For a version designed for embedding in your own scripts, see 
-[uhferret-gem](https://github.com/petercrlane/uhferret-gem).
 
 ## License ##
 

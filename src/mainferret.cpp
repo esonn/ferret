@@ -73,7 +73,7 @@ void aboutMessage ()
 		<< "  -l, --list-trigrams  	produce trigram list report" << std::endl
 		<< "  -a, --all-comparisons	produce list of all comparisons" << std::endl
     << "  -r, --remove-common   removes common trigrams" << std::endl
-		<< "  -p, --pdf-report     	source-1 source-2 results-file : create pdf report" << std::endl
+		//<< "  -p, --pdf-report     	source-1 source-2 results-file : create pdf report" << std::endl
 		<< "  -x, --xml-report     	source-1 source-2 results-file : create xml report" << std::endl
 		<< "  -f, --definition-file	use file with document list" << std::endl
 		<< "  -u, --use-stored-data	store/retrieve data structure" << std::endl;
@@ -238,7 +238,8 @@ bool FerretApp::OnInit ()
       }
 			else if (isPdfOption (argv[filenames_start]))
 			{
-				report_type = PDF_REPORT;
+				report_type = XML_REPORT;
+				//report_type = PDF_REPORT;
 				filenames_start += 1;
 			}
 			else if (isXmlOption (argv[filenames_start]))
