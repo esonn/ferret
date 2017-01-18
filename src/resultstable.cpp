@@ -309,13 +309,15 @@ void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique,
   wxFileDialog dialog (NULL, "Create and save report",
       wxEmptyString,
       newname,
-      "pdf|*.pdf|xml|*.xml", 
+      "xml|*.xml", 
+      //"pdf|*.pdf|xml|*.xml", 
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR);
   if (dialog.ShowModal () == wxID_OK)
   {
     wxBusyCursor wait;
     wxBusyInfo info ("Saving comparison report, please wait ...", this);
     wxFileName path (dialog.GetPath ()); 
+    /*
    	if (dialog.GetFilterIndex () == 0 || (path.GetExt () == "pdf"))
    	{
     	path.SetExt ("pdf"); // force .pdf as extension
@@ -328,6 +330,10 @@ void DocumentListCtrl::SaveReportFor (int document1, int document2, bool unique,
       XmlReport xmlreport (_ferretparent->GetDocumentList (), unique, ignore);
       xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
     }
+    */
+    path.SetExt ("xml"); // force .xml as extension
+    XmlReport xmlreport (_ferretparent->GetDocumentList (), unique, ignore);
+    xmlreport.WriteXmlReport (path.GetFullPath (), document1, document2);
   }
 }
 
